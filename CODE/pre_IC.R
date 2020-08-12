@@ -188,16 +188,15 @@ create_IC = function(sim_constants,Elms,IC_type,IC_beetles,IC_radius,IC_number_d
     # print(sampling.dead.trees)
     # IC_radius = radius1 # because 
   }else if(IC_type == "random"){ # dead trees are chosen randomly
-    if(is.integer(IC_number_dead_trees)){ 
+    
+    if(is.integer(IC_number_dead_trees)){#because we can put it at "ic_radius", not an integer
       sampling.dead.trees = sample.int(sim_constants$default_params$N,size = IC_number_dead_trees)
-    }
-    else{#if we want to have the same number of dead trees than a cluster of size IC_radius
+    }else{#if we want to have the same number of dead trees than a cluster of size IC_radius
       # cluster virtually created from the IC_radius 
       virtual_cluster = cluster.inf.trees(Elms,centre_world,IC_radius)
       # then, the length of virtual_cluster gives the number of dead trees we want
       sampling.dead.trees = sample.int(sim_constants$default_params$N,size = length(virtual_cluster))
     }
-    
   }
   
   stages = initially.inf.trees(sim_constants$default_params,sampling.dead.trees)

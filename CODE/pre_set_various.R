@@ -26,7 +26,14 @@ week_types = function(v,climate = NULL) {
   return(out)
 }
 
-### READ_PARAMETERS
+### READ_PARAMETERS 
+#
+# read parameters from the csv file and replace those choosen in the main file (input)
+# read the pre_processing files required for the given value of maxD (3 files per maxD)
+# read the tree database
+# read the initial condition
+# read the proba_root files created by the pre-processing of roots (Julien)
+# also adjust some parameters in function of the read files (nb of trees for instance)
 read_parameters = function(sim_constants,input) {
   sim_constants$FILES = list()
   sim_constants$FILES[[1]] = sprintf("%s/parameters.csv", sim_constants$DIRS$PARAM)
@@ -40,11 +47,13 @@ read_parameters = function(sim_constants,input) {
   sim_constants$default_params$p_r             = input$pr
   sim_constants$default_params$Sdt             = input$sdt
   sim_constants$default_params$maxD            = input$maxD
+  
   ## Now we can load the good preprocessing since we have the right maxD
   sim_constants$FILES[[2]] = sprintf("%s/Preprocessing/neighbours_%s_maxD%s.RData", sim_constants$DIRS$DATA, sim_constants$sim_core, sim_constants$default_params$maxD)
   sim_constants$FILES[[3]] = sprintf("%s/Preprocessing/distance_neighbours_%s_maxD%s.RData", sim_constants$DIRS$DATA, sim_constants$sim_core, sim_constants$default_params$maxD)
   sim_constants$FILES[[4]] = sprintf("%s/Preprocessing/neighbours_pos_%s_maxD%s.RData", sim_constants$DIRS$DATA,sim_constants$sim_core, sim_constants$default_params$maxD)
   sim_constants$FILES[[5]] = sprintf("%s/Elms_Neighbourhood/Elms_%s.RData", sim_constants$DIRS$DATA, sim_constants$Neighbourhood)
+  
   #the following file is just a default_file, then it changes when we set up the IC
   sim_constants$FILES[[6]] = sprintf("%s/IC_PULBERRY_radius_60.RData", sim_constants$DIRS$PARAM)
   sim_constants$FILES[[7]] = sprintf("%s/Proba_roots/Proba_roots_%s_pr%s.RData",sim_constants$DIRS$DATA,sim_constants$Neighbourhood,sim_constants$default_params$p_r*100)
@@ -65,6 +74,7 @@ read_parameters = function(sim_constants,input) {
   
   #### Sublist with initial conditions
   sim_constants$default_params$IC = readRDS(sim_constants$FILES[[6]])
+  
   #### Sublist with selected elms
   sim_constants$default_params$elms = Elms
   
@@ -72,26 +82,20 @@ read_parameters = function(sim_constants,input) {
 }
 
 ### SET_OUTPUT_LOCATION
+#
+# set up the directory for the output with a name sim_date for the repertory
 set_output_location = function(sim_constants) {
   current_date_time = format(Sys.time(), "%Y_%m_%d_%H_%M")
-  # if (sim_constants$roots){
-  #we create the folder for the outputs
-  #   output_dir = sprintf(sprintf("%s/sim_%s_maxD%03g_pb_inf%03g_pr%03g_%s",sim_constants$DIRS$RESULT,sim_constants$initial_set_up$IC_type,sim_constants$default_params$maxD,sim_constants$default_params$proba_infection*100,sim_constants$default_params$p_r*100,sim_constants$sim_core))
-  # }else{
-  #   output_dir = sprintf(sprintf("%s/sim_%s_maxD%03g_pb_inf%03g_pr0_%s",sim_constants$DIRS$RESULT,sim_constants$initial_set_up$IC_type,sim_constants$default_params$maxD,sim_constants$default_params$proba_infection*100,sim_constants$sim_core))
-  # }
+  abb_ngh = abbreviate(sim_constants$Neighbourhood,minlength = 5)
   
   #we create the folder for the outputs
   output_dir = paste(sim_constants$DIRS$RESULT,
                      "/sim",
                      current_date_time,
                      "_",
-                     sim_constants$sim_core,
+                     abb_ngh,
                      sep = "")
   dir.create(output_dir)
-  dir.create(paste(output_dir,"/imgs",sep=""))
-  dir.create(paste(output_dir,"/proportions",sep=""))
-  sim_constants[["filename"]] = paste(output_dir,"/sim.RData",sep="")
   sim_constants$output_dir = output_dir
   return(sim_constants)
 }
@@ -120,14 +124,12 @@ set_sim_environment = function(sim_constants,input) {
   #######################################################################################
   ## Provide the range and the name of the parameters -> the order matters !!!!!!!!!!!!!!
   # save the hypercube in the output file
-  
   out$params[[1]] = sim_constants$default_params
-  
-      # Changing small parameters
-      varying_params = list()
-      out$params[[1]]$varying_params = varying_params
-      new_params = out$params[[1]]
-      out$params[[1]]$matrices = set_demography_matrices(new_params)
+  # Changing small parameters
+  varying_params = list()
+  out$params[[1]]$varying_params = varying_params
+  new_params = out$params[[1]]
+  out$params[[1]]$matrices = set_demography_matrices(new_params)
   return(out)
 }
 
@@ -155,7 +157,9 @@ set_maxD_IC_random = function(sim_constants,fileNb){
 }
 
 # SET_OTHER_CONSTANTS
+#
 # Gives constants that can be used and that will never be changed
+# indexes and state names are defined here
 set_other_constants = function(sim_constants) {
   
   indexOs = seq(1,sim_constants$default_params$Nbs*sim_constants$default_params$N,by=sim_constants$default_params$Nbs)
@@ -174,6 +178,9 @@ set_other_constants = function(sim_constants) {
   return(out)
 }
 
+# SET_DEMOGRAPHY_MATRICES
+#
+# Define the demography matrices as a function of the tree status and the period
 set_demography_matrices = function(default_params){
   env = environment()
   list2env(default_params,env)

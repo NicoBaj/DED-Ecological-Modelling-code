@@ -18,6 +18,12 @@ input$pr   = 0.5 #max proba for an infected tree to infect another one by root i
 input$pi   = 0.02 #proba that one beetle infects successfully one tree
 input$sdt  = 0.98 #proba for beetles to survive one time step
 
+#do we want to run the code with the root infection route ?
+roots = TRUE
+
+#number of simulations required for one set of parameters
+nb_sims = 1
+
 # The three types of IC used in the paper
 IC_type="cluster"
 # IC_type = "2clusters"
@@ -40,10 +46,12 @@ if(Neighbourhood=="MIXED_PULBERRY_CRESCENT_PARK" & IC_type == "cluster"){
 IC_number_dead_trees = "ic_radius"
 #old: "ic_radius"
 # the following is used if random IC
-if(EVAL_IC_RANDOM & Neighbourhood == "MIXED_PULBERRY_CRESCENT_PARK"){
-  IC_number_dead_trees = 38
-}else if (EVAL_IC_RANDOM & Neighbourhood == "NORTH_RIVER_HEIGHTS"){
-  IC_number_dead_trees = 53 ## to change that
+if (EVAL_IC_RANDOM){
+  if(Neighbourhood == "MIXED_PULBERRY_CRESCENT_PARK"){
+    IC_number_dead_trees = 38
+  }else if(Neighbourhood == "NORTH_RIVER_HEIGHTS"){
+    IC_number_dead_trees = 53 ## to change that
+  }
 }
 
 # RUN_PARALLEL = TRUE
@@ -52,8 +60,8 @@ end_date = "2020-12-31"
 
 # if we need one particular initial condition, then put the file here
 # to put the name of the file, go to sim_parallel...R and put the file name there
-if (EVAL_IC == FALSE){
-  dir_ic = "/storage/var/groups/mathbio/DED_DATA_OUTPUT/PARAMS/"
+if (!EVAL_IC){
+  dir_ic = "dir_file_IC"
 }
 
 # Libraries needed for all the processes
@@ -62,15 +70,15 @@ library(igraph)
 library(Matrix)
 library(R.utils)
 library(markovchain)
-library(plotrix)
+# library(plotrix)
 library(parallel)
 library(ISOweek)
-library(deldir)
+# library(deldir)
 library(stringr)
-library(lattice)
+# library(lattice)
 library(tictoc)
-library(colorRamps)
-library(vioplot)
+# library(colorRamps)
+# library(vioplot)
 library(tgp)
 library(poibin)
 
@@ -96,4 +104,4 @@ source(sprintf("%s/sim_functions.R",TOP_DIR_CODE))
 # Source the functions that create initial condition
 source(sprintf("%s/pre_IC.R",TOP_DIR_CODE))
 # Source the R script for the simulation
-# source(sprintf("%s/sim.R",TOP_DIR_CODE))
+source(sprintf("%s/sim.R",TOP_DIR_CODE))

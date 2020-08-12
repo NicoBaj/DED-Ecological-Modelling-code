@@ -1,6 +1,8 @@
 ########## Functions #########
 
-########## Matrix system #########
+### SYSTEM.OVER.TIME
+#
+# The main function that runs one simulation
 system.over.time=function(sim_param,sim_constants){
   
   #Set up the IC:
@@ -14,25 +16,25 @@ system.over.time=function(sim_param,sim_constants){
   new_infection = mat.or.vec(sim_constants$default_params$N,length(sim_constants$time$idx))
   new_infection[,1] = sim_param$IC$infection0
   
-  phase = sim_constants$time$phase
-  event=phase[1]
+  # phase = sim_constants$time$phase
+  event=sim_constants$time$phase[1]
   current_event = event
+  #Demog is the big block diagonal demography matrix
   Demog = demography.matrices(sim_constants,sim_param$params,status_trees[,1],event)
   #End of IC
   
   root_or_vec = mat.or.vec(length(sim_constants$time$idx),2)
   
-  ## print("plot")
-  # png(filename = "what_you_want.png")
+  #plot the intial set up
   plot(sim_constants$default_params$elms$X,
        sim_constants$default_params$elms$Y,
        col="green",xlab = "X", ylab = "Y", main = "Trees")
   Di_Wi = which(status_trees[,1]=="Di"|status_trees[,1]=="Wi")
   points(sim_constants$default_params$elms$X[Di_Wi],sim_constants$default_params$elms$Y[Di_Wi],col="red")
-  # dev.off()
-  
+
+  #loop over time
   for (idx in 2:length(sim_constants$time$idx)) {
-    event = phase[idx]
+    event = sim_constants$time$phase[idx]
     # demography changes if event is different from before
     if (event != current_event) {
       Demog = demography.matrices(sim_constants,sim_param$params,status_trees[,idx-1],event)
@@ -60,7 +62,7 @@ system.over.time=function(sim_param,sim_constants){
     matPopByTrees[,idx] = Demog%*%matPopByTrees[,idx]
     
     ##Finally update tree status every l steps
-    if(event == "Winter" & phase[idx+1] == "Emerge" & idx != length(sim_constants$time$idx)){
+    if(event == "Winter" & sim_constants$time$phase[idx+1] == "Emerge" & idx != length(sim_constants$time$idx)){
       print(sprintf("Update tree states %d",idx))
       if(sim_constants$time$simple_year[idx]==1){#if this is the the first time we update
         vec_idx = 1:idx
@@ -93,7 +95,7 @@ system.over.time=function(sim_param,sim_constants){
       ###############################
       # ROOT INFECTION
       ###############################
-    
+      
       if (sim_constants$roots){
         idx_Susceptible_trees = which(status_trees[,(idx-1)]=="H"|status_trees[,(idx-1)]=="Ws"|status_trees[,(idx-1)]=="Ds")
         status_trees_after_root = mat.or.vec(sim_constants$default_params$N,1)
@@ -141,24 +143,19 @@ system.over.time=function(sim_param,sim_constants){
         root_or_vec[idx,2] = length(nb_inf_roots)
         
         status_trees[,idx] = merge_updates(sim_constants,status_trees_after_root,status_trees_after_beetles)
-        
-        # png(filename = "what_you_want.png",1)
-        plot(sim_constants$default_params$elms$X,sim_constants$default_params$elms$Y,
-             col="green",xlab = "X", ylab = "Y", main = "Trees")
-        Di_Wi = which(status_trees[,idx]=="Di"|status_trees[,idx]=="Wi")
-        points(sim_constants$default_params$elms$X[Di_Wi],sim_constants$default_params$elms$Y[Di_Wi],col="red")
-        # dev.off()
+      
         
       }else{
         status_trees[,idx] = status_trees_after_beetles
         Di_Wi = which(status_trees[,idx]=="Di"|status_trees[,idx]=="Wi")
-        points(sim_constants$default_params$elms$X[Di_Wi],sim_constants$default_params$elms$Y[Di_Wi],col="red")
       }
       
-      ###############################
-      #END OF ROOT INFECTION
-      ###############################
       
+      plot(sim_constants$default_params$elms$X,sim_constants$default_params$elms$Y,
+           col="green",xlab = "X", ylab = "Y", main = "Trees")
+      Di_Wi = which(status_trees[,idx]=="Di"|status_trees[,idx]=="Wi")
+      points(sim_constants$default_params$elms$X[Di_Wi],sim_constants$default_params$elms$Y[Di_Wi],col="red")
+
       ##since we change the status, we change the demography matrices
       Demog=demography.matrices(sim_constants,sim_param$params,status_trees[,idx],event)
     }else{
@@ -323,10 +320,15 @@ proba.distance = function(maxD,distance){
   return(res)
 }
 
+
+### DEMOGRAPHY.MATRICES
+#
+# Set the big demography matrices when the period changes (Winter, Emerge, Breeding or Offspring) or when the status of trees change
+# stagesi gives the new status of trees
+# event gives the new scenario
+# sim_param = sim_param$params
 demography.matrices = function(sim_constants,sim_param,stagesi,event){#function to create the big demography matrix when status_trees or scenario change
-  #stagesi gives the new status of trees
-  #event gives the new scenario
-  #!!!!!!!!!!!!!!!!!!sim_param = sim_param$params
+  
   if (event == "Winter"){
     LH = sim_param$matrices$list_winter_normal$LH_win_normal
     LWs = sim_param$matrices$list_winter_normal$LWs_win_normal
@@ -352,8 +354,6 @@ demography.matrices = function(sim_constants,sim_param,stagesi,event){#function 
     LDs = sim_param$matrices$list_offsprings_normal$LDs_off_normal
     LDi = sim_param$matrices$list_offsprings_normal$LDi_off_normal
   }
-  # llll=list(LH=LH,LDi=LDi)
-  # saveRDS(llll,file = "~/list_mat.RData")
   
   L.list = list()
   for (i in (1:as.numeric(sim_constants$default_params$N))){
@@ -376,17 +376,6 @@ demography.matrices = function(sim_constants,sim_param,stagesi,event){#function 
   }
   D=bdiag(L.list)
   # D = as.matrix(bdiag(L.list))
-  D<-as(D,"sparseMatrix")
-  return(D)
-}
-
-demography.winter = function(params,nb_winter_week){
-  LH = (params$list_winter_normal$LH_win_normal)^nb_winter_week
-  L.list = list()
-  for (i in 1:params$N){
-    L.list[[i]] = LH
-  }
-  D=bdiag(L.list)
   D<-as(D,"sparseMatrix")
   return(D)
 }
