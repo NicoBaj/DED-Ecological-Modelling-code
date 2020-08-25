@@ -14,7 +14,7 @@ source(sprintf("%s/set_directories.R", TOP_DIR_CODE))
 # Source some useful functions
 source(sprintf("%s/useful_functions.R", TOP_DIR_CODE))
 
-
+# If you want to refresh the OSM data, set this to TRUE. Otherwise, pre-saved data is used
 REFRESH_OSM_DATA = FALSE
 
 if (REFRESH_OSM_DATA) {
@@ -39,43 +39,44 @@ if (REFRESH_OSM_DATA) {
             ROADS[["tertiary"]],
             ROADS[["residential"]],
             ROADS[["unclassified"]])
-  saveRDS(roads,sprintf("%s/Winnipeg_roads.Rds",DIR_DATA_PROCESSED_GLOBAL))
+  saveRDS(roads,sprintf("%s/Winnipeg_roads.Rds",DIRS$DATA))
   #same thing with the rail
   rail <- opq(bbox = bb_poly) %>%
     add_osm_feature(key = 'railway', value = "rail") %>%
     osmdata_sf () %>%
     trim_osmdata (bb_poly)
-  saveRDS(rivers,sprintf("%s/Winnipeg_rail.Rds",DIR_DATA_PROCESSED_GLOBAL))
+  saveRDS(rivers,sprintf("%s/Winnipeg_rail.Rds",DIRS$DATA))
   #same thing with the rivers
   rivers <- opq(bbox = bb_poly) %>%
     add_osm_feature(key = 'waterway', value = "river") %>%
     osmdata_sf () %>%
     trim_osmdata (bb_poly)
-  saveRDS(rivers,sprintf("%s/Winnipeg_rivers.Rds",DIR_DATA_PROCESSED_GLOBAL))
+  saveRDS(rivers,sprintf("%s/Winnipeg_rivers.Rds",DIRS$DATA))
   #same thing with the parking lots
   parkings <- opq(bbox = bb_poly) %>%
     add_osm_feature(key = 'amenity', value = "parking") %>%
     osmdata_sf () %>%
     trim_osmdata (bb_poly)
-  saveRDS(parkings,sprintf("%s/Winnipeg_parkings.Rds",DIR_DATA_PROCESSED_GLOBAL))
+  saveRDS(parkings,sprintf("%s/Winnipeg_parkings.Rds",DIRS$DATA))
   # All sources of root cuts
   all_root_cutters = c(roads, rail, rivers, parkings)
-  saveRDS(all_root_cutters,sprintf("%s/Winnipeg_all_root_cutters.Rds",DIR_DATA_PROCESSED_GLOBAL))
+  saveRDS(all_root_cutters,sprintf("%s/Winnipeg_all_root_cutters.Rds",DIRS$DATA))
 } else {
-  roads = readRDS(sprintf("%s/Winnipeg_roads.Rds",DIR_DATA_PROCESSED_GLOBAL))
-  rail = readRDS(sprintf("%s/Winnipeg_rail.Rds",DIR_DATA_PROCESSED_GLOBAL))
-  rivers = readRDS(sprintf("%s/Winnipeg_rivers.Rds",DIR_DATA_PROCESSED_GLOBAL))
-  parkings = readRDS(sprintf("%s/Winnipeg_parkings.Rds",DIR_DATA_PROCESSED_GLOBAL))
-  all_root_cutters = readRDS(sprintf("%s/Winnipeg_all_root_cutters.Rds",DIR_DATA_PROCESSED_GLOBAL))
+  roads = readRDS(sprintf("%s/Winnipeg_roads.Rds",DIRS$DATA))
+  rail = readRDS(sprintf("%s/Winnipeg_rail.Rds",DIRS$DATA))
+  rivers = readRDS(sprintf("%s/Winnipeg_rivers.Rds",DIRS$DATA))
+  parkings = readRDS(sprintf("%s/Winnipeg_parkings.Rds",DIRS$DATA))
+  all_root_cutters = readRDS(sprintf("%s/Winnipeg_all_root_cutters.Rds",DIRS$DATA))
 }
 
-TI_files = list.files(path = DIR_DATA_PROCESSED_GLOBAL,
+# There can be several versions of the tree inventory file, load the latest
+TI_files = list.files(path = DIRS$DATA,
                       pattern = glob2rx("Tree_Inventory_Elms_*.csv"))
-latest_TI_file = sort(TI_files)[length(TI_files)]
+latest_TI_file = sort(TI_files, decreasing = TRUE)[1]
 date_of_file = substr(latest_TI_file,21,30)
 
 # Read elms csv file (could also read the RDS..)
-elms <- read.csv(sprintf("%s/%s", DIR_DATA_PROCESSED_GLOBAL, latest_TI_file),
+elms <- read.csv(sprintf("%s/%s", DIRS$DATA, latest_TI_file),
                  stringsAsFactors = FALSE)
 
 # Compute distances and select the ones matching the criterion. 
@@ -127,14 +128,14 @@ rm(D_mat)
 gc()
 
 # Save as both csv and RDS
-write.csv(DISTS, file = sprintf("%s/elms_distances_roots_%s.csv",DIR_DATA_PROCESSED_GLOBAL,date_of_file))
-saveRDS(DISTS, file = sprintf("%s/elms_distances_roots_%s.Rds",DIR_DATA_PROCESSED_GLOBAL,date_of_file))
+write.csv(DISTS, file = sprintf("%s/elms_distances_roots_%s.csv",DIRS$DATA, date_of_file))
+saveRDS(DISTS, file = sprintf("%s/elms_distances_roots_%s.Rds",DIRS$DATA, date_of_file))
 
 
 # The locations of the origins of the pairs
 tree_locs_orig = cbind(DISTS$lon_i, DISTS$lat_i)
 # The locations of the destinations of the pairs
-tree_locs_dest = cbind(DISTS$lon_j,DISTS$lat_j)
+tree_locs_dest = cbind(DISTS$lon_j, DISTS$lat_j)
 
 tree_pairs = do.call(sf::st_sfc,
                      lapply(
