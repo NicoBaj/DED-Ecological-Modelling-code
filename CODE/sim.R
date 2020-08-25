@@ -64,15 +64,15 @@ sims$params = set_sim_environment(sim_constants=sim_constants)
 # 
 if(EVAL_IC){
   sims$IC = create_IC(sim_constants = sim_constants,Elms=sim_constants$default_params$elms,IC_type,IC_beetles,IC_radius,IC_number_dead_trees)
-  if(is.list(IC_radius)){
-    saveRDS(sims$IC,file = sprintf("%s/IC_%s_radiuses_%s_%s.RData",sim_constants$DIRS$PARAM,sim_constants$Neighbourhood,IC_radius$r1,IC_radius$r2))
+  if(is.list(IC_radius)){#in the case of two clusters
+    saveRDS(sims$IC,file = sprintf("%s/IC_%s_radiuses_%s_%s.RData",sim_constants$DIRS$DATA,sim_constants$Neighbourhood,IC_radius$r1,IC_radius$r2))
   }else{
-    saveRDS(sims$IC,file = sprintf("%s/IC_%s_radius_%s.RData",sim_constants$DIRS$PARAM,sim_constants$Neighbourhood,IC_radius))
+    saveRDS(sims$IC,file = sprintf("%s/IC_%s_radius_%s.RData",sim_constants$DIRS$DATA,sim_constants$Neighbourhood,IC_radius))
   }
   sim_constants$default_params$IC= sims$IC
-}else if (EVAL_IC_RANDOM){
+}else if (EVAL_IC_RANDOM){#if IC is random, then each sim has a different IC
   sims$IC = list()
-  for (i in 1:nb_sims){#we use a different IC for each sim
+  for (i in 1:nb_sims){
     sims$IC[[i]] = create_IC(sim_constants = sim_constants,Elms=sim_constants$default_params$elms,IC_type,IC_beetles,IC_radius,IC_number_dead_trees)
     dir_ic=sprintf("%s/PARAMS/",TOP_DIR_DATA_OUTPUT)
     sim_constants$default_params$IC= sims$IC
@@ -82,14 +82,64 @@ if(EVAL_IC){
   sims$IC = readRDS(sprintf("%sIC_%s_radius_%s.RData",dir_ic,sim_constants$Neighbourhood,IC_radius))
 }
 
-sims_params[[1]] = list()
-sims_params[[1]]$params = sims$params$params[[1]]
-sims_params[[1]]$IC = sims$IC # only initial beetles, initial tree status and initial demography
+
+for (i in 1:sim_constants$nb_sims) {
+  sims_params[[i]] = list()
+  sims_params[[i]]$params = sims$params$params[[i]]
+  sims_params[[i]]$IC = sims$IC # only initial beetles, initial tree status and initial demography
+}
+
+# sims_params[[1]]        = list()
+# sims_params[[1]]$params = sims$params$params[[1]]
+# sims_params[[1]]$IC     = sims$IC # only initial beetles, initial tree status and initial demography
 
 # Run simulations and plot in the same time the spread of the disease
-results = lapply(X = sims_params, FUN = function(x) system.over.time(x,sim_constants))
+# results = lapply(X = sims_params, FUN = function(x) system.over.time(x,sim_constants))
 
-# saveRDS(sims$IC, file = sprintf("%s/ic.RData",sim_constants$output_dir))
+
+# Run simulations
+if (RUN_PARALLEL) {
+  # Detect number of cores, use all but 1
+  no_cores <- detectCores()
+  # Initiate cluster
+  tictoc::tic()
+  cl <- makeCluster(no_cores)
+  # Export needed variables
+  clusterEvalQ(cl,{
+    library(markovchain)
+    library(Matrix)
+    library(poibin)
+  })
+  clusterExport(cl,
+                c("mvt.beetles",
+                  "proba.distance",
+                  "demography.matrices",
+                  "transition.matrices",
+                  "sim_constants",
+                  "system.over.time",
+                  "transition.matrix.root",
+                  "new.transition.matrices",
+                  "transition.matrix.root.new",
+                  "proba_root_fun",
+                  "merge_updates",
+                  "convert_state_to_number"),
+                envir = .GlobalEnv)
+  # Run computation
+  results = parLapply(cl = cl, X = sims_params, fun =  function(x) system.over.time(x,sim_constants))
+  # Stop cluster
+  stopCluster(cl)
+  timeProcessing=tictoc::toc()
+} else {
+  tictoc::tic()
+  # Run computation
+  results = lapply(X = sims_params, FUN = function(x) system.over.time(x,sim_constants))
+  timeProcessing=tictoc::toc()
+}
+
+
+
+
+
 
 #########################################################################
 ## Here, we save all the results in one file

@@ -1,4 +1,4 @@
-##main.R: to run 
+##run_one_sim.R: to run 
 
 # File that conducts the main simulation run.
 # Works by logical control through flow.
@@ -7,11 +7,13 @@
 #just a story of initial conditions ...
 EVAL_IC = TRUE #do we need to create a new IC ?
 EVAL_IC_RANDOM = FALSE #do we want random IC
+PLOT_SIM = TRUE #if one sim is launched, do you want to see the DED spread evolution?
 
 #choose the neighbourhood in which the simulation is run
 Neighbourhood = "MIXED_PULBERRY_CRESCENT_PARK" #PCP
+# Neighbourhood = "MIXED_PULBERRY_CRESCENT_PARK" #
 
-#parameters
+#main parameters
 input = list()
 input$maxD = 20 #max distance that beetles fly during one time step
 input$pr   = 0.5 #max proba for an infected tree to infect another one by root infection
@@ -21,8 +23,11 @@ input$sdt  = 0.98 #proba for beetles to survive one time step
 #do we want to run the code with the root infection route ?
 roots = TRUE
 
-#number of simulations required for one set of parameters
+#number of simulations required for the set of parameters given above
 nb_sims = 1
+
+#if nb_sims>1, say if you want to run sims in parallel
+RUN_PARALLEL = FALSE
 
 # The three types of IC used in the paper
 IC_type="cluster"
@@ -54,7 +59,7 @@ if (EVAL_IC_RANDOM){
   }
 }
 
-# RUN_PARALLEL = TRUE
+#Put here the initial and final dates for the simulation(s)
 start_date = "2019-08-01"
 end_date = "2020-12-31"
 
@@ -70,15 +75,10 @@ library(igraph)
 library(Matrix)
 library(R.utils)
 library(markovchain)
-# library(plotrix)
 library(parallel)
 library(ISOweek)
-# library(deldir)
 library(stringr)
-# library(lattice)
 library(tictoc)
-# library(colorRamps)
-# library(vioplot)
 library(tgp)
 library(poibin)
 

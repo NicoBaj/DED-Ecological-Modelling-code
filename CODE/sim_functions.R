@@ -25,11 +25,14 @@ system.over.time=function(sim_param,sim_constants){
   root_or_vec = mat.or.vec(length(sim_constants$time$idx),2)
   
   #plot the intial set up
-  plot(sim_constants$default_params$elms$X,
-       sim_constants$default_params$elms$Y,
-       col="green",xlab = "X", ylab = "Y", main = "Trees")
-  Di_Wi = which(status_trees[,1]=="Di"|status_trees[,1]=="Wi")
-  points(sim_constants$default_params$elms$X[Di_Wi],sim_constants$default_params$elms$Y[Di_Wi],col="red")
+  if(PLOT_SIM){
+    plot(sim_constants$default_params$elms$X,
+         sim_constants$default_params$elms$Y,
+         col="green",xlab = "X", ylab = "Y", main = "Trees")
+    Di_Wi = which(status_trees[,1]=="Di"|status_trees[,1]=="Wi")
+    points(sim_constants$default_params$elms$X[Di_Wi],sim_constants$default_params$elms$Y[Di_Wi],col="red")
+  }
+  
 
   #loop over time
   for (idx in 2:length(sim_constants$time$idx)) {
@@ -149,12 +152,13 @@ system.over.time=function(sim_param,sim_constants){
         Di_Wi = which(status_trees[,idx]=="Di"|status_trees[,idx]=="Wi")
       }
       
+      if (PLOT_SIM){
+        plot(sim_constants$default_params$elms$X,sim_constants$default_params$elms$Y,
+             col="green",xlab = "X", ylab = "Y", main = "Trees")
+        Di_Wi = which(status_trees[,idx]=="Di"|status_trees[,idx]=="Wi")
+        points(sim_constants$default_params$elms$X[Di_Wi],sim_constants$default_params$elms$Y[Di_Wi],col="red")
+      }
       
-      plot(sim_constants$default_params$elms$X,sim_constants$default_params$elms$Y,
-           col="green",xlab = "X", ylab = "Y", main = "Trees")
-      Di_Wi = which(status_trees[,idx]=="Di"|status_trees[,idx]=="Wi")
-      points(sim_constants$default_params$elms$X[Di_Wi],sim_constants$default_params$elms$Y[Di_Wi],col="red")
-
       ##since we change the status, we change the demography matrices
       Demog=demography.matrices(sim_constants,sim_param$params,status_trees[,idx],event)
     }else{

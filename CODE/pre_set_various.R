@@ -3,7 +3,7 @@ set_directories = function(DIR_TOP) {
   out = list()
   out$TOP = DIR_TOP
   out$DATA = sprintf("%s/DATA",DIR_TOP)
-  out$PARAM = sprintf("%s/PARAMS",DIR_TOP)
+  # out$PARAM = sprintf("%s/PARAMS",DIR_TOP)
   out$RESULT = sprintf("%s/RESULTS",DIR_TOP)
   return(out)
 }
@@ -36,7 +36,7 @@ week_types = function(v,climate = NULL) {
 # also adjust some parameters in function of the read files (nb of trees for instance)
 read_parameters = function(sim_constants,input) {
   sim_constants$FILES = list()
-  sim_constants$FILES[[1]] = sprintf("%s/parameters.csv", sim_constants$DIRS$PARAM)
+  sim_constants$FILES[[1]] = sprintf("%s/parameters.csv", sim_constants$DIRS$DATA)
   parameters <- read.csv(sim_constants$FILES[[1]], header=TRUE)
   #### Sublist with parameters
   sim_constants$default_params = list()
@@ -55,7 +55,7 @@ read_parameters = function(sim_constants,input) {
   sim_constants$FILES[[5]] = sprintf("%s/Elms_Neighbourhood/Elms_%s.RData", sim_constants$DIRS$DATA, sim_constants$Neighbourhood)
   
   #the following file is just a default_file, then it changes when we set up the IC
-  sim_constants$FILES[[6]] = sprintf("%s/IC_PULBERRY_radius_60.RData", sim_constants$DIRS$PARAM)
+  sim_constants$FILES[[6]] = sprintf("%s/IC_PULBERRY_radius_60.RData", sim_constants$DIRS$DATA)
   sim_constants$FILES[[7]] = sprintf("%s/Proba_roots/Proba_roots_%s_pr%s.RData",sim_constants$DIRS$DATA,sim_constants$Neighbourhood,sim_constants$default_params$p_r*100)
   
   # parameters <- read.csv(sim_constants$FILES[[1]], header=TRUE)
