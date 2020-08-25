@@ -26,12 +26,12 @@ roots = TRUE
 nb_sims = 2
 
 #if nb_sims>1, say if you want to run sims in parallel
-RUN_PARALLEL = TRUE
+RUN_PARALLEL = FALSE
 
 # The three types of IC used in the paper
-# IC_type="cluster"
+IC_type="cluster"
 # IC_type = "2clusters"
-IC_type = "random"
+# IC_type = "random"
 
 
 IC_beetles = 500 #nb of inf beetles in each infected tree
