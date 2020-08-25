@@ -122,7 +122,6 @@ DISTS = data.frame(idx_i = indices[,1],
                    lon_j = elms$lon[indices[,2]],
                    ngbhd_j = elms$Neighbourhood[indices[,2]],
                    dist = D_mat[indices])
-
 # Clean up and collect garbage..
 rm(D_mat)
 gc()
