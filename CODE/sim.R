@@ -54,6 +54,10 @@ if(EVAL_IC_RANDOM){
   sim_constants$default_params$maxD = set_maxD_IC_random(sim_constants,sim_constants$fileNb) #only 3 values
 }
 
+#Set the gates
+sim_constants$GATES = list()
+sim_constants$GATES$PLOT_SIM = PLOT_SIM #add other gates if needed
+
 # Parameters (and almost everything else) will go in a list called sim_params.
 sims_params = list()
 
@@ -111,18 +115,14 @@ if (RUN_PARALLEL) {
     library(poibin)
   })
   clusterExport(cl,
-                c("mvt.beetles",
+                c("system.over.time",
+                  "convert_state_to_number",
+                  "merge_updates",
+                  "mvt.beetles",
                   "proba.distance",
                   "demography.matrices",
-                  "transition.matrices",
                   "sim_constants",
-                  "system.over.time",
-                  "transition.matrix.root",
-                  "new.transition.matrices",
-                  "transition.matrix.root.new",
-                  "proba_root_fun",
-                  "merge_updates",
-                  "convert_state_to_number"),
+                  "new.transition.matrices"),
                 envir = .GlobalEnv)
   # Run computation
   results = parLapply(cl = cl, X = sims_params, fun =  function(x) system.over.time(x,sim_constants))
@@ -139,8 +139,6 @@ if (RUN_PARALLEL) {
 
 
 
-
-
 #########################################################################
 ## Here, we save all the results in one file
 #########################################################################
@@ -152,9 +150,11 @@ beetles = list()
 paramet = list()
 vec_year = seq(1,length(sim_constants$time$idx),by=53)
 
-tree_states[[1]] = results[[1]]$sim_output$status_trees[,vec_year]
-beetles[[1]]     = results[[1]]$sim_output$matPopByTrees
-paramet[[1]]     = results[[1]]$sim_param$params
+for (i in 1:sim_constants$nb_sims){
+  tree_states[[i]] = results[[i]]$sim_output$status_trees[,vec_year]
+  beetles[[i]]     = results[[i]]$sim_output$matPopByTrees
+  paramet[[i]]     = results[[i]]$sim_param$params
+}
 
 saveRDS(sims$IC, 
         file = sprintf("%s/ic.RData",sim_constants$output_dir))

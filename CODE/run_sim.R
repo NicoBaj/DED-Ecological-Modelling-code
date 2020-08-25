@@ -24,10 +24,10 @@ input$sdt  = 0.98 #proba for beetles to survive one time step
 roots = TRUE
 
 #number of simulations required for the set of parameters given above
-nb_sims = 1
+nb_sims = 10
 
 #if nb_sims>1, say if you want to run sims in parallel
-RUN_PARALLEL = FALSE
+RUN_PARALLEL = TRUE
 
 # The three types of IC used in the paper
 IC_type="cluster"

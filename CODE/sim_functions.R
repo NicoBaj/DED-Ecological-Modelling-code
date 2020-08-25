@@ -25,7 +25,7 @@ system.over.time=function(sim_param,sim_constants){
   root_or_vec = mat.or.vec(length(sim_constants$time$idx),2)
   
   #plot the intial set up
-  if(PLOT_SIM){
+  if(sim_constants$GATES$PLOT_SIM){
     plot(sim_constants$default_params$elms$X,
          sim_constants$default_params$elms$Y,
          col="green",xlab = "X", ylab = "Y", main = "Trees")
@@ -152,7 +152,7 @@ system.over.time=function(sim_param,sim_constants){
         Di_Wi = which(status_trees[,idx]=="Di"|status_trees[,idx]=="Wi")
       }
       
-      if (PLOT_SIM){
+      if (sim_constants$GATES$PLOT_SIM){
         plot(sim_constants$default_params$elms$X,sim_constants$default_params$elms$Y,
              col="green",xlab = "X", ylab = "Y", main = "Trees")
         Di_Wi = which(status_trees[,idx]=="Di"|status_trees[,idx]=="Wi")
@@ -322,7 +322,6 @@ proba.distance = function(maxD,distance){
   res = exp(-distance/maxD)
   return(res)
 }
-
 
 ### DEMOGRAPHY.MATRICES
 #

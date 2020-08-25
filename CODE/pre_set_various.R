@@ -124,12 +124,13 @@ set_sim_environment = function(sim_constants,input) {
   #######################################################################################
   ## Provide the range and the name of the parameters -> the order matters !!!!!!!!!!!!!!
   # save the hypercube in the output file
-  out$params[[1]] = sim_constants$default_params
-  # Changing small parameters
-  varying_params = list()
-  out$params[[1]]$varying_params = varying_params
-  new_params = out$params[[1]]
-  out$params[[1]]$matrices = set_demography_matrices(new_params)
+  for (i in 1:sim_constants$nb_sims){
+    out$params[[i]] = sim_constants$default_params
+    varying_params = list()
+    out$params[[i]]$varying_params = varying_params
+    new_params = out$params[[i]]
+    out$params[[i]]$matrices = set_demography_matrices(new_params)
+  }
   return(out)
 }
 
