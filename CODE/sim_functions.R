@@ -5,7 +5,7 @@
 # The main function that runs one simulation
 system.over.time=function(sim_param,sim_constants){
   
-  #Set up the IC:
+  #Set up the initial conditions:
   matPopByTrees = mat.or.vec(sim_constants$default_params$N*sim_constants$default_params$Nbs,length(sim_constants$time$idx))
   colnames(matPopByTrees) = sim_constants$time$dateFull
   matPopByTrees[,1] = sim_param$IC$pop0ByTrees
@@ -16,7 +16,6 @@ system.over.time=function(sim_param,sim_constants){
   new_infection = mat.or.vec(sim_constants$default_params$N,length(sim_constants$time$idx))
   new_infection[,1] = sim_param$IC$infection0
   
-  # phase = sim_constants$time$phase
   event=sim_constants$time$phase[1]
   current_event = event
   #Demog is the big block diagonal demography matrix
@@ -61,7 +60,7 @@ system.over.time=function(sim_param,sim_constants){
     #Matrix Demog is defined first in the initial conditions, it only changes when scenario, trees status or year condition change
     matPopByTrees[,idx] = Demog%*%matPopByTrees[,idx]
     
-    ##Finally update tree status every l steps
+    ##Finally update tree status
     if(event == "Winter" & sim_constants$time$phase[idx+1] == "Emerge" & idx != length(sim_constants$time$idx)){
       print(sprintf("Update tree states %d",idx))
       if(sim_constants$time$simple_year[idx]==1){#if this is the the first time we update
