@@ -55,7 +55,7 @@ read_parameters = function(sim_constants,input) {
   sim_constants$FILES[[5]] = sprintf("%s/Elms_Neighbourhood/Elms_%s.RData", sim_constants$DIRS$DATA, sim_constants$Neighbourhood)
   
   #the following file is just a default_file, then it changes when we set up the IC
-  sim_constants$FILES[[6]] = sprintf("%s/IC_PULBERRY_radius_60.RData", sim_constants$DIRS$DATA)
+  # sim_constants$FILES[[6]] = sprintf("%s/IC_PULBERRY_radius_60.RData", sim_constants$DIRS$DATA)
   sim_constants$FILES[[7]] = sprintf("%s/Proba_roots/Proba_roots_%s_pr%s.RData",sim_constants$DIRS$DATA,sim_constants$Neighbourhood,sim_constants$default_params$p_r*100)
   
   # parameters <- read.csv(sim_constants$FILES[[1]], header=TRUE)
@@ -73,7 +73,7 @@ read_parameters = function(sim_constants,input) {
   )
   
   #### Sublist with initial conditions
-  sim_constants$default_params$IC = readRDS(sim_constants$FILES[[6]])
+  # sim_constants$default_params$IC = readRDS(sim_constants$FILES[[6]])
   
   #### Sublist with selected elms
   sim_constants$default_params$elms = Elms

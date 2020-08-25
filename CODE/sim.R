@@ -46,7 +46,7 @@ sim_constants$nb_sims = nb_sims
 sim_constants$other = set_other_constants(sim_constants)
 
 #if we want to compare random IC
-if(EVAL_IC_RANDOM){
+if(IC_type == "random"){
   if(is.null(sim_constants$fileNb)){
     sim_constants$fileNb = 1
   }
@@ -65,32 +65,30 @@ sims = list()
 sims$params = set_sim_environment(sim_constants=sim_constants)
 
 # Choice of initial conditions
-# 
-if(EVAL_IC){
-  sims$IC = create_IC(sim_constants = sim_constants,Elms=sim_constants$default_params$elms,IC_type,IC_beetles,IC_radius,IC_number_dead_trees)
-  if(is.list(IC_radius)){#in the case of two clusters
-    saveRDS(sims$IC,file = sprintf("%s/IC_%s_radiuses_%s_%s.RData",sim_constants$DIRS$DATA,sim_constants$Neighbourhood,IC_radius$r1,IC_radius$r2))
-  }else{
-    saveRDS(sims$IC,file = sprintf("%s/IC_%s_radius_%s.RData",sim_constants$DIRS$DATA,sim_constants$Neighbourhood,IC_radius))
-  }
-  sim_constants$default_params$IC= sims$IC
-}else if (EVAL_IC_RANDOM){#if IC is random, then each sim has a different IC
+if (IC_type=="random"){#if IC is random, then each sim has a different IC
   sims$IC = list()
   for (i in 1:nb_sims){
     sims$IC[[i]] = create_IC(sim_constants = sim_constants,Elms=sim_constants$default_params$elms,IC_type,IC_beetles,IC_radius,IC_number_dead_trees)
-    dir_ic=sprintf("%s/PARAMS/",TOP_DIR_DATA_OUTPUT)
-    sim_constants$default_params$IC= sims$IC
   }
-  saveRDS(sims$IC,file = sprintf("%sIC_%s_random.RData",dir_ic,sim_constants$Neighbourhood))
-}else{
-  sims$IC = readRDS(sprintf("%sIC_%s_radius_%s.RData",dir_ic,sim_constants$Neighbourhood,IC_radius))
+}else{#if IC is cluster or 2clusters
+  sims$IC = create_IC(sim_constants = sim_constants,Elms=sim_constants$default_params$elms,IC_type,IC_beetles,IC_radius,IC_number_dead_trees)
+}
+sim_constants$default_params$IC= sims$IC
+
+if (FALSE){#if needed, we can create an IC using the functions in pre_IC.R and read the file directly
+  sims$IC = readRDS("name_file_IC.rds")
 }
 
 
 for (i in 1:sim_constants$nb_sims) {
   sims_params[[i]] = list()
   sims_params[[i]]$params = sims$params$params[[i]]
-  sims_params[[i]]$IC = sims$IC # only initial beetles, initial tree status and initial demography
+  if(IC_type=="random"){ #for random IC: there is a different IC for each sim
+    sims_params[[i]]$IC = sims$IC[[i]] 
+  }else{ #for cluster and 2clusters IC: there is only one IC
+    sims_params[[i]]$IC = sims$IC 
+  }
+  
 }
 
 # sims_params[[1]]        = list()
