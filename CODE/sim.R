@@ -10,7 +10,9 @@ sim_constants = list()
 ##NOTE_NB: I need to remove that once we change the way we save the pre_processing stuff
 #################
 # Set part of the name for the result directory
-sim_constants$sim_core = "1513Trees"
+# sim_constants$sim_core = "1513Trees" #PCP
+sim_constants$sim_core = "2004Trees" #NRH
+
 
 # Set directories
 sim_constants$DIRS = set_directories(TOP_DIR)
@@ -155,17 +157,17 @@ for (i in 1:sim_constants$nb_sims){
 }
 
 saveRDS(sims$IC, 
-        file = sprintf("%s/ic.RData",sim_constants$output_dir))
+        file = sprintf("%s/ic.Rds",sim_constants$output_dir))
 
 saveRDS(tree_states, 
-        file = sprintf("%s/tree_states_maxD%03g_pb_inf%03g_pr%03g.RData",
+        file = sprintf("%s/tree_states_maxD%03g_pb_inf%03g_pr%03g.Rds",
                        sim_constants$output_dir,
                        sim_constants$default_params$maxD,
                        sim_constants$default_params$proba_infection*100,
                        sim_constants$default_params$p_r*100))
 
 saveRDS(beetles, 
-        file = sprintf("%s/beetles_maxD%03g_pb_inf%03g_pr%03g.RData",
+        file = sprintf("%s/beetles_maxD%03g_pb_inf%03g_pr%03g.Rds",
                        sim_constants$output_dir,
                        sim_constants$default_params$maxD,
                        sim_constants$default_params$proba_infection*100,
@@ -174,7 +176,7 @@ saveRDS(beetles,
 # If needed, save the parameters as well (can be a large file)
 if(FALSE){
   saveRDS(paramet,
-          file = sprintf("%s/parameters_maxD%03g_pb_inf%03g_pr%03g.RData",
+          file = sprintf("%s/parameters_maxD%03g_pb_inf%03g_pr%03g.Rds",
                          sim_constants$output_dir,
                          sim_constants$default_params$maxD,
                          sim_constants$default_params$proba_infection*100,
