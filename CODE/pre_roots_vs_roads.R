@@ -18,6 +18,7 @@ source(sprintf("%s/CODE/set_directories.R", here::here()))
 # If you want to refresh the OSM data, set this to TRUE. Otherwise, pre-saved data is used
 REFRESH_OSM_DATA = FALSE
 
+
 if (REFRESH_OSM_DATA) {
   # Get exact bounding polygon for Winnipeg
   bb_poly = getbb(place_name = "winnipeg", format_out = "polygon")
