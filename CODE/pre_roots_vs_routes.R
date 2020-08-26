@@ -1,4 +1,5 @@
-# PRE_ROOTS_VS_ROADS.R
+# PRE_ROOTS_VS_ROUTES.R
+# roots vs roads :)
 #
 #
 # Compute network for roots, taking into account roads and other obstacles.
