@@ -10,9 +10,7 @@ sim_constants = list()
 ##NOTE_NB: I need to remove that once we change the way we save the pre_processing stuff
 #################
 # Set part of the name for the result directory
-# sim_constants$sim_core = "1513Trees" #PCP
-sim_constants$sim_core = "2004Trees" #NRH
-
+sim_constants$sim_core = sim_core
 
 # Set directories
 sim_constants$DIRS = set_directories(TOP_DIR)

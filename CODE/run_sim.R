@@ -12,9 +12,15 @@ PLOT_SIM = TRUE #if one sim is launched, do you want to see the DED spread evolu
 # Neighbourhood = "MIXED_PULBERRY_CRESCENT_PARK" #PCP
 Neighbourhood = "NORTH_RIVER_HEIGHTS" #NRH
 
+if(Neighbourhood=="NORTH_RIVER_HEIGHTS"){
+  sim_core = "2004Trees"
+}else if (Neighbourhood == "MIXED_PULBERRY_CRESCENT_PARK"){
+  sim_core = "1513Trees"
+}
+
 #main parameters
 input = list()
-input$maxD = 20 #max distance that beetles fly during one time step
+input$maxD = 380 #max distance that beetles fly during one time step
 input$pr   = 0.5 #max proba for an infected tree to infect another one by root infection
 input$pi   = 0.02 #proba that one beetle infects successfully one tree
 input$sdt  = 0.98 #proba for beetles to survive one time step
@@ -29,13 +35,11 @@ nb_sims = 1
 RUN_PARALLEL = FALSE
 
 # The three types of IC used in the paper
-IC_type="cluster"
+# IC_type="cluster"
 # IC_type = "2clusters"
-# IC_type = "random"
+IC_type = "random"
 
 IC_beetles = 500 #nb of inf beetles in each infected tree
-
-# IC_radius = 96 #radius of the cluster in m, to remove for 2clusters
 
 if (IC_type == "2clusters"){ # this is for PCP
   IC_radius1 = 47.5
@@ -49,10 +53,9 @@ if(Neighbourhood=="MIXED_PULBERRY_CRESCENT_PARK" & IC_type == "cluster"){
   IC_radius = 100
 }
 
-# the next parameter can be an integer (classic approach) or a character chain that specifies the number of dead trees in function of the IC_radius for instance
+# the next parameter can be an integer (classic approach) or a character chain that specifies the number of dead trees in function: "ic_radius" specifies either that we use a cluster IC ("cluster" or "2clusters") or a random IC with the same nb of infected trees as the radius 
 IC_number_dead_trees = "ic_radius"
-#old: "ic_radius"
-# the following is used if random IC. The values are the same number of infected trees at initial time than one or two clusters
+# For a random IC, the values are the same number of infected trees at initial time than one or two clusters
 if (IC_type=="random"){
   if(Neighbourhood == "MIXED_PULBERRY_CRESCENT_PARK"){
     IC_number_dead_trees = 38
