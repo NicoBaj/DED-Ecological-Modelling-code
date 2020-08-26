@@ -29,23 +29,28 @@ input$sdt  = 0.98 #proba for beetles to survive one time step
 roots = TRUE
 
 #number of simulations required for the set of parameters given above
-nb_sims = 1
+nb_sims = 2
 
 #if nb_sims>1, say if you want to run sims in parallel
-RUN_PARALLEL = FALSE
+RUN_PARALLEL = TRUE
 
 # The three types of IC used in the paper
 # IC_type="cluster"
-# IC_type = "2clusters"
-IC_type = "random"
+IC_type = "2clusters"
+# IC_type = "random"
 
 IC_beetles = 500 #nb of inf beetles in each infected tree
 
-if (IC_type == "2clusters"){ # this is for PCP
+if (Neighbourhood=="MIXED_PULBERRY_CRESCENT_PARK" & IC_type == "2clusters"){ # this is for PCP
   IC_radius1 = 47.5
   IC_radius2 = 280
   IC_radius = list(r1=IC_radius1,r2=IC_radius2)
   #These values of radii are done to get the same nb of infected trees at the initial time than in one cluster (96m)
+}else if(Neighbourhood=="NORTH_RIVER_HEIGHTS" & IC_type == "2clusters"){
+  IC_radius1 = 85
+  IC_radius2 = 85
+  IC_radius = list(r1=IC_radius1,r2=IC_radius2)
+  #These values of radii are done to get the same nb of infected trees at the initial time than in one cluster (100m)
 }
 if(Neighbourhood=="MIXED_PULBERRY_CRESCENT_PARK" & IC_type == "cluster"){
   IC_radius = 96
