@@ -1,11 +1,6 @@
 ##pre_IC.R:
 #functions that permit to create the three types of initial conditions (cluster, 2clusters and random)
 
-
-##############################################
-## Functions
-##############################################
-
 ###FIND_CENTER
 #
 #center of the map
@@ -115,12 +110,18 @@ cluster_inf_trees = function(Elms,centre_world,r){
   return(idx_selected)
 }
 
-proba.infection = function(default_params,pop0ByTrees,stages){
+
+###PROBA_INFECTION
+#
+#Set the probability that, if a tree is susceptible and with beetles that are supposed to infect these trees, compute the proba that these trees are going to be infected next year (year 1)
+#Remark: this situation is never used in the simulations of the paper so the output is always a vector full of zeros.
+proba_infection = function(default_params,pop0ByTrees,stages){
   indexJi = seq(6,default_params$Nbs*default_params$N,by=default_params$Nbs)
   idx_presence_Ji = which(pop0ByTrees[indexJi]>0)
+  
   vec.inf = rep(0,default_params$N)
-  # stages = convert_state_to_number(stages)
   idx_H_or_Ws = which(stages=="H"|stages=="Ws")
+  
   vecvec = intersect(idx_presence_Ji,idx_H_or_Ws)
   for (k in vecvec){
     vec.inf[k] = rbinom(1,pop0ByTrees[k],default.params$proba_infection)
@@ -129,33 +130,6 @@ proba.infection = function(default_params,pop0ByTrees,stages){
     }
   }
   return(vec.inf)
-}
-
-find_radius = function(Elms,center1,center2,IC_radius,nb_inf_trees){
-  dead1 = cluster_inf_trees(Elms,center1,IC_radius)
-  dead2 = cluster_inf_trees(Elms,center2,IC_radius)
-  l = length(dead1)+length(dead2)
-  if(l!=nb_inf_trees){
-    cpt = 1
-    while (l!=nb_inf_trees & cpt<100) {
-      if(l>nb_inf_trees){
-        IC_radius = IC_radius-0.5
-        dead1 = cluster_inf_trees(Elms,center1,IC_radius)
-        dead2 = cluster_inf_trees(Elms,center2,IC_radius)
-        l = length(dead1)+length(dead2)
-      }else{
-        IC_radius = IC_radius+0.5
-        dead1 = cluster_inf_trees(Elms,center1,IC_radius)
-        dead2 = cluster_inf_trees(Elms,center2,IC_radius)
-        l = length(dead1)+length(dead2)
-      }
-      cpt = cpt+1
-    }
-    out = IC_radius
-  }else{
-    out = IC_radius
-  }
-  return(out)
 }
 
 ###CREATE_IC
@@ -182,19 +156,8 @@ create_IC = function(sim_constants,Elms,IC_type,IC_beetles,IC_radius,IC_number_d
   
   stages = initially_inf_trees(sim_constants$default_params,sampling.dead.trees) #IC for trees
   pop0ByTrees = initial_beetles(sim_constants$default_params,stages,IC_beetles) #IC for beetles
-  infection0 = proba.infection(sim_constants$default_params,pop0ByTrees,stages)
+  infection0 = proba_infection(sim_constants$default_params,pop0ByTrees,stages) #infection for next year
   
   list.ic = list(stages=stages,pop0ByTrees=pop0ByTrees,IC_type=IC_type,IC_beetles=IC_beetles,IC_radius=IC_radius,IC_number_dead_trees=IC_number_dead_trees,infection0=infection0)
   return(list.ic)
 }
-
-## keep te following commented part, this is when we want to create specific ic:
-# Elms = readRDS("/storage/var/groups/mathbio/DED_DATA_OUTPUT/DATA/Elms_Neighbourhood/Elms_MIXED_PULBERRY_CRESCENT_PARK.RData")
-
-# ic = create_IC(sim_constants,Elms,IC_type,IC_beetles,IC_radius,IC_number_dead_trees)
-# saveRDS(ic,file = sprintf("/storage/var/groups/mathbio/DED_DATA_OUTPUT/PARAMS/IC_%s_radius_%s.RData",sim_constants$Neighbourhood,IC_radius))
-# if(IC_type=="2clusters"){
-#   center1 = special_center(Elms)
-#   center2 = special_center3(Elms)
-#   new_radius = find_radius(Elms,center1,center2,IC_radius,IC_number_dead_trees)
-# }
