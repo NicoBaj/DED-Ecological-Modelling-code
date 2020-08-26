@@ -1,14 +1,14 @@
-###############################################
-## Spread of the Dutch Elm Disease
-## Code that creates initial conditions
-## Code to select some trees
-###############################################
+##pre_IC.R:
+#functions that permit to create the three types of initial conditions (cluster, 2clusters and random)
+
 
 ##############################################
 ## Functions
 ##############################################
 
-#center of the map, roughly
+###FIND_CENTER
+#
+#center of the map
 find_center = function(Elms){
   min_X = min(Elms$X)
   max_X = max(Elms$X)
@@ -18,37 +18,43 @@ find_center = function(Elms){
   return(center)
 }
 
-#center of the third quadrant
+###SPECIAL_CENTER
+#
+#set the center of the third quadrant (bottom left)
 special_center = function(Elms){
   min_X = min(Elms$X)
   max_X = max(Elms$X)
   min_Y = min(Elms$Y)
   max_Y = max(Elms$Y)
   center = list(x=(max_X+min_X)/2,y=(max_Y+min_Y)/2)
-  first_quarter_center = list(x=(center$x+min_X)/2,y=(center$y+min_Y)/2)
-  return(first_quarter_center)
-  
+  third_quarter_center = list(x=(center$x+min_X)/2,y=(center$y+min_Y)/2)
+  return(third_quarter_center)
 }
 
+###SPECIAL_CENTER2
+#
+#set the right center of the map (middle right)
 special_center2 = function(Elms){
   min_X = min(Elms$X)
   max_X = max(Elms$X)
   min_Y = min(Elms$Y)
   max_Y = max(Elms$Y)
   center = list(x=(max_X+min_X)/2,y=(max_Y+min_Y)/2)
-  third_quarter_center = list(x=(center$x+max_X)/2,y=(max_Y+min_Y)/2)
-  return(third_quarter_center)
+  middle_right_center = list(x=(center$x+max_X)/2,y=(max_Y+min_Y)/2)
+  return(middle_right_center)
 }
 
+###SPECIAL_CENTER3
+#
+#set the center of the first quadrant (top right)
 special_center3 = function(Elms){
   min_X = min(Elms$X)
   max_X = max(Elms$X)
   min_Y = min(Elms$Y)
   max_Y = max(Elms$Y)
   center = list(x=(max_X+min_X)/2,y=(max_Y+min_Y)/2)
-  third_quarter_center = list(x=(center$x+max_X)/2,y=(center$y+max_Y)/2)
-  return(third_quarter_center)
-  
+  first_quadrant_center = list(x=(center$x+max_X)/2,y=(center$y+max_Y)/2)
+  return(first_quadrant_center)
 }
 
 convert_state_to_number = function(M){
@@ -102,22 +108,15 @@ initial.beetles = function(default_params,stages,IC_beetles){
   return(as.matrix(pop0ByTrees))
 }
 
-cluster.inf.trees = function(Elms,centre_world,r){
+###CLUSTER_INF_TREES
+#
+#select all trees in the circle of radius r and center center_world
+cluster_inf_trees = function(Elms,centre_world,r){
   ## Function to select some trees from the data (around the "center" within a radius r)
-  
-  SELECT_DISK = TRUE
-  # r = 1100
-  if (SELECT_DISK) {
-    diff_x = Elms$X-centre_world$x
-    diff_y = Elms$Y-centre_world$y
-    rad_xy = diff_x^2+diff_y^2
-    idx_selected = which(rad_xy <= (r^2))
-  } else {
-    diff_x = abs(Elms$X-centre_world$x)
-    diff_y = abs(Elms$Y-centre_world$y)
-    idx_selected = intersect(which(diff_x <= r),which(diff_y <= r))
-  }
-  
+  diff_x = Elms$X-centre_world$x
+  diff_y = Elms$Y-centre_world$y
+  rad_xy = diff_x^2+diff_y^2
+  idx_selected = which(rad_xy <= (r^2))
   return(idx_selected)
 }
 
@@ -138,21 +137,21 @@ proba.infection = function(default_params,pop0ByTrees,stages){
 }
 
 find_radius = function(Elms,center1,center2,IC_radius,nb_inf_trees){
-  dead1 = cluster.inf.trees(Elms,center1,IC_radius)
-  dead2 = cluster.inf.trees(Elms,center2,IC_radius)
+  dead1 = cluster_inf_trees(Elms,center1,IC_radius)
+  dead2 = cluster_inf_trees(Elms,center2,IC_radius)
   l = length(dead1)+length(dead2)
   if(l!=nb_inf_trees){
     cpt = 1
     while (l!=nb_inf_trees & cpt<100) {
       if(l>nb_inf_trees){
         IC_radius = IC_radius-0.5
-        dead1 = cluster.inf.trees(Elms,center1,IC_radius)
-        dead2 = cluster.inf.trees(Elms,center2,IC_radius)
+        dead1 = cluster_inf_trees(Elms,center1,IC_radius)
+        dead2 = cluster_inf_trees(Elms,center2,IC_radius)
         l = length(dead1)+length(dead2)
       }else{
         IC_radius = IC_radius+0.5
-        dead1 = cluster.inf.trees(Elms,center1,IC_radius)
-        dead2 = cluster.inf.trees(Elms,center2,IC_radius)
+        dead1 = cluster_inf_trees(Elms,center1,IC_radius)
+        dead2 = cluster_inf_trees(Elms,center2,IC_radius)
         l = length(dead1)+length(dead2)
       }
       cpt = cpt+1
@@ -164,32 +163,26 @@ find_radius = function(Elms,center1,center2,IC_radius,nb_inf_trees){
   return(out)
 }
 
+###CREATE_IC
+#
+#Function that creates the initial condition required with all info in an list of outputs
 create_IC = function(sim_constants,Elms,IC_type,IC_beetles,IC_radius,IC_number_dead_trees){
   
   centre_world = find_center(Elms)
   # centre_world = special_center(Elms)
   
   if (IC_type == "cluster"){ # just one cluster in the middle of the map
-    sampling.dead.trees = cluster.inf.trees(Elms,centre_world,IC_radius)
+    sampling.dead.trees = cluster_inf_trees(Elms,centre_world,IC_radius)
   } else if(IC_type == "2clusters"){ # 2 clusters
     center1 = special_center(Elms) #center of the first cluster
     center2 = special_center2(Elms) #center of the second cluster
     radius1 = IC_radius$r1
     radius2 = IC_radius$r2
-    sampling.dead.trees1 = cluster.inf.trees(Elms,center1,radius1)
-    sampling.dead.trees2 = cluster.inf.trees(Elms,center2,radius2)
+    sampling.dead.trees1 = cluster_inf_trees(Elms,center1,radius1)
+    sampling.dead.trees2 = cluster_inf_trees(Elms,center2,radius2)
     sampling.dead.trees = c(sampling.dead.trees1,sampling.dead.trees2)
   }else if(IC_type == "random"){ # dead trees are chosen randomly
     sampling.dead.trees = sample.int(sim_constants$default_params$N,size = IC_number_dead_trees)
-    
-    # if(is.integer(IC_number_dead_trees)){
-    #   sampling.dead.trees = sample.int(sim_constants$default_params$N,size = IC_number_dead_trees)
-    # }else{#if IC_number_dead_trees == "ic_radius": we want to have the same number of dead trees than a cluster of size IC_radius
-    #   # cluster virtually created from the IC_radius 
-    #   virtual_cluster = cluster.inf.trees(Elms,centre_world,IC_radius)
-    #   # then, the length of virtual_cluster gives the number of dead trees we want
-    #   sampling.dead.trees = sample.int(sim_constants$default_params$N,size = length(virtual_cluster))
-    # }
   }
   
   stages = initially.inf.trees(sim_constants$default_params,sampling.dead.trees)
