@@ -9,8 +9,8 @@
 PLOT_SIM = TRUE #if one sim is launched, do you want to see the DED spread evolution?
 
 #choose the neighbourhood in which the simulation is run
-Neighbourhood = "MIXED_PULBERRY_CRESCENT_PARK" #PCP
-# Neighbourhood = "NORTH_RIVER_HEIGHTS" #NRH
+# Neighbourhood = "MIXED_PULBERRY_CRESCENT_PARK" #PCP
+Neighbourhood = "NORTH_RIVER_HEIGHTS" #NRH
 
 #main parameters
 input = list()
@@ -23,7 +23,7 @@ input$sdt  = 0.98 #proba for beetles to survive one time step
 roots = TRUE
 
 #number of simulations required for the set of parameters given above
-nb_sims = 2
+nb_sims = 1
 
 #if nb_sims>1, say if you want to run sims in parallel
 RUN_PARALLEL = FALSE
@@ -33,9 +33,9 @@ IC_type="cluster"
 # IC_type = "2clusters"
 # IC_type = "random"
 
-
 IC_beetles = 500 #nb of inf beetles in each infected tree
-IC_radius = 96 #radius of the cluster in m, to remove for 2clusters
+
+# IC_radius = 96 #radius of the cluster in m, to remove for 2clusters
 
 if (IC_type == "2clusters"){ # this is for PCP
   IC_radius1 = 47.5
@@ -45,6 +45,8 @@ if (IC_type == "2clusters"){ # this is for PCP
 }
 if(Neighbourhood=="MIXED_PULBERRY_CRESCENT_PARK" & IC_type == "cluster"){
   IC_radius = 96
+}else if(Neighbourhood=="NORTH_RIVER_HEIGHTS" & IC_type == "cluster"){
+  IC_radius = 100
 }
 
 # the next parameter can be an integer (classic approach) or a character chain that specifies the number of dead trees in function of the IC_radius for instance
