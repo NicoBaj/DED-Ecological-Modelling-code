@@ -67,10 +67,13 @@ convert_state_to_number = function(M){
   return(res)
 }
 
-initially.inf.trees = function(default_params,dead_sampling){
-  current_stages = rep(1,default_params$N) # trees are healthy
+###INITIALLY_INFECTED_TREES
+#
+#Set up the stages of trees at the initial time
+initially_inf_trees = function(default_params,dead_sampling){
+  current_stages = rep(1,default_params$N) #1 is for healthy
   initially_dead_trees_idx = dead_sampling 
-  current_stages[initially_dead_trees_idx]=5 #Di
+  current_stages[initially_dead_trees_idx]=5 #5 is for dead and infected tree
   
   current_stages[which(current_stages==1)] = "H"
   current_stages[which(current_stages==2)] = "Ws"
@@ -86,24 +89,14 @@ initial.beetles = function(default_params,stages,IC_beetles){
   env = environment()
   list2env(default_params,env)
   
-  pop0ByTrees = rep(0,N*Nbs) # initial population
-  Os = rep(0,N)
+  #initialize the total population vector to 0 (categorized by tree)
+  pop0ByTrees = rep(0,N*Nbs)
+  
   Oi = rep(0,N)
-  Mbs = rep(0,N)
-  Mbi = rep(0,N)
-  Js = rep(0,N)
-  Ji = rep(0,N)
-  Ms = rep(0,N)
-  Mi = rep(0,N)
-  As = rep(0,N)
-  Ai = rep(0,N)
+  Oi[which(stages=="Di")] = IC_beetles
   
-  stages = convert_state_to_number(stages)
-  idx_nonHealthy_trees = which(stages>1)
-  Oi[which(stages==5)] = IC_beetles
-  
-  for(j in 1:N){
-    pop0ByTrees[((j-1)*10+1):(j*10)] = c(Os[j],Oi[j],Mbs[j],Mbi[j],Js[j],Ji[j],Ms[j],Mi[j],As[j],Ai[j])
+  for (j in 1:N){
+    pop0ByTrees[(j-1)*Nbs+2] = Oi[j]
   }
   return(as.matrix(pop0ByTrees))
 }
@@ -185,8 +178,8 @@ create_IC = function(sim_constants,Elms,IC_type,IC_beetles,IC_radius,IC_number_d
     sampling.dead.trees = sample.int(sim_constants$default_params$N,size = IC_number_dead_trees)
   }
   
-  stages = initially.inf.trees(sim_constants$default_params,sampling.dead.trees)
-  pop0ByTrees = initial.beetles(sim_constants$default_params,stages,IC_beetles) #beetles initially present
+  stages = initially_inf_trees(sim_constants$default_params,sampling.dead.trees) #IC for trees
+  pop0ByTrees = initial.beetles(sim_constants$default_params,stages,IC_beetles) #IC for beetles
   infection0 = proba.infection(sim_constants$default_params,pop0ByTrees,stages)
   
   list.ic = list(stages=stages,pop0ByTrees=pop0ByTrees,IC_type=IC_type,IC_beetles=IC_beetles,IC_radius=IC_radius,IC_number_dead_trees=IC_number_dead_trees,infection0=infection0)
