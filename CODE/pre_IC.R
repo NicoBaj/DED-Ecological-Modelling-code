@@ -84,8 +84,10 @@ initially_inf_trees = function(default_params,dead_sampling){
   
   return(current_stages)
 }
-
-initial.beetles = function(default_params,stages,IC_beetles){
+###INITIAL_BEETLES
+#
+#set up the initial number of beetles in the right trees
+initial_beetles = function(default_params,stages,IC_beetles){
   env = environment()
   list2env(default_params,env)
   
@@ -179,7 +181,7 @@ create_IC = function(sim_constants,Elms,IC_type,IC_beetles,IC_radius,IC_number_d
   }
   
   stages = initially_inf_trees(sim_constants$default_params,sampling.dead.trees) #IC for trees
-  pop0ByTrees = initial.beetles(sim_constants$default_params,stages,IC_beetles) #IC for beetles
+  pop0ByTrees = initial_beetles(sim_constants$default_params,stages,IC_beetles) #IC for beetles
   infection0 = proba.infection(sim_constants$default_params,pop0ByTrees,stages)
   
   list.ic = list(stages=stages,pop0ByTrees=pop0ByTrees,IC_type=IC_type,IC_beetles=IC_beetles,IC_radius=IC_radius,IC_number_dead_trees=IC_number_dead_trees,infection0=infection0)
