@@ -1,18 +1,19 @@
-# Compute network for roots, taking into account the road network and other obstacles.
+# PRE_ROOTS_VS_ROADS.R
+#
+#
+# Compute network for roots, taking into account roads and other obstacles.
+# 
+# This file is used to produce simulations in the paper: 
+# Nicolas Bajeux, Julien Arino, Stephanie Portet and Richard Westwood
+# 
+# Please note: running some of this code requires a substantial amount of RAM.
 
 library(osmdata)
 library(sf)
 library(rprojroot)
 
-# Set top directory for code
-TOP_DIR_CODE = here::here()
-if (length(TOP_DIR_CODE) == 0) {
-  TOP_DIR_CODE = rprojroot::find_root(is_git_root,".")
-}
-# Source code that sets directories. Always run.
-source(sprintf("%s/set_directories.R", TOP_DIR_CODE))
-# Source some useful functions
-source(sprintf("%s/useful_functions.R", TOP_DIR_CODE))
+# Set directories
+source(sprintf("%s/CODE/set_directories.R", here::here()))
 
 # If you want to refresh the OSM data, set this to TRUE. Otherwise, pre-saved data is used
 REFRESH_OSM_DATA = FALSE
@@ -71,13 +72,11 @@ if (REFRESH_OSM_DATA) {
 
 # There can be several versions of the tree inventory file, load the latest
 TI_files = list.files(path = DIRS$DATA,
-                      pattern = glob2rx("Tree_Inventory_Elms_*.csv"))
+                      pattern = glob2rx("tree_inventory_elms*.Rds"))
 latest_TI_file = sort(TI_files, decreasing = TRUE)[1]
-date_of_file = substr(latest_TI_file,21,30)
 
 # Read elms csv file (could also read the RDS..)
-elms <- read.csv(sprintf("%s/%s", DIRS$DATA, latest_TI_file),
-                 stringsAsFactors = FALSE)
+elms <- readRDS(sprintf("%s/%s", DIRS$DATA, latest_TI_file))
 
 # Compute distances and select the ones matching the criterion. 
 # Work with X,Y (which are in metres), rather than lon,lat
@@ -98,7 +97,7 @@ D_mat[idx_D_mat] = 0
 rm(idx_D_mat)
 gc()
 
-saveRDS(D_mat, file = sprintf("%s/matrix_tmp.Rds", DIR_DATA_PROCESSED_GLOBAL))
+saveRDS(D_mat, file = sprintf("%s/matrix_tmp.Rds", DIRS$DATA))
 # Keep only pairs with nonzero distance (i.e., <= 6*elms_max_height).
 indices = which(D_mat !=0, arr.ind = TRUE)
 # Also, only keep one of the edges, not both directions.
@@ -126,9 +125,8 @@ DISTS = data.frame(idx_i = indices[,1],
 rm(D_mat)
 gc()
 
-# Save as both csv and RDS
-write.csv(DISTS, file = sprintf("%s/elms_distances_roots_%s.csv",DIRS$DATA, date_of_file))
-saveRDS(DISTS, file = sprintf("%s/elms_distances_roots_%s.Rds",DIRS$DATA, date_of_file))
+# Save 
+saveRDS(DISTS, file = sprintf("%s/elms_distances_roots.Rds",DIRS$DATA))
 
 
 # The locations of the origins of the pairs
@@ -152,7 +150,7 @@ tree_pairs = do.call(sf::st_sfc,
 )
 
 if (FALSE) {
-  pdf(file = sprintf("%s/OUTPUT/PDF/pairs_preproc_%s.pdf", TOP_DIR_DED, date_of_file),
+  pdf(file = sprintf("%s/elms_pairs_preproc.pdf", DIRS$RESULTS),
       width = 50, height = 50)
   plot(tree_pairs)
   dev.off()
@@ -179,7 +177,7 @@ to_keep = 1:dim(tree_locs_orig)[1]
 to_keep = setdiff(to_keep,tree_pairs_all_root_cutters_intersect)
 
 if(FALSE){
-  pdf(file = sprintf("%s/OUTPUT/PDF/pairs_postproc_%s.pdf", TOP_DIR_DED, date_of_file),
+  pdf(file = sprintf("%s/elms_pairs_postproc.pdf", DIRS$RESULTS),
       width = 50, height = 50)
   plot(tree_pairs[to_keep_roads_rivers])
   dev.off() 
@@ -197,6 +195,5 @@ DISTS = cbind(DISTS, h_tmp)
 # Keep only the edges not intersected by a road or a river
 DISTS = DISTS[to_keep,]
 
-# Save as both csv and RDS
-write.csv(DISTS, file = sprintf("%s/elms_distances_roots_%s.csv",DIR_DATA_PROCESSED_GLOBAL,date_of_file))
-saveRDS(DISTS, file = sprintf("%s/elms_distances_roots_%s.Rds",DIR_DATA_PROCESSED_GLOBAL,date_of_file))
+# Save
+saveRDS(DISTS, file = sprintf("%s/elms_distances_roots.Rds",DIR$DATA))
