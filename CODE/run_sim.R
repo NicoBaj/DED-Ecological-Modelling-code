@@ -1,26 +1,22 @@
-##run_one_sim.R: to run 
-
+##run_one_sim.R: 
 # File that conducts the main simulation run.
-# Works by logical control through flow.
 
 # LOGICAL GATES
-#just a story of initial conditions ...
-# EVAL_IC = TRUE #do we need to create a new IC ?
-PLOT_SIM = TRUE #if one sim is launched, do you want to see the DED spread evolution?
+PLOT_SIM = TRUE #if sims are launched, do you want to see the DED spread evolution?
 
 #The three following inputs are crucial for the type of simulations:
 #1- choose the neighbourhood
 #2- choose the initial condition (IC)
 #3- choose the values of the main parameters
 
-#1- Neighbourhood
+# 1- Neighbourhood
 # Neighbourhood = "MIXED_PULBERRY_CRESCENT_PARK" #PCP
 Neighbourhood = "NORTH_RIVER_HEIGHTS" #NRH
 
 #2- IC
 # IC_type="cluster"
-IC_type = "2clusters"
-# IC_type = "random"
+# IC_type = "2clusters"
+IC_type = "random"
 
 #3- main parameters
 input = list()
@@ -29,11 +25,7 @@ input$pr   = 0.5 #max proba for an infected tree to infect another one by root i
 input$pi   = 0.02 #proba that one beetle infects successfully one tree
 input$sdt  = 0.98 #proba for beetles to survive one time step
 
-#In function of choices in 2- and 3-:
-
-# the next parameter can be an integer (classic approach) or a character chain that specifies the number of dead trees in function: "ic_radius" specifies either that we use a cluster IC ("cluster" or "2clusters") or a random IC with the same nb of infected trees as the radius 
-IC_number_dead_trees = "ic_radius"
-
+#Set up the simulation in function of choices in 2- and 3-:
 if(Neighbourhood=="MIXED_PULBERRY_CRESCENT_PARK"){
   sim_core = "1513Trees"
   if(IC_type == "cluster"){
@@ -44,6 +36,7 @@ if(Neighbourhood=="MIXED_PULBERRY_CRESCENT_PARK"){
     IC_radius = list(r1=IC_radius1,r2=IC_radius2)
     #These values of radii are done to get the same nb of infected trees at the initial time than in one cluster (96m)
   }else{
+    IC_radius = 96
     IC_number_dead_trees = 38
   }
 }else if (Neighbourhood == "NORTH_RIVER_HEIGHTS"){
@@ -56,6 +49,7 @@ if(Neighbourhood=="MIXED_PULBERRY_CRESCENT_PARK"){
     IC_radius = list(r1=IC_radius1,r2=IC_radius2)
     #These values of radii are done to get the same nb of infected trees at the initial time than in one cluster (100m)
   }else{
+    IC_radius = 100
     IC_number_dead_trees = 53
   }
 }
@@ -70,33 +64,6 @@ nb_sims = 1
 RUN_PARALLEL = FALSE
 
 IC_beetles = 500 #nb of inf beetles in each infected tree
-
-# if (Neighbourhood=="MIXED_PULBERRY_CRESCENT_PARK" & IC_type == "2clusters"){ # this is for PCP
-#   IC_radius1 = 47.5
-#   IC_radius2 = 280
-#   IC_radius = list(r1=IC_radius1,r2=IC_radius2)
-  #These values of radii are done to get the same nb of infected trees at the initial time than in one cluster (96m)
-# }else if(Neighbourhood=="NORTH_RIVER_HEIGHTS" & IC_type == "2clusters"){
-#   IC_radius1 = 85
-#   IC_radius2 = 85
-#   IC_radius = list(r1=IC_radius1,r2=IC_radius2)
-#   #These values of radii are done to get the same nb of infected trees at the initial time than in one cluster (100m)
-# }
-# if(Neighbourhood=="MIXED_PULBERRY_CRESCENT_PARK" & IC_type == "cluster"){
-#   IC_radius = 96
-# }else if(Neighbourhood=="NORTH_RIVER_HEIGHTS" & IC_type == "cluster"){
-#   IC_radius = 100
-# }
-
-
-# For a random IC, the values are the same number of infected trees at initial time than one or two clusters
-# if (IC_type=="random"){
-#   if(Neighbourhood == "MIXED_PULBERRY_CRESCENT_PARK"){
-#     IC_number_dead_trees = 38
-#   }else if(Neighbourhood == "NORTH_RIVER_HEIGHTS"){
-#     IC_number_dead_trees = 53 ## to check/change that
-#   }
-# }
 
 #Put here the initial and final dates for the simulation(s)
 start_date = "2019-08-01"

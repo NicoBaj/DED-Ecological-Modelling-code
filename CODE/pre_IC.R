@@ -103,7 +103,7 @@ initial.beetles = function(default_params,stages,IC_beetles){
 }
 
 cluster.inf.trees = function(Elms,centre_world,r){
-  ## Function to select some trees from te data (around the "center" within a radius r)
+  ## Function to select some trees from the data (around the "center" within a radius r)
   
   SELECT_DISK = TRUE
   # r = 1100
@@ -165,11 +165,6 @@ find_radius = function(Elms,center1,center2,IC_radius,nb_inf_trees){
 }
 
 create_IC = function(sim_constants,Elms,IC_type,IC_beetles,IC_radius,IC_number_dead_trees){
-  # if(sim_constants$Neighbourhood=="PULBERRY"){
-  #   centre_world = special_center(Elms)
-  # }else{
-  #   centre_world = find_center(Elms)
-  # }
   
   centre_world = find_center(Elms)
   # centre_world = special_center(Elms)
@@ -179,24 +174,22 @@ create_IC = function(sim_constants,Elms,IC_type,IC_beetles,IC_radius,IC_number_d
   } else if(IC_type == "2clusters"){ # 2 clusters
     center1 = special_center(Elms) #center of the first cluster
     center2 = special_center2(Elms) #center of the second cluster
-    # new_radius = find_radius(Elms,center1,center2,IC_radius,IC_number_dead_trees) # radius of both cluster #### !!!!! attention a ce 42
     radius1 = IC_radius$r1
     radius2 = IC_radius$r2
     sampling.dead.trees1 = cluster.inf.trees(Elms,center1,radius1)
     sampling.dead.trees2 = cluster.inf.trees(Elms,center2,radius2)
     sampling.dead.trees = c(sampling.dead.trees1,sampling.dead.trees2)
-    # print(sampling.dead.trees)
-    # IC_radius = radius1 # because 
   }else if(IC_type == "random"){ # dead trees are chosen randomly
+    sampling.dead.trees = sample.int(sim_constants$default_params$N,size = IC_number_dead_trees)
     
-    if(is.integer(IC_number_dead_trees)){#because we can put it at "ic_radius", not an integer
-      sampling.dead.trees = sample.int(sim_constants$default_params$N,size = IC_number_dead_trees)
-    }else{#if we want to have the same number of dead trees than a cluster of size IC_radius
-      # cluster virtually created from the IC_radius 
-      virtual_cluster = cluster.inf.trees(Elms,centre_world,IC_radius)
-      # then, the length of virtual_cluster gives the number of dead trees we want
-      sampling.dead.trees = sample.int(sim_constants$default_params$N,size = length(virtual_cluster))
-    }
+    # if(is.integer(IC_number_dead_trees)){
+    #   sampling.dead.trees = sample.int(sim_constants$default_params$N,size = IC_number_dead_trees)
+    # }else{#if IC_number_dead_trees == "ic_radius": we want to have the same number of dead trees than a cluster of size IC_radius
+    #   # cluster virtually created from the IC_radius 
+    #   virtual_cluster = cluster.inf.trees(Elms,centre_world,IC_radius)
+    #   # then, the length of virtual_cluster gives the number of dead trees we want
+    #   sampling.dead.trees = sample.int(sim_constants$default_params$N,size = length(virtual_cluster))
+    # }
   }
   
   stages = initially.inf.trees(sim_constants$default_params,sampling.dead.trees)
