@@ -2,7 +2,7 @@
 
 ### SYSTEM.OVER.TIME
 #
-# The main function that runs one simulation
+# Runs one simulation
 system.over.time=function(sim_param,sim_constants){
   
   #Set up the initial conditions:
@@ -33,7 +33,7 @@ system.over.time=function(sim_param,sim_constants){
     points(sim_constants$default_params$elms$X[Di_Wi],sim_constants$default_params$elms$Y[Di_Wi],col="red")
   }
   
-
+  
   #loop over time
   for (idx in 2:length(sim_constants$time$idx)) {
     event = sim_constants$time$phase[idx]
@@ -64,7 +64,7 @@ system.over.time=function(sim_param,sim_constants){
     matPopByTrees[,idx] = Demog%*%matPopByTrees[,idx]
     
     ##Finally update tree status
-    if(event == "Winter" & sim_constants$time$phase[idx+1] == "Emerge" & idx != length(sim_constants$time$idx)){
+    if(event == "Winter" & sim_constants$time$phase[idx+1] == "Emergence" & idx != length(sim_constants$time$idx)){
       print(sprintf("Update tree states %d",idx))
       if(sim_constants$time$simple_year[idx]==1){#if this is the the first time we update
         vec_idx = 1:idx
@@ -145,7 +145,7 @@ system.over.time=function(sim_param,sim_constants){
         root_or_vec[idx,2] = length(nb_inf_roots)
         
         status_trees[,idx] = merge_updates(sim_constants,status_trees_after_root,status_trees_after_beetles)
-      
+        
         
       }else{
         status_trees[,idx] = status_trees_after_beetles
@@ -169,16 +169,6 @@ system.over.time=function(sim_param,sim_constants){
   # sim_output = list(matPopByTrees=matPopByTrees,status_trees = status_trees)
   out = list(sim_output = sim_output,sim_param = sim_param,root_or_vec=root_or_vec)
   return(out)
-}
-
-convert_state_to_number = function(M){
-  res = mat.or.vec(dim(M)[1],dim(M)[2])
-  res[which(M=="H")] = 1
-  res[which(M=="Ws")] = 2
-  res[which(M=="Wi")] = 3
-  res[which(M=="Ds")] = 4
-  res[which(M=="Di")] = 5
-  return(res)
 }
 
 merge_updates = function(sim_constants,root,beetles){
@@ -332,48 +322,48 @@ proba.distance = function(maxD,distance){
 demography.matrices = function(sim_constants,sim_param,stagesi,event){#function to create the big demography matrix when status_trees or scenario change
   
   if (event == "Winter"){
-    LH = sim_param$matrices$list_winter_normal$LH_win_normal
-    LWs = sim_param$matrices$list_winter_normal$LWs_win_normal
-    LWi = sim_param$matrices$list_winter_normal$LWi_win_normal
-    LDs = sim_param$matrices$list_winter_normal$LDs_win_normal
-    LDi = sim_param$matrices$list_winter_normal$LDi_win_normal
-  }else if (event == "Emerge"){
-    LH = sim_param$matrices$list_emergence1_normal$LH_em1_normal
-    LWs = sim_param$matrices$list_emergence1_normal$LWs_em1_normal
-    LWi = sim_param$matrices$list_emergence1_normal$LWi_em1_normal
-    LDs = sim_param$matrices$list_emergence1_normal$LDs_em1_normal
-    LDi = sim_param$matrices$list_emergence1_normal$LDi_em1_normal
+    LH = sim_param$matrices$list_winter$LH_winter
+    LSW = sim_param$matrices$list_winter$LSW_winter
+    LIW = sim_param$matrices$list_winter$LID_winter
+    LSD = sim_param$matrices$list_winter$LSD_winter
+    LID = sim_param$matrices$list_winter$LID_winter
+  }else if (event == "Emergence"){
+    LH = sim_param$matrices$list_emergence$LH_emergence
+    LSW = sim_param$matrices$list_emergence$LSW_emergence
+    LIW = sim_param$matrices$list_emergence$LIW_emergence
+    LSD = sim_param$matrices$list_emergence$LSD_emergence
+    LID = sim_param$matrices$list_emergence$LID_emergence
   }else if (event == "Breeding"){
-    LH = sim_param$matrices$list_breeding_normal$LH_bre_normal
-    LWs = sim_param$matrices$list_breeding_normal$LWs_bre_normal
-    LWi = sim_param$matrices$list_breeding_normal$LWi_bre_normal
-    LDs = sim_param$matrices$list_breeding_normal$LDs_bre_normal
-    LDi = sim_param$matrices$list_breeding_normal$LDi_bre_normal
-  }else if (event =="Offspring"){
-    LH = sim_param$matrices$list_offsprings_normal$LH_off_normal
-    LWs = sim_param$matrices$list_offsprings_normal$LWs_off_normal
-    LWi = sim_param$matrices$list_offsprings_normal$LWi_off_normal
-    LDs = sim_param$matrices$list_offsprings_normal$LDs_off_normal
-    LDi = sim_param$matrices$list_offsprings_normal$LDi_off_normal
+    LH = sim_param$matrices$list_breeding$LH_breeding
+    LSW = sim_param$matrices$list_breeding$LSW_breeding
+    LIW = sim_param$matrices$list_breeding$LIW_breeding
+    LSD = sim_param$matrices$list_breeding$LSD_breeding
+    LID = sim_param$matrices$list_breeding$LID_breeding
+  }else if (event =="New_generation"){
+    LH = sim_param$matrices$list_new_generation$LH_new_generation
+    LSW = sim_param$matrices$list_new_generation$LSW_new_generation
+    LIW = sim_param$matrices$list_new_generation$LIW_new_generation
+    LSD = sim_param$matrices$list_new_generation$LSD_new_generation
+    LID = sim_param$matrices$list_new_generation$LID_new_generation
   }
   
   L.list = list()
-  for (i in (1:as.numeric(sim_constants$default_params$N))){
+  for(i in 1:sim_constants$default_params$N){
     s=stagesi[i]
     if(s=="H"){
       L.list[[i]] = LH
     }
     else if(s=="Ws"){
-      L.list[[i]] = LWs
+      L.list[[i]] = LSW
     }
     else if(s=="Wi"){
-      L.list[[i]] = LWi
+      L.list[[i]] = LIW
     }
     else if(s=="Ds"){
-      L.list[[i]] = LDs
+      L.list[[i]] = LSD
     }
     else if(s=="Di"){
-      L.list[[i]] = LDi
+      L.list[[i]] = LID
     }
   }
   D=bdiag(L.list)

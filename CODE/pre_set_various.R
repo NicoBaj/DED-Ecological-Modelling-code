@@ -17,9 +17,9 @@ week_types = function(v,climate = NULL) {
   out = mat.or.vec(nr = length(v), nc = 1)
   weekType = list() #here is the regular year
   weekType[["Winter"]]        = c(1:21,45:53)
-  weekType[["Emerge"]]        = 22
+  weekType[["Emergence"]]     = 22
   weekType[["Breeding"]]      = 23:38
-  weekType[["Offspring"]]     = 39:44
+  weekType[["New_generation"]]     = 39:44
   for (wt in names(weekType)) {
     out[which(v %in% weekType[[wt]])] = wt
   }
@@ -121,9 +121,7 @@ set_sim_time = function(sim_constants, startDate = start_date, endDate = end_dat
 set_sim_environment = function(sim_constants,input) {
   out = list()
   out$params = list()
-  #######################################################################################
-  ## Provide the range and the name of the parameters -> the order matters !!!!!!!!!!!!!!
-  # save the hypercube in the output file
+
   for (i in 1:sim_constants$nb_sims){
     out$params[[i]] = sim_constants$default_params
     varying_params = list()
@@ -185,8 +183,9 @@ set_other_constants = function(sim_constants) {
 set_demography_matrices = function(default_params){
   env = environment()
   list2env(default_params,env)
+  
   ##########################################################################
-  ##matrices for winter event, mean year
+  ##matrices for winter event
   #######################################################################
   lH1 = c(0,0,0,0,0,0,0,0,0,0)
   lH2 = c(0,0,0,0,0,0,0,0,0,0)
@@ -198,19 +197,19 @@ set_demography_matrices = function(default_params){
   lH8 = c(0,0,0,0,0,0,0,0,0,0)
   lH9 = c(0,0,0,0,0,0,0,0,0,0)
   lH10 = c(0,0,0,0,0,0,0,0,0,0)
-  LH_win_normal=matrix(data = c(lH1,lH2,lH3,lH4,lH5,lH6,lH7,lH8,lH9,lH10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
-  LH_win_normal=as(LH_win_normal,"sparseMatrix")
+  LH_winter=matrix(data = c(lH1,lH2,lH3,lH4,lH5,lH6,lH7,lH8,lH9,lH10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
+  LH_winter=as(LH_winter,"sparseMatrix")
   
-  LDs_win_normal = mat.or.vec(Nbs,Nbs)
-  LDs_win_normal = as(LDs_win_normal,"sparseMatrix")
-  LDi_win_normal = LDs_win_normal #beetles die if they overwinter in a dead or weak tree
-  LWi_win_normal = LDi_win_normal
-  LWs_win_normal = LDi_win_normal
+  LSD_winter = mat.or.vec(Nbs,Nbs)
+  LSD_winter = as(LSD_winter,"sparseMatrix")
+  LID_winter = LSD_winter #beetles die if they overwinter in a dead or weak tree
+  LIW_winter = LID_winter
+  LSW_winter = LID_winter
   
-  list_winter_normal = list(LH_win_normal=LH_win_normal,LDs_win_normal=LDs_win_normal,LDi_win_normal=LDi_win_normal,LWs_win_normal=LWs_win_normal,LWi_win_normal=LWi_win_normal)
+  list_winter = list(LH_winter=LH_winter,LSD_winter=LSD_winter,LID_winter=LID_winter,LSW_winter=LSW_winter,LIW_winter=LIW_winter)
   
   #######################################################################
-  ##matrices for Emergence1 event, mean year
+  ##matrices for Emergence event
   #######################################################################
   lH1 = c(0,0,0,0,0,0,0,0,0,0)
   lH2 = c(0,0,0,0,0,0,0,0,0,0)
@@ -222,8 +221,8 @@ set_demography_matrices = function(default_params){
   lH8 = c(0,0,0,0,0,Sdt*SMJi,0,Sdt*Smi,0,0)
   lH9 = c(0,0,0,0,0,0,0,0,0,0)
   lH10 = c(0,0,0,0,0,0,0,0,0,0)
-  LH_em1_normal=matrix(data = c(lH1,lH2,lH3,lH4,lH5,lH6,lH7,lH8,lH9,lH10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
-  LH_em1_normal=as(LH_em1_normal,"sparseMatrix")
+  LH_emergence=matrix(data = c(lH1,lH2,lH3,lH4,lH5,lH6,lH7,lH8,lH9,lH10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
+  LH_emergence=as(LH_emergence,"sparseMatrix")
   
   lW1 = c(0,0,0,0,0,0,0,0,0,0)
   lW2 = c(0,0,0,0,0,0,0,0,0,0)
@@ -235,15 +234,15 @@ set_demography_matrices = function(default_params){
   lW8 = c(0,0,0,0,0,Sdt*SMJi,0,Sdt*Smi,0,0)
   lW9 = c(0,0,0,0,0,0,0,0,0,0)
   lW10 = c(0,0,0,0,0,0,0,0,0,0)
-  LWi_em1_normal=matrix(data = c(lW1,lW2,lW3,lW4,lW5,lW6,lW7,lW8,lW9,lW10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
-  LWi_em1_normal=as(LWi_em1_normal,"sparseMatrix")
-  LWs_em1_normal=LWi_em1_normal
+  LIW_emergence=matrix(data = c(lW1,lW2,lW3,lW4,lW5,lW6,lW7,lW8,lW9,lW10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
+  LIW_emergence=as(LIW_emergence,"sparseMatrix")
+  LSW_emergence=LIW_emergence
   
-  LDs_em1_normal=mat.or.vec(Nbs,Nbs)
-  LDs_em1_normal=as(LDs_em1_normal,"sparseMatrix")
-  LDi_em1_normal = LDs_em1_normal #no beetle can be present in dead trees at this time of the year
+  LSD_emergence=mat.or.vec(Nbs,Nbs)
+  LSD_emergence=as(LSD_emergence,"sparseMatrix")
+  LID_emergence = LSD_emergence #no beetle can be present in dead trees at this time of the year
   
-  list_emergence1_normal = list(LH_em1_normal=LH_em1_normal,LWs_em1_normal=LWs_em1_normal,LWi_em1_normal=LWi_em1_normal,LDs_em1_normal=LDs_em1_normal,LDi_em1_normal=LDi_em1_normal)
+  list_emergence = list(LH_emergence=LH_emergence,LSW_emergence=LSW_emergence,LIW_emergence=LIW_emergence,LSD_emergence=LSD_emergence,LID_emergence=LID_emergence)
   ###############################################################
   ##Matrices for breeding
   ###############################################################
@@ -260,8 +259,8 @@ set_demography_matrices = function(default_params){
   lH8 = c(0,0,0,0,0,Sdt,0,Sdt*Smi,0,0)
   lH9 = c(0,0,0,0,0,0,0,0,0,0)
   lH10 = c(0,0,0,0,0,0,0,0,0,0)
-  LH_bre_normal=matrix(data = c(lH1,lH2,lH3,lH4,lH5,lH6,lH7,lH8,lH9,lH10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
-  LH_bre_normal=as(LH_bre_normal,"sparseMatrix")
+  LH_breeding=matrix(data = c(lH1,lH2,lH3,lH4,lH5,lH6,lH7,lH8,lH9,lH10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
+  LH_breeding=as(LH_breeding,"sparseMatrix")
   
   lW1 = c(Sdt*(Sos+SmbOs),0,0,0,0,0,0,0,Fecs,Fecs)
   lW2 = c(Sdt*Sosoi,Sdt*(Soi+SmbOi),0,0,0,0,0,0,0,0)
@@ -273,10 +272,10 @@ set_demography_matrices = function(default_params){
   lW8 = c(0,0,0,0,0,Sdt,0,Sdt*Smi,0,0)
   lW9 = c(0,0,0,0,0,0,Sdt*SAMs,0,Sdt*Sas,0)
   lW10 = c(0,0,0,0,0,0,0,Sdt*SAMi,0,Sdt*Sai)
-  LWi_bre_normal=matrix(data = c(lW1,lW2,lW3,lW4,lW5,lW6,lW7,lW8,lW9,lW10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
+  LIW_breeding=matrix(data = c(lW1,lW2,lW3,lW4,lW5,lW6,lW7,lW8,lW9,lW10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
   ## Check if this is good
-  # LWi_bre_normal=LWi_bre_normal
-  LWi_bre_normal=as(LWi_bre_normal,"sparseMatrix")
+  # LIW_breeding=LIW_breeding
+  LIW_breeding=as(LIW_breeding,"sparseMatrix")
   
   lW1 = c(Sdt*(Sos+Sosoi+SmbOs),0,0,0,0,0,0,0,Fecs,Fecs)
   lW2 = c(0,Sdt*(Soi+SmbOi),0,0,0,0,0,0,0,0)
@@ -288,8 +287,8 @@ set_demography_matrices = function(default_params){
   lW8 = c(0,0,0,0,0,Sdt,0,Sdt*Smi,0,0)
   lW9 = c(0,0,0,0,0,0,Sdt*SAMs,0,Sdt*Sas,0)
   lW10 = c(0,0,0,0,0,0,0,Sdt*SAMi,0,Sdt*Sai)
-  LWs_bre_normal=matrix(data = c(lW1,lW2,lW3,lW4,lW5,lW6,lW7,lW8,lW9,lW10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
-  LWs_bre_normal=as(LWs_bre_normal,"sparseMatrix")
+  LSW_breeding=matrix(data = c(lW1,lW2,lW3,lW4,lW5,lW6,lW7,lW8,lW9,lW10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
+  LSW_breeding=as(LSW_breeding,"sparseMatrix")
   #the same thing but SOsOi=0 (row2,col1)
   
   lD1 = c(0,0,0,0,0,0,0,0,Fecs,Fecs)
@@ -302,8 +301,8 @@ set_demography_matrices = function(default_params){
   lD8 = c(0,0,0,0,0,0,0,0,0,0)
   lD9 = c(0,0,0,0,0,0,Sdt*SAMs,0,Sdt*Sas,0)
   lD10 = c(0,0,0,0,0,0,0,Sdt*SAMi,0,Sdt*Sai)
-  LDi_bre_normal=matrix(data = c(lD1,lD2,lD3,lD4,lD5,lD6,lD7,lD8,lD9,lD10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
-  LDi_bre_normal=as(LDi_bre_normal,"sparseMatrix")
+  LID_breeding=matrix(data = c(lD1,lD2,lD3,lD4,lD5,lD6,lD7,lD8,lD9,lD10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
+  LID_breeding=as(LID_breeding,"sparseMatrix")
   
   lD1 = c(Sdt*(Sos+SmbOs+Sosoi),0,0,0,0,0,0,0,Fecs,Fecs)
   lD2 = c(0,Sdt*(Soi+SmbOi),0,0,0,0,0,0,0,0)
@@ -315,26 +314,14 @@ set_demography_matrices = function(default_params){
   lD8 = c(0,0,0,0,0,0,0,0,0,0)
   lD9 = c(0,0,0,0,0,0,Sdt*SAMs,0,Sdt*Sas,0)
   lD10 = c(0,0,0,0,0,0,0,Sdt*SAMi,0,Sdt*Sai)
-  LDs_bre_normal=matrix(data = c(lD1,lD2,lD3,lD4,lD5,lD6,lD7,lD8,lD9,lD10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
-  LDs_bre_normal=as(LDs_bre_normal,"sparseMatrix")
+  LSD_breeding=matrix(data = c(lD1,lD2,lD3,lD4,lD5,lD6,lD7,lD8,lD9,lD10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
+  LSD_breeding=as(LSD_breeding,"sparseMatrix")
   
-  list_breeding_normal = list(LH_bre_normal=LH_bre_normal,LWs_bre_normal=LWs_bre_normal,LWi_bre_normal=LWi_bre_normal,LDs_bre_normal=LDs_bre_normal,LDi_bre_normal=LDi_bre_normal)
+  list_breeding = list(LH_breeding=LH_breeding,LSW_breeding=LSW_breeding,LIW_breeding=LIW_breeding,LSD_breeding=LSD_breeding,LID_breeding=LID_breeding)
   
   ################################################################
-  ##Matrices for Offsprings development
+  ##Matrices for new generation event
   ################################################################
-  
-  #######OLD CODE
-  # lH1 = c(0,0,0,0,0,0,0,0,0,0)
-  # lH2 = c(0,0,0,0,0,0,0,0,0,0)
-  # lH3 = c(0,0,0,0,0,0,0,0,0,0)
-  # lH4 = c(0,0,0,0,0,0,0,0,0,0)
-  # lH5 = c(0,0,Sdt*SJMbs,0,Sdt*Sjs,0,0,0,0,0)
-  # lH6 = c(0,0,0,Sdt*SJMbi,0,Sdt*Sji,0,0,0,0)
-  # lH7 = c(0,0,0,0,0,0,0,0,0,0) # I force callow adults to become ms or mi
-  # lH8 = c(0,0,0,0,0,0,0,0,0,0)
-  # lH9 = c(0,0,0,0,0,0,0,0,0,0)
-  # lH10 = c(0,0,0,0,0,0,0,0,0,0)
   
   lH1 = c(Sdt*(Sos+Sosoi),0,0,0,0,0,0,0,0,0)
   lH2 = c(0,Sdt*Soi,0,0,0,0,0,0,0,0)
@@ -346,8 +333,8 @@ set_demography_matrices = function(default_params){
   lH8 = c(0,0,0,0,0,0,0,0,0,0)
   lH9 = c(0,0,0,0,0,0,0,0,0,0)
   lH10 = c(0,0,0,0,0,0,0,0,0,0)
-  LH_off_normal=matrix(data = c(lH1,lH2,lH3,lH4,lH5,lH6,lH7,lH8,lH9,lH10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
-  LH_off_normal=as(LH_off_normal,"sparseMatrix")
+  LH_new_generation=matrix(data = c(lH1,lH2,lH3,lH4,lH5,lH6,lH7,lH8,lH9,lH10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
+  LH_new_generation=as(LH_new_generation,"sparseMatrix")
   
   lW1 = c(Sdt*Sos,0,0,0,0,0,0,0,0,0)
   lW2 = c(Sdt*Sosoi,Sdt*Soi,0,0,0,0,0,0,0,0)
@@ -359,9 +346,9 @@ set_demography_matrices = function(default_params){
   lW8 = c(0,0,0,0,0,0,0,0,0,0)
   lW9 = c(0,0,0,0,0,0,0,0,0,0)
   lW10 = c(0,0,0,0,0,0,0,0,0,0)
-  LWi_off_normal=matrix(data = c(lW1,lW2,lW3,lW4,lW5,lW6,lW7,lW8,lW9,lW10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
+  LIW_new_generation=matrix(data = c(lW1,lW2,lW3,lW4,lW5,lW6,lW7,lW8,lW9,lW10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
   ## Check if this is good
-  LWi_off_normal=as(LWi_off_normal,"sparseMatrix")
+  LIW_new_generation=as(LIW_new_generation,"sparseMatrix")
   
   lW1 = c(Sdt*(Sos+Sosoi),0,0,0,0,0,0,0,0,0)
   lW2 = c(0,Sdt*Soi,0,0,0,0,0,0,0,0)
@@ -373,8 +360,8 @@ set_demography_matrices = function(default_params){
   lW8 = c(0,0,0,0,0,0,0,0,0,0)
   lW9 = c(0,0,0,0,0,0,0,0,0,0)
   lW10 = c(0,0,0,0,0,0,0,0,0,0)
-  LWs_off_normal=matrix(data = c(lW1,lW2,lW3,lW4,lW5,lW6,lW7,lW8,lW9,lW10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
-  LWs_off_normal=as(LWs_off_normal,"sparseMatrix")
+  LSW_new_generation=matrix(data = c(lW1,lW2,lW3,lW4,lW5,lW6,lW7,lW8,lW9,lW10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
+  LSW_new_generation=as(LSW_new_generation,"sparseMatrix")
   #the same thing but SOsOi=0 (row2,col1)
   
   lD1 = c(0,0,0,0,0,0,0,0,0,0)
@@ -387,8 +374,8 @@ set_demography_matrices = function(default_params){
   lD8 = c(0,0,0,0,0,0,0,0,0,0)
   lD9 = c(0,0,0,0,0,0,0,0,0,0)
   lD10 = c(0,0,0,0,0,0,0,0,0,0)
-  LDi_off_normal=matrix(data = c(lD1,lD2,lD3,lD4,lD5,lD6,lD7,lD8,lD9,lD10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
-  LDi_off_normal=as(LDi_off_normal,"sparseMatrix")
+  LID_new_generation=matrix(data = c(lD1,lD2,lD3,lD4,lD5,lD6,lD7,lD8,lD9,lD10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
+  LID_new_generation=as(LID_new_generation,"sparseMatrix")
   
   lD1 = c(Sdt*(Sos+Sosoi),0,0,0,0,0,0,0,0,0)
   lD2 = c(0,Sdt*Soi,0,0,0,0,0,0,0,0)
@@ -400,25 +387,12 @@ set_demography_matrices = function(default_params){
   lD8 = c(0,0,0,0,0,0,0,0,0,0)
   lD9 = c(0,0,0,0,0,0,0,0,0,0)
   lD10 = c(0,0,0,0,0,0,0,0,0,0)
-  LDs_off_normal=matrix(data = c(lD1,lD2,lD3,lD4,lD5,lD6,lD7,lD8,lD9,lD10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
-  LDs_off_normal=as(LDs_off_normal,"sparseMatrix")
+  LSD_new_generation=matrix(data = c(lD1,lD2,lD3,lD4,lD5,lD6,lD7,lD8,lD9,lD10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
+  LSD_new_generation=as(LSD_new_generation,"sparseMatrix")
   
-  list_offsprings_normal = list(LH_off_normal=LH_off_normal,LWi_off_normal=LWi_off_normal,LWs_off_normal=LWs_off_normal,LDs_off_normal=LDs_off_normal,LDi_off_normal=LDi_off_normal)
+  list_new_generation = list(LH_new_generation=LH_new_generation,LIW_new_generation=LIW_new_generation,LSW_new_generation=LSW_new_generation,LSD_new_generation=LSD_new_generation,LID_new_generation=LID_new_generation)
   
-  lC1 = c(0,0,0,0,0,0,0,0,0,0)
-  lC2 = c(0,0,0,0,0,0,0,0,0,0)
-  lC3 = c(0,0,0,0,0,0,0,0,0,0)
-  lC4 = c(0,0,0,0,0,0,0,0,0,0)
-  lC5 = c(0,0,0,0,0,0,0,0,0,0)
-  lC6 = c(0,0,0,0,0,0,0,0,0,0)
-  lC7 = c(0,0,0,0,0,0,0,0,0,0)
-  lC8 = c(0,0,0,0,0,0,0,0,0,0)
-  lC9 = c(0,0,0,0,0,0,0,0,0,0)
-  lC10 = c(0,0,0,0,0,0,0,0,0,0)
-  LC=matrix(data = c(lC1,lC2,lC3,lC4,lC5,lC6,lC7,lC8,lC9,lC10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
-  # LCT=t(LC)
-  LC=as(LC,"sparseMatrix")
-  
-  out = list(list_offsprings_normal=list_offsprings_normal,list_winter_normal=list_winter_normal,list_emergence1_normal=list_emergence1_normal,list_breeding_normal=list_breeding_normal,LC=LC)
+  out = list(list_new_generation=list_new_generation,list_winter=list_winter,list_emergence=list_emergence,list_breeding=list_breeding
+             )
   return(out)
 }
