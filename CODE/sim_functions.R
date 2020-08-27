@@ -16,10 +16,10 @@ system.over.time=function(sim_param,sim_constants){
   new_infection = mat.or.vec(sim_constants$default_params$N,length(sim_constants$time$idx))
   new_infection[,1] = sim_param$IC$infection0
   
-  event=sim_constants$time$phase[1]
-  current_event = event
+  period=sim_constants$time$phase[1]
+  current_period = period
   #Demog is the big block diagonal demography matrix
-  Demog = demography_matrix(sim_constants,sim_param$params,status_trees[,1],event)
+  Demog = demography_matrix(sim_constants,sim_param$params,status_trees[,1],period)
   #End of set up
   
   root_or_beetle = mat.or.vec(length(sim_constants$time$idx),2)
@@ -35,11 +35,11 @@ system.over.time=function(sim_param,sim_constants){
   
   #loop over time
   for (idx in 2:length(sim_constants$time$idx)) {
-    event = sim_constants$time$phase[idx]
-    # demography changes if event is different from before
-    if (event != current_event) {
-      Demog = demography_matrix(sim_constants,sim_param$params,status_trees[,idx-1],event)
-      current_event = event
+    period = sim_constants$time$phase[idx]
+    # demography changes if period is different from before
+    if (period != current_period) {
+      Demog = demography_matrix(sim_constants,sim_param$params,status_trees[,idx-1],period)
+      current_period = period
     }
     
     ##First movement
@@ -63,7 +63,7 @@ system.over.time=function(sim_param,sim_constants){
     matPopByTrees[,idx] = Demog%*%matPopByTrees[,idx]
     
     ##Finally update tree status
-    if(event == "Winter" & sim_constants$time$phase[idx+1] == "Emergence" & idx != length(sim_constants$time$idx)){
+    if(period == "Winter" & sim_constants$time$phase[idx+1] == "Emergence" & idx != length(sim_constants$time$idx)){
       print(sprintf("Update tree states %d",idx))
       if(sim_constants$time$simple_year[idx]==1){#if this is the the first time we update
         vec_idx = 1:idx
@@ -159,7 +159,7 @@ system.over.time=function(sim_param,sim_constants){
       }
       
       ##since we change the status, we change the demography matrices
-      Demog=demography_matrix(sim_constants,sim_param$params,status_trees[,idx],event)
+      Demog=demography_matrix(sim_constants,sim_param$params,status_trees[,idx],period)
     }else{
       status_trees[,idx]=status_trees[,(idx-1)]
     }
@@ -309,29 +309,29 @@ proba.distance = function(maxD,distance){
 #
 # Set the big demography matrix when the period changes (Winter, Emerge, Breeding or Offspring) or when the status of trees change
 # stagesi gives the new status of trees
-# event gives the new scenario
+# period gives the new scenario
 # sim_param = sim_param$params
-demography_matrix = function(sim_constants,sim_param,stagesi,event){#function to create the big demography matrix when status_trees or scenario change
+demography_matrix = function(sim_constants,sim_param,stagesi,period){#function to create the big demography matrix when status_trees or scenario change
   
-  if (event == "Winter"){
+  if (period == "Winter"){
     LH = sim_param$matrices$list_winter$LH_winter
     LSW = sim_param$matrices$list_winter$LSW_winter
     LIW = sim_param$matrices$list_winter$LID_winter
     LSD = sim_param$matrices$list_winter$LSD_winter
     LID = sim_param$matrices$list_winter$LID_winter
-  }else if (event == "Emergence"){
+  }else if (period == "Emergence"){
     LH = sim_param$matrices$list_emergence$LH_emergence
     LSW = sim_param$matrices$list_emergence$LSW_emergence
     LIW = sim_param$matrices$list_emergence$LIW_emergence
     LSD = sim_param$matrices$list_emergence$LSD_emergence
     LID = sim_param$matrices$list_emergence$LID_emergence
-  }else if (event == "Breeding"){
+  }else if (period == "Breeding"){
     LH = sim_param$matrices$list_breeding$LH_breeding
     LSW = sim_param$matrices$list_breeding$LSW_breeding
     LIW = sim_param$matrices$list_breeding$LIW_breeding
     LSD = sim_param$matrices$list_breeding$LSD_breeding
     LID = sim_param$matrices$list_breeding$LID_breeding
-  }else if (event =="New_generation"){
+  }else if (period =="New_generation"){
     LH = sim_param$matrices$list_new_generation$LH_new_generation
     LSW = sim_param$matrices$list_new_generation$LSW_new_generation
     LIW = sim_param$matrices$list_new_generation$LIW_new_generation
