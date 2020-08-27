@@ -17,12 +17,7 @@ sim_constants$DIRS = set_directories(TOP_DIR)
 
 # Set the neighbourhood
 sim_constants$Neighbourhood = Neighbourhood
-# Set the important initial parameters
-sim_constants$initial_set_up = list()
-sim_constants$initial_set_up$IC_type=IC_type
-sim_constants$initial_set_up$IC_radius=IC_radius
-sim_constants$initial_set_up$IC_beetles=IC_beetles
-sim_constants$initial_set_up$IC_number_dead_trees=IC_number_dead_trees
+
 
 # Read parameters from the csv file and replace those choosen in the main file (input)
 sim_constants = read_parameters(sim_constants,input) # create default_params
@@ -45,15 +40,6 @@ sim_constants$nb_sims = nb_sims
 # Set up other stuffs
 sim_constants$other = set_other_constants(sim_constants)
 
-#if we want to compare random IC
-if(IC_type == "random"){
-  if(is.null(sim_constants$fileNb)){
-    sim_constants$fileNb = 1
-  }
-  # sim_constants$default_params$maxD = set_maxD(sim_constants,sim_constants$fileNb)# ten values
-  sim_constants$default_params$maxD = set_maxD_IC_random(sim_constants,sim_constants$fileNb) #only 3 values
-}
-
 #Set the gates
 sim_constants$GATES = list()
 sim_constants$GATES$PLOT_SIM = PLOT_SIM #add other gates if needed
@@ -64,16 +50,23 @@ sims_params = list()
 sims = list()
 sims$params = set_sim_environment(sim_constants=sim_constants)
 
-# Choice of initial conditions
+# Set the initial conditions
+# sim_constants$initial_set_up = list()
+# sim_constants$initial_set_up$IC_type=IC_type
+# sim_constants$initial_set_up$IC_radius=IC_radius
+# sim_constants$initial_set_up$IC_beetles=IC_beetles
+
 if (IC_type=="random"){#if IC is random, then each sim has a different IC
   sims$IC = list()
   for (i in 1:nb_sims){
     sims$IC[[i]] = create_IC(sim_constants = sim_constants,Elms=sim_constants$default_params$elms,IC_type,IC_beetles,IC_radius,IC_number_dead_trees)
   }
 }else{#if IC is cluster or 2clusters
-  sims$IC = create_IC(sim_constants = sim_constants,Elms=sim_constants$default_params$elms,IC_type,IC_beetles,IC_radius,IC_number_dead_trees)
+  sims$IC = create_IC(sim_constants = sim_constants,Elms=sim_constants$default_params$elms,IC_type,IC_beetles,IC_radius,IC_number_dead_trees=0) #put IC_number_dead_trees to 0 here, the function will replace its value by the good nb of initially infected trees
 }
 sim_constants$default_params$IC= sims$IC
+
+# sim_constants$initial_set_up$IC_number_dead_trees=sims$IC$IC_number_dead_trees
 
 if (FALSE){#if needed, we can create an IC using the functions in pre_IC.R and read the file directly
   sims$IC = readRDS("name_file_IC.rds")

@@ -14,9 +14,9 @@ PLOT_SIM = TRUE #if sims are launched, do you want to see the DED spread evoluti
 Neighbourhood = "NORTH_RIVER_HEIGHTS" #NRH
 
 #2- IC
-IC_type="cluster"
+# IC_type="cluster"
 # IC_type = "2clusters"
-# IC_type = "random"
+IC_type = "random"
 
 #3- main parameters
 input = list()

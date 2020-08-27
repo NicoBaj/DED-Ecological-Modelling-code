@@ -154,6 +154,8 @@ create_IC = function(sim_constants,Elms,IC_type,IC_beetles,IC_radius,IC_number_d
     sampling.dead.trees = sample.int(sim_constants$default_params$N,size = IC_number_dead_trees)
   }
   
+  IC_number_dead_trees = length(sampling.dead.trees) #this is the number of initially infected trees
+  
   stages = initially_inf_trees(sim_constants$default_params,sampling.dead.trees) #IC for trees
   pop0ByTrees = initial_beetles(sim_constants$default_params,stages,IC_beetles) #IC for beetles
   infection0 = proba_infection(sim_constants$default_params,pop0ByTrees,stages) #infection for next year

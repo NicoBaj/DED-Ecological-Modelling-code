@@ -141,21 +141,21 @@ proba_infection = function(sim_constants,fileNb){
   return(vec.pb[as.numeric(fileNb)])
 }
 
-set_maxD = function(sim_constants,fileNb){
-  nb.of.files = 10
-  # nb.of.files = 3
-  vec.maxD = seq(20,380,by = 40)
-  # vec.maxD = c(20,180,340)
-  sim_constants$default_params$maxD = vec.maxD[as.numeric(fileNb)]
-  return(vec.maxD[as.numeric(fileNb)])
-}
-
-set_maxD_IC_random = function(sim_constants,fileNb){
-  nb.of.files = 3
-  vec.maxD = c(300,300,300)
-  maxD = vec.maxD[as.numeric(fileNb)]
-  return(maxD)
-}
+# set_maxD = function(sim_constants,fileNb){
+#   nb.of.files = 10
+#   # nb.of.files = 3
+#   vec.maxD = seq(20,380,by = 40)
+#   # vec.maxD = c(20,180,340)
+#   sim_constants$default_params$maxD = vec.maxD[as.numeric(fileNb)]
+#   return(vec.maxD[as.numeric(fileNb)])
+# }
+# 
+# set_maxD_IC_random = function(sim_constants,fileNb){
+#   nb.of.files = 3
+#   vec.maxD = c(300,300,300)
+#   maxD = vec.maxD[as.numeric(fileNb)]
+#   return(maxD)
+# }
 
 # SET_OTHER_CONSTANTS
 #
