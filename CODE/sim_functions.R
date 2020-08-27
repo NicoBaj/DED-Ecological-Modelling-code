@@ -42,54 +42,70 @@ system.over.time=function(sim_param,sim_constants){
       current_period = period
     }
     
-    ##First movement
-    matPopByTrees[,idx] = matPopByTrees[,idx-1]
-    # proba_infection = sim_constants$default_params$proba_infection
-    mvt.Mbs.and.inf = mvt_beetles(sim_constants,sim_param$params,matPopByTrees[sim_constants$other$indexMbs,idx-1],status_trees[,(idx-1)],"H",VARYING_PREPROC,"no_carrier",sim_constants$default_params$proba_infection)
-    mvt.Mbi.and.inf = mvt_beetles(sim_constants,sim_param$params,matPopByTrees[sim_constants$other$indexMbi,idx-1],status_trees[,(idx-1)],"H",VARYING_PREPROC,"carrier",sim_constants$default_params$proba_infection)
-    mvt.Ms.and.inf = mvt_beetles(sim_constants,sim_param$params,matPopByTrees[sim_constants$other$indexMs,idx-1],status_trees[,(idx-1)],"all",VARYING_PREPROC,"no_carrier",sim_constants$default_params$proba_infection)
-    mvt.Mi.and.inf = mvt_beetles(sim_constants,sim_param$params,matPopByTrees[sim_constants$other$indexMi,idx-1],status_trees[,(idx-1)],"all",VARYING_PREPROC,"carrier",sim_constants$default_params$proba_infection)
     
-    matPopByTrees[sim_constants$other$indexMbs,idx] = mvt.Mbs.and.inf$Movement
-    matPopByTrees[sim_constants$other$indexMbi,idx] = mvt.Mbi.and.inf$Movement
-    matPopByTrees[sim_constants$other$indexMs,idx] = mvt.Ms.and.inf$Movement
-    matPopByTrees[sim_constants$other$indexMi,idx] = mvt.Mi.and.inf$Movement
+    ## three steps: 1) movement of beetles, 2) demography and 3) update of tree states (if required)
+    ## 1) movement
+    matPopByTrees[,idx] = matPopByTrees[,idx-1]
+    
+    #mvt of feeders F, spores-free
+    mvt_F = mvt_beetles(sim_constants,sim_param$params,matPopByTrees[sim_constants$other$indexMbs,idx-1],status_trees[,(idx-1)],"H",VARYING_PREPROC,"no_carrier",sim_constants$default_params$proba_infection)
+    
+    #mvt of feeders Fp, spores-carrying
+    mvt_Fp = mvt_beetles(sim_constants,sim_param$params,matPopByTrees[sim_constants$other$indexMbi,idx-1],status_trees[,(idx-1)],"H",VARYING_PREPROC,"carrier",sim_constants$default_params$proba_infection)
+    
+    #mvt of maters M, spores-free
+    mvt_M = mvt_beetles(sim_constants,sim_param$params,matPopByTrees[sim_constants$other$indexMs,idx-1],status_trees[,(idx-1)],"all",VARYING_PREPROC,"no_carrier",sim_constants$default_params$proba_infection)
+    
+    #mvt of maters M, spores-carrying
+    mvt_Mp = mvt_beetles(sim_constants,sim_param$params,matPopByTrees[sim_constants$other$indexMi,idx-1],status_trees[,(idx-1)],"all",VARYING_PREPROC,"carrier",sim_constants$default_params$proba_infection)
+    
+    matPopByTrees[sim_constants$other$indexMbs,idx] = mvt_F$Movement
+    matPopByTrees[sim_constants$other$indexMbi,idx] = mvt_Fp$Movement
+    matPopByTrees[sim_constants$other$indexMs,idx] =  mvt_M$Movement
+    matPopByTrees[sim_constants$other$indexMi,idx] =  mvt_Mp$Movement
     
     #only the new feeders can infect trees
-    new_infection[,idx]=mvt.Mbi.and.inf$Infection
+    new_infection[,idx]=mvt_Fp$Infection
     
-    ## Then demography
+    ## 2) demography
     #Matrix Demog is defined first in the initial conditions, it only changes when scenario, trees status or year condition change
     matPopByTrees[,idx] = Demog%*%matPopByTrees[,idx]
     
-    ##Finally update tree status
+    ## 3) update tree status
     if(period == "Winter" & sim_constants$time$phase[idx+1] == "Emergence" & idx != length(sim_constants$time$idx)){
       print(sprintf("Update tree states %d",idx))
+      
       if(sim_constants$time$simple_year[idx]==1){#if this is the the first time we update
-        vec_idx = 1:idx
+        vec_idx = 1:idx #take all the weeks from the beginning
       }else{#for the other years
-        vec_idx = (idx-sim_constants$default_params$l):idx
+        vec_idx = (idx-sim_constants$default_params$l):idx #take the l=53 weeks prior the update. Note it is not important that the year has 52 or 53 weeks since the infection only occurs when beetles feed (in spring/summer and this is not the week at which the update occurs)
       }
-      idx_susceptible = which(status_trees[,idx-1]=="H"|status_trees[,idx-1]=="Ws")
-      vec_new_inf = c()
-      for (k in idx_susceptible){
+      
+      idx_susceptible_beetles = which(status_trees[,idx-1]=="H"|status_trees[,idx-1]=="Ws")#only these two types can be infected by beetles (because Fp can only go to S, Ws and Wi)
+      
+      ###############################
+      # BEETLE INFECTION
+      ###############################
+      
+      vec_new_inf = c()#each entry of this vector gives the index of tree that has been infected during last year
+      for (k in idx_susceptible_beetles){
         sum_proba_inf = sum(new_infection[k,vec_idx])
         if(sum_proba_inf>0){
           vec_new_inf = c(vec_new_inf,k)
         }
       }
-      print(sprintf("nb of new infected trees by beetles = %s",length(vec_new_inf)))
+      nb_inf_trees_by_beetles = length(vec_new_inf)
+      print(sprintf("nb of new infected trees by beetles = %s",nb_inf_trees_by_beetles))
       status_trees_after_beetles = mat.or.vec(sim_constants$default_params$N,1)
       status_trees_after_beetles[vec_new_inf] = "Wi"
       
-      root_or_beetle[idx,1] = length(vec_new_inf)
+      root_or_beetle[idx,1] = nb_inf_trees_by_beetles
       
       #for all other trees, we use the markov chain as before (transition for ageing)
       other_trees = setdiff(1:sim_constants$default_params$N,vec_new_inf)
-      
       for (k in other_trees){
         mcB <- new("markovchain", states = sim_constants$other$statesNames,
-                   transitionMatrix = new.transition.matrices(sim_param$params))
+                   transitionMatrix = transition_matrix(sim_param$params))
         status_trees_after_beetles[k] = markovchainSequence(n = 1, markovchain = mcB, t0 = status_trees[k,(idx-1)])
       }
       
@@ -98,27 +114,21 @@ system.over.time=function(sim_param,sim_constants){
       ###############################
       
       if (sim_constants$roots){
-        idx_Susceptible_trees = which(status_trees[,(idx-1)]=="H"|status_trees[,(idx-1)]=="Ws"|status_trees[,(idx-1)]=="Ds")
+        idx_susceptible_roots = which(status_trees[,(idx-1)]=="H"|status_trees[,(idx-1)]=="Ws"|status_trees[,(idx-1)]=="Ds")#this time, all susceptible trees are ... susceptible
         status_trees_after_root = mat.or.vec(sim_constants$default_params$N,1)
-        nb_inf_roots = 0
+        nb_inf_roots = 0#just to compute the number of infections by roots
         
-        for (j in idx_Susceptible_trees){#look up over susceptible trees
-          ##j is the index of the tree in the "neighbourhood"
-          # print(sprintf("Susceptible tree = %s",j))
+        for (j in idx_susceptible_roots){#look up over susceptible trees
+          # j is the index of the tree in the "neighbourhood"
+          
+          #sim_param$params$proba_roots is the data frame
           #first the rows that have j as a connected tree in proba_roots and find the associated neighbours
           
-          #row_j is the indices of neighbours of j
-          row_j = which(sim_param$params$proba_roots$idx_i==j)
-          #pos_neighbours is the real position in the system
-          pos_neighbours = sim_param$params$proba_roots$idx_j[row_j]
+          row_j = which(sim_param$params$proba_roots$idx_i==j)#indices of neighbours of j
+          pos_neighbours = sim_param$params$proba_roots$idx_j[row_j]# their position in the system
+          inf_neighbours = pos_neighbours[which(status_trees[pos_neighbours,idx-1]=="Di")]#position of neighbours that are infected
           
-          #find the position of neighbours that are infected
-          inf_neighbours = pos_neighbours[which(status_trees[pos_neighbours,idx-1]=="Di")]
-          # print(sprintf("Number of infected ngh: %s",length(inf_neighbours)))
-          # update_status=FALSE
           if(length(inf_neighbours)>0){
-            #j_infected gives the rows for which a j is infected
-            # points(sim_constants$default_params$elms$X[j],sim_constants$default_params$elms$Y[j],col="blue")
             #save the rows at which we have j associated to an infected neighbour
             
             row_inf = row_j[which(status_trees[sim_param$params$proba_roots$idx_j[row_j],idx-1]=="Di")]
@@ -126,9 +136,9 @@ system.over.time=function(sim_param,sim_constants){
               
               ##PB:
               vec_proba_inf = 2*sim_param$params$proba_roots$proba[row_inf]*sim_param$params$p_r
+              #!!!!!!!!!!!!!!!!!!!!!
               tirage_poisson_binomiale = rpoibin(1,vec_proba_inf)
               if(tirage_poisson_binomiale>0){
-                # update_status = TRUE
                 if(status_trees[j,idx-1]=="H"|status_trees[j,idx-1]=="Ws"){
                   status_trees_after_root[j]="Wi"
                   nb_inf_roots = nb_inf_roots+1
@@ -364,9 +374,13 @@ demography_matrix = function(sim_constants,sim_param,stagesi,period){#function t
   return(D)
 }
 
-new.transition.matrices = function(params){
+### TRANSITION_MATRIX
+#
+# transition matrix for trees that did not become infected by beetles during the year
+transition_matrix = function(params){
   env = environment()
   list2env(params,env)
+  
   lt1 = c(Ph,0,0,0,0)
   lt2 = c(1-Ph,Pws,0,0,0)
   lt3 = c(0,0,0,0,0)
