@@ -3,7 +3,6 @@ set_directories = function(DIR_TOP) {
   out = list()
   out$TOP = DIR_TOP
   out$DATA = sprintf("%s/DATA",DIR_TOP)
-  # out$PARAM = sprintf("%s/PARAMS",DIR_TOP)
   out$RESULT = sprintf("%s/RESULTS",DIR_TOP)
   return(out)
 }
@@ -11,7 +10,6 @@ set_directories = function(DIR_TOP) {
 
 ### WEEK_TYPES
 #
-# For the moment, we assume the schedule of weeks is fixed in the year. In the future, the schedule might vary.
 # Given a vector v of week numbers, return a vector of same size with the type of week under consideration
 week_types = function(v,climate = NULL) {
   out = mat.or.vec(nr = length(v), nc = 1)
@@ -29,7 +27,7 @@ week_types = function(v,climate = NULL) {
 ### READ_PARAMETERS 
 #
 # read parameters from the csv file and replace those choosen in the main file (input)
-# read the pre_processing files required for the given value of maxD (3 files per maxD)
+# read the pre_processing files required for the given value of R_B (3 files for each R_B)
 # read the tree database
 # read the initial condition
 # read the proba_root files created by the pre-processing of roots
@@ -46,12 +44,12 @@ read_parameters = function(sim_constants,input) {
   sim_constants$default_params$proba_infection = input$pi
   sim_constants$default_params$p_r             = input$pr
   sim_constants$default_params$Sdt             = input$sdt
-  sim_constants$default_params$maxD            = input$maxD
+  sim_constants$default_params$R_B            = input$R_B
   
-  ## Now we can load the good preprocessing since we have the right maxD
-  sim_constants$FILES[[2]] = sprintf("%s/Preprocessing/neighbours_%s_maxD%s.RData", sim_constants$DIRS$DATA, sim_constants$sim_core, sim_constants$default_params$maxD)
-  sim_constants$FILES[[3]] = sprintf("%s/Preprocessing/distance_neighbours_%s_maxD%s.RData", sim_constants$DIRS$DATA, sim_constants$sim_core, sim_constants$default_params$maxD)
-  sim_constants$FILES[[4]] = sprintf("%s/Preprocessing/neighbours_pos_%s_maxD%s.RData", sim_constants$DIRS$DATA,sim_constants$sim_core, sim_constants$default_params$maxD)
+  ## Now we can load the good preprocessing since we have the right R_B
+  sim_constants$FILES[[2]] = sprintf("%s/Preprocessing/neighbours_%s_maxD%s.RData", sim_constants$DIRS$DATA, sim_constants$sim_core, sim_constants$default_params$R_B)
+  sim_constants$FILES[[3]] = sprintf("%s/Preprocessing/distance_neighbours_%s_maxD%s.RData", sim_constants$DIRS$DATA, sim_constants$sim_core, sim_constants$default_params$R_B)
+  sim_constants$FILES[[4]] = sprintf("%s/Preprocessing/neighbours_pos_%s_maxD%s.RData", sim_constants$DIRS$DATA,sim_constants$sim_core, sim_constants$default_params$R_B)
   sim_constants$FILES[[5]] = sprintf("%s/Elms_Neighbourhood/Elms_%s.RData", sim_constants$DIRS$DATA, sim_constants$Neighbourhood)
   
   #the following file is just a default_file, then it changes when we set up the IC
@@ -141,22 +139,6 @@ proba_infection = function(sim_constants,fileNb){
   sim_constants$default_params$proba_infection = vec.pb[as.numeric(fileNb)]
   return(vec.pb[as.numeric(fileNb)])
 }
-
-# set_maxD = function(sim_constants,fileNb){
-#   nb.of.files = 10
-#   # nb.of.files = 3
-#   vec.maxD = seq(20,380,by = 40)
-#   # vec.maxD = c(20,180,340)
-#   sim_constants$default_params$maxD = vec.maxD[as.numeric(fileNb)]
-#   return(vec.maxD[as.numeric(fileNb)])
-# }
-# 
-# set_maxD_IC_random = function(sim_constants,fileNb){
-#   nb.of.files = 3
-#   vec.maxD = c(300,300,300)
-#   maxD = vec.maxD[as.numeric(fileNb)]
-#   return(maxD)
-# }
 
 # SET_OTHER_CONSTANTS
 #

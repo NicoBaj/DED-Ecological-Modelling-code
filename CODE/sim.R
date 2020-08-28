@@ -141,25 +141,25 @@ if (SIM_SAVE){
           file = sprintf("%s/ic.Rds",sim_constants$output_dir))
   
   saveRDS(tree_states, 
-          file = sprintf("%s/tree_states_maxD%03g_pb_inf%03g_pr%03g.Rds",
+          file = sprintf("%s/tree_states_Rb%03g_pb_inf%03g_pr%03g.Rds",
                          sim_constants$output_dir,
-                         sim_constants$default_params$maxD,
+                         sim_constants$default_params$R_B,
                          sim_constants$default_params$proba_infection*100,
                          sim_constants$default_params$p_r*100))
   
   saveRDS(beetles, 
-          file = sprintf("%s/beetles_maxD%03g_pb_inf%03g_pr%03g.Rds",
+          file = sprintf("%s/beetles_Rb%03g_pb_inf%03g_pr%03g.Rds",
                          sim_constants$output_dir,
-                         sim_constants$default_params$maxD,
+                         sim_constants$default_params$R_B,
                          sim_constants$default_params$proba_infection*100,
                          sim_constants$default_params$p_r*100))  
   
   # If needed, save the parameters as well (can be a large file)
   if(FALSE){
     saveRDS(paramet,
-            file = sprintf("%s/parameters_maxD%03g_pb_inf%03g_pr%03g.Rds",
+            file = sprintf("%s/parameters_Rb%03g_pb_inf%03g_pr%03g.Rds",
                            sim_constants$output_dir,
-                           sim_constants$default_params$maxD,
+                           sim_constants$default_params$R_B,
                            sim_constants$default_params$proba_infection*100,
                            sim_constants$default_params$p_r*100))
   }

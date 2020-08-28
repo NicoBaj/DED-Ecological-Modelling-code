@@ -274,7 +274,7 @@ mvt_beetles = function(sim_constants,params,vec.of.beetles,status_trees,type,VAR
         list.random[[i]] = sample(1:len,size=ceiling(vec.of.beetles[i]),replace = TRUE)#destination for the beetles choosen randomly
         list.pos[[i]] = pos_of_H_in_neighbourhood[list.random[[i]]]#position of the destination trees
         
-        list.dist[[i]] = proba.distance(sim_constants$default_params$maxD,distance_of_H_in_neighbourhood[list.random[[i]]]) #probability to survive the distance for the destination trees
+        list.dist[[i]] = proba_distance(sim_constants$default_params$R_B,distance_of_H_in_neighbourhood[list.random[[i]]]) #probability to survive the distance for the destination trees
 
         #then, dispatch the beetles in the neighbour trees
         nb = list.pos[[i]] 
@@ -334,8 +334,11 @@ mvt_beetles = function(sim_constants,params,vec.of.beetles,status_trees,type,VAR
   return(out)
 }
 
-proba.distance = function(maxD,distance){
-  res = exp(-distance/maxD)
+###PROBA_DISTANCE
+#
+#probability that a beetle survives the travel of distance distance
+proba_distance = function(R_B,distance){
+  res = exp(-distance/R_B)
   return(res)
 }
 
