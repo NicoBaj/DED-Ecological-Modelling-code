@@ -21,8 +21,7 @@ IC_type="cluster"
 #3- main parameters
 input = list()
 input$maxD = 380 #max distance that beetles fly during one time step
-input$pr   = 0.5 #max proba for an infected tree to infect another one by root infection
-#Note about p_r: it is multiplied by 2: so p_r=0.5 will give a 1.
+input$pr   = 0.1 #max proba for an infected tree to infect another one by root infection
 input$pi   = 0.02 #proba that one beetle infects successfully one tree
 input$sdt  = 0.98 #proba for beetles to survive one time step
 

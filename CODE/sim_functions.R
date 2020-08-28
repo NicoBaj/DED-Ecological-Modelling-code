@@ -130,28 +130,27 @@ system.over.time=function(sim_param,sim_constants){
           
           if(length(inf_neighbours)>0){
             #save the rows at which we have j associated to an infected neighbour
-            
             row_inf = row_j[which(status_trees[sim_param$params$proba_roots$idx_j[row_j],idx-1]=="Di")]
             if(length(row_inf)>0){
-              
-              ##PB:
-              vec_proba_inf = 2*sim_param$params$proba_roots$proba[row_inf]*sim_param$params$p_r
-              #!!!!!!!!!!!!!!!!!!!!!
-              tirage_poisson_binomiale = rpoibin(1,vec_proba_inf)
-              if(tirage_poisson_binomiale>0){
+              vec_proba_inf = sim_param$params$proba_roots$proba[row_inf]*sim_param$params$p_r
+              poisson_binomial_run = rpoibin(1,vec_proba_inf)
+              if(poisson_binomial_run>0){#means that the tree has been infected
                 if(status_trees[j,idx-1]=="H"|status_trees[j,idx-1]=="Ws"){
                   status_trees_after_root[j]="Wi"
-                  nb_inf_roots = nb_inf_roots+1
                 }else if(status_trees[j,idx-1]=="Ds"){
                   status_trees_after_root[j]="Di"
-                  nb_inf_roots = nb_inf_roots+1
                 }
+                nb_inf_roots = nb_inf_roots+1
               }
             }
           }
         }
         print(sprintf("nb of new infected trees by roots = %s",nb_inf_roots))
         root_or_beetle[idx,2] = length(nb_inf_roots)
+        
+        ###############################
+        # MERGING BOTH ROUTES OF INFECTION
+        ###############################
         
         status_trees[,idx] = merge_updates(sim_constants,status_trees_after_root,status_trees_after_beetles)
         
@@ -180,11 +179,16 @@ system.over.time=function(sim_param,sim_constants){
   return(out)
 }
 
+
+###MERGE_UPDATES
+#
+#merge both routes of infection
 merge_updates = function(sim_constants,root,beetles){
-  #root and beetles are vectors of outcomes from both stochastic processes
+  #root and beetles are vectors obtained from both stochastic processes
   out = mat.or.vec(sim_constants$default_params$N,1)
   root = convert_state_to_number(as.matrix(root))
   beetles = convert_state_to_number(as.matrix(beetles))
+  
   #indexes that are the same in both new updates
   idx_same_status = which(root==beetles)
   if(length(idx_same_status)>0){
@@ -203,6 +207,7 @@ merge_updates = function(sim_constants,root,beetles){
     out[idx_diff_status_beetles] = beetles[idx_diff_status_beetles]
   }
   
+  #the following is the case in which there was an infection through roots (the tree is now 3) while the tree was at S_D or ages to S_D during the year (the tree is now 4). In this case, the tree becomes I_D (5) because it ages and becomes dead
   idx_root3 = which(root==3)
   idx_beetles4 = which(beetles==4)
   out[intersect(idx_root3,idx_beetles4)] = 5

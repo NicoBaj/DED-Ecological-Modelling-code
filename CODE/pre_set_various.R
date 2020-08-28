@@ -32,7 +32,7 @@ week_types = function(v,climate = NULL) {
 # read the pre_processing files required for the given value of maxD (3 files per maxD)
 # read the tree database
 # read the initial condition
-# read the proba_root files created by the pre-processing of roots (Julien)
+# read the proba_root files created by the pre-processing of roots
 # also adjust some parameters in function of the read files (nb of trees for instance)
 read_parameters = function(sim_constants,input) {
   sim_constants$FILES = list()
@@ -56,7 +56,10 @@ read_parameters = function(sim_constants,input) {
   
   #the following file is just a default_file, then it changes when we set up the IC
   # sim_constants$FILES[[6]] = sprintf("%s/IC_PULBERRY_radius_60.RData", sim_constants$DIRS$DATA)
-  sim_constants$FILES[[7]] = sprintf("%s/Proba_roots/Proba_roots_%s_pr%s.RData",sim_constants$DIRS$DATA,sim_constants$Neighbourhood,sim_constants$default_params$p_r*100)
+  
+  # sim_constants$FILES[[7]] = sprintf("%s/Proba_roots/Proba_roots_%s_pr%s.RData",sim_constants$DIRS$DATA,sim_constants$Neighbourhood,sim_constants$default_params$p_r*100)
+  
+  sim_constants$FILES[[7]] = sprintf("%s/Proba_roots/Proba_roots_%s.Rds",sim_constants$DIRS$DATA,sim_constants$Neighbourhood)
   
   # parameters <- read.csv(sim_constants$FILES[[1]], header=TRUE)
   neighbours_circle = readRDS(sim_constants$FILES[[2]])
