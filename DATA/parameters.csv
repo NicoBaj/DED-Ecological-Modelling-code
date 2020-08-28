@@ -1,12 +1,12 @@
 Parameters,Values
 Nbs,10
 Nbts,5
-maxD,380
+R_B,380
 l,53
 Ws,1
 Wm,2
 Wl,5
-proba_infection,0.02
+pi,0.02
 Sdt,0.99
 p_r,0.5
 Sos,0.75

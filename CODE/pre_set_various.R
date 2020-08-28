@@ -41,7 +41,7 @@ read_parameters = function(sim_constants,input) {
   for (i in 1:dim(parameters)[1]) {
     sim_constants$default_params[[sprintf("%s",parameters[i,1])]] = as.numeric(parameters[i,2])
   }
-  sim_constants$default_params$proba_infection = input$pi
+  sim_constants$default_params$pi = input$pi
   sim_constants$default_params$p_r             = input$pr
   sim_constants$default_params$Sdt             = input$sdt
   sim_constants$default_params$R_B            = input$R_B
@@ -133,12 +133,12 @@ set_sim_environment = function(sim_constants,input) {
   return(out)
 }
 
-proba_infection = function(sim_constants,fileNb){
-  nb.of.files = 10
-  vec.pb = seq(0.01,0.1,length.out = nb.of.files)
-  sim_constants$default_params$proba_infection = vec.pb[as.numeric(fileNb)]
-  return(vec.pb[as.numeric(fileNb)])
-}
+# proba_infection = function(sim_constants,fileNb){
+#   nb.of.files = 10
+#   vec.pb = seq(0.01,0.1,length.out = nb.of.files)
+#   sim_constants$default_params$pi = vec.pb[as.numeric(fileNb)]
+#   return(vec.pb[as.numeric(fileNb)])
+# }
 
 # SET_OTHER_CONSTANTS
 #
