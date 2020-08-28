@@ -42,9 +42,9 @@ read_parameters = function(sim_constants,input) {
     sim_constants$default_params[[sprintf("%s",parameters[i,1])]] = as.numeric(parameters[i,2])
   }
   sim_constants$default_params$pi = input$pi
-  sim_constants$default_params$p_r             = input$pr
+  sim_constants$default_params$p_r             = input$p_r
   sim_constants$default_params$Sdt             = input$sdt
-  sim_constants$default_params$R_B            = input$R_B
+  sim_constants$default_params$R_B             = input$R_B
   
   ## Now we can load the good preprocessing since we have the right R_B
   sim_constants$FILES[[2]] = sprintf("%s/Preprocessing/neighbours_%s_maxD%s.RData", sim_constants$DIRS$DATA, sim_constants$sim_core, sim_constants$default_params$R_B)
