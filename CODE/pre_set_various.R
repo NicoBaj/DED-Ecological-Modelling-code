@@ -133,13 +133,6 @@ set_sim_environment = function(sim_constants,input) {
   return(out)
 }
 
-# proba_infection = function(sim_constants,fileNb){
-#   nb.of.files = 10
-#   vec.pb = seq(0.01,0.1,length.out = nb.of.files)
-#   sim_constants$default_params$pi = vec.pb[as.numeric(fileNb)]
-#   return(vec.pb[as.numeric(fileNb)])
-# }
-
 # SET_OTHER_CONSTANTS
 #
 # Gives constants that can be used and that will never be changed
