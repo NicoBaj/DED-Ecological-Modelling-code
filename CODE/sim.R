@@ -144,14 +144,14 @@ if (SIM_SAVE){
           file = sprintf("%s/tree_states_Rb%03g_pb_inf%03g_pr%03g.Rds",
                          sim_constants$output_dir,
                          sim_constants$default_params$R_B,
-                         sim_constants$default_params$pi*100,
+                         sim_constants$default_params$p_i*100,
                          sim_constants$default_params$p_r*100))
   
   saveRDS(beetles, 
           file = sprintf("%s/beetles_Rb%03g_pb_inf%03g_pr%03g.Rds",
                          sim_constants$output_dir,
                          sim_constants$default_params$R_B,
-                         sim_constants$default_params$pi*100,
+                         sim_constants$default_params$p_i*100,
                          sim_constants$default_params$p_r*100))  
   
   # If needed, save the parameters as well (can be a large file)
@@ -160,7 +160,7 @@ if (SIM_SAVE){
             file = sprintf("%s/parameters_Rb%03g_pb_inf%03g_pr%03g.Rds",
                            sim_constants$output_dir,
                            sim_constants$default_params$R_B,
-                           sim_constants$default_params$pi*100,
+                           sim_constants$default_params$p_i*100,
                            sim_constants$default_params$p_r*100))
   }
   

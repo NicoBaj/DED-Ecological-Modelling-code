@@ -48,16 +48,16 @@ system_over_time=function(sim_param,sim_constants){
     matPopByTrees[,idx] = matPopByTrees[,idx-1]
     
     #mvt of feeders F, spores-free
-    mvt_F = mvt_beetles(sim_constants,sim_param$params,matPopByTrees[sim_constants$other$indexMbs,idx-1],status_trees[,(idx-1)],"H",VARYING_PREPROC,"no_carrier",sim_constants$default_params$pi)
+    mvt_F = mvt_beetles(sim_constants,sim_param$params,matPopByTrees[sim_constants$other$indexMbs,idx-1],status_trees[,(idx-1)],"H",VARYING_PREPROC,"no_carrier",sim_constants$default_params$p_i)
     
     #mvt of feeders Fp, spores-carrying
-    mvt_Fp = mvt_beetles(sim_constants,sim_param$params,matPopByTrees[sim_constants$other$indexMbi,idx-1],status_trees[,(idx-1)],"H",VARYING_PREPROC,"carrier",sim_constants$default_params$pi)
+    mvt_Fp = mvt_beetles(sim_constants,sim_param$params,matPopByTrees[sim_constants$other$indexMbi,idx-1],status_trees[,(idx-1)],"H",VARYING_PREPROC,"carrier",sim_constants$default_params$p_i)
     
     #mvt of maters M, spores-free
-    mvt_M = mvt_beetles(sim_constants,sim_param$params,matPopByTrees[sim_constants$other$indexMs,idx-1],status_trees[,(idx-1)],"all",VARYING_PREPROC,"no_carrier",sim_constants$default_params$pi)
+    mvt_M = mvt_beetles(sim_constants,sim_param$params,matPopByTrees[sim_constants$other$indexMs,idx-1],status_trees[,(idx-1)],"all",VARYING_PREPROC,"no_carrier",sim_constants$default_params$p_i)
     
     #mvt of maters M, spores-carrying
-    mvt_Mp = mvt_beetles(sim_constants,sim_param$params,matPopByTrees[sim_constants$other$indexMi,idx-1],status_trees[,(idx-1)],"all",VARYING_PREPROC,"carrier",sim_constants$default_params$pi)
+    mvt_Mp = mvt_beetles(sim_constants,sim_param$params,matPopByTrees[sim_constants$other$indexMi,idx-1],status_trees[,(idx-1)],"all",VARYING_PREPROC,"carrier",sim_constants$default_params$p_i)
     
     matPopByTrees[sim_constants$other$indexMbs,idx] = mvt_F$Movement
     matPopByTrees[sim_constants$other$indexMbi,idx] = mvt_Fp$Movement
@@ -220,7 +220,7 @@ merge_updates = function(sim_constants,root,beetles){
 ###MVT_BEETLES
 #
 #function that moves beetles from trees to other. If beetles are carrying the spores, then the probability to infect the destination trees are computed and saved
-mvt_beetles = function(sim_constants,params,vec.of.beetles,status_trees,type,VARYING_PREPROC,status_beetles,pi){
+mvt_beetles = function(sim_constants,params,vec.of.beetles,status_trees,type,VARYING_PREPROC,status_beetles,p_i){
   # params list of para: sim_param$params
   # vec.of.beetles vector of beetles is the vector of Mbs, Mbi, Ms or Mi
   # type MUST BE "H" or "all": this is the type of trees towards which the beetles go, "H" meaning not dead trees (H, SW and IW)
@@ -289,7 +289,7 @@ mvt_beetles = function(sim_constants,params,vec.of.beetles,status_trees,type,VAR
           dtfr$Survivals[j] = rbinom(1,dtfr$Freq[j],as.numeric(as.character(dtfr$pb[j])))
           if (status_beetles=="carrier" & type =="H"){#only carrier beetles can infect susceptible trees
             if(dtfr$Survivals[j]>0){#only beetles who survive can infect the destination tree ...
-              dtfr$New_infection[j] = rbinom(1,dtfr$Survival[j],pi)
+              dtfr$New_infection[j] = rbinom(1,dtfr$Survival[j],p_i)
               if(dtfr$New_infection[j]>0){#one successful infection suffices to infect the tree
                 dtfr$New_infection[j]=1
               }  
@@ -304,7 +304,7 @@ mvt_beetles = function(sim_constants,params,vec.of.beetles,status_trees,type,VAR
           # print(dtfr)
           if(dtfr$Survivals[id_deci]>0){#only beetles who survive can infect the destination tree ...
             dtfr$Survivals[id_deci] = dtfr$Survivals[id_deci]-1+dec.beetles[i]
-            dtfr$New_infection[id_deci] = rbinom(1,floor(dtfr$Survival[id_deci]),pi)+rbinom(1,1,pi*dec.beetles[i])
+            dtfr$New_infection[id_deci] = rbinom(1,floor(dtfr$Survival[id_deci]),p_i)+rbinom(1,1,p_i*dec.beetles[i])
             if(dtfr$New_infection[id_deci]>0){#one successful infection suffices to infect the tree
               dtfr$New_infection[id_deci]=1
             }  

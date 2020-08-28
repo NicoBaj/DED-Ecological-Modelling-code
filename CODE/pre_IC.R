@@ -123,7 +123,7 @@ proba_infection = function(default_params,pop0ByTrees,stages){
   
   vecvec = intersect(idx_presence_Ji,idx_H_or_Ws)
   for (k in vecvec){
-    vec.inf[k] = rbinom(1,pop0ByTrees[k],default.params$pi)
+    vec.inf[k] = rbinom(1,pop0ByTrees[k],default.params$p_i)
     if(vec.inf[k]>0){
       vec.inf[k]=1
     }

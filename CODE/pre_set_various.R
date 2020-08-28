@@ -41,7 +41,7 @@ read_parameters = function(sim_constants,input) {
   for (i in 1:dim(parameters)[1]) {
     sim_constants$default_params[[sprintf("%s",parameters[i,1])]] = as.numeric(parameters[i,2])
   }
-  sim_constants$default_params$pi = input$pi
+  sim_constants$default_params$p_i             = input$p_i
   sim_constants$default_params$p_r             = input$p_r
   sim_constants$default_params$Sdt             = input$sdt
   sim_constants$default_params$R_B             = input$R_B
