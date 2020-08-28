@@ -6,9 +6,6 @@
 # Constants will go in a list called sim_constants.
 sim_constants = list()
 
-#################
-##NOTE_NB: I need to remove that once we change the way we save the pre_processing stuff
-#################
 # Set part of the name for the result directory
 sim_constants$sim_core = sim_core
 
@@ -84,14 +81,6 @@ for (i in 1:sim_constants$nb_sims) {
   
 }
 
-# sims_params[[1]]        = list()
-# sims_params[[1]]$params = sims$params$params[[1]]
-# sims_params[[1]]$IC     = sims$IC # only initial beetles, initial tree status and initial demography
-
-# Run simulations and plot in the same time the spread of the disease
-# results = lapply(X = sims_params, FUN = function(x) system.over.time(x,sim_constants))
-
-
 # Run simulations
 if (RUN_PARALLEL) {
   # Detect number of cores, use all but 1
@@ -116,14 +105,14 @@ if (RUN_PARALLEL) {
                   "new.transition.matrices"),
                 envir = .GlobalEnv)
   # Run computation
-  results = parLapply(cl = cl, X = sims_params, fun =  function(x) system.over.time(x,sim_constants))
+  results = parLapply(cl = cl, X = sims_params, fun =  function(x) system_over_time(x,sim_constants))
   # Stop cluster
   stopCluster(cl)
   timeProcessing=tictoc::toc()
 } else {
   tictoc::tic()
   # Run computation
-  results = lapply(X = sims_params, FUN = function(x) system.over.time(x,sim_constants))
+  results = lapply(X = sims_params, FUN = function(x) system_over_time(x,sim_constants))
   timeProcessing=tictoc::toc()
 }
 

@@ -1,9 +1,9 @@
 ########## Functions #########
 
-### SYSTEM.OVER.TIME
+### SYSTEM_OVER_TIME
 #
 # Runs one simulation
-system.over.time=function(sim_param,sim_constants){
+system_over_time=function(sim_param,sim_constants){
   
   #Set up the initial conditions:
   matPopByTrees = mat.or.vec(sim_constants$default_params$N*sim_constants$default_params$Nbs,length(sim_constants$time$idx))
@@ -153,11 +153,8 @@ system.over.time=function(sim_param,sim_constants){
         ###############################
         
         status_trees[,idx] = merge_updates(sim_constants,status_trees_after_root,status_trees_after_beetles)
-        
-        
       }else{
         status_trees[,idx] = status_trees_after_beetles
-        Di_Wi = which(status_trees[,idx]=="Di"|status_trees[,idx]=="Wi")
       }
       
       if (sim_constants$GATES$PLOT_SIM){
@@ -173,9 +170,10 @@ system.over.time=function(sim_param,sim_constants){
       status_trees[,idx]=status_trees[,(idx-1)]
     }
   }
-  sim_output = list(status_trees = status_trees)
-  # sim_output = list(matPopByTrees=matPopByTrees,status_trees = status_trees)
+  
+  sim_output = list(status_trees = status_trees,matPopByTrees = matPopByTrees)
   out = list(sim_output = sim_output,sim_param = sim_param,root_or_beetle=root_or_beetle)
+  
   return(out)
 }
 
@@ -234,10 +232,12 @@ mvt_beetles = function(sim_constants,params,vec.of.beetles,status_trees,type,VAR
   distance_neighbours = params$preproc$distance_neighbours
   
   #The entry i of result gives the number of beetles that moved in tree i from all other possible trees 
-  result = rep(0,sim_constants$default_params$N)
+  movement = rep(0,sim_constants$default_params$N)
   #The entry i of Infection is either 0 or 1, if 1 then the tree i has been infected by a beetle, 0 otherwise
   Infection = rep(0,sim_constants$default_params$N)
-  vec.of.beetles = round(vec.of.beetles)#
+  
+  dec.beetles = vec.of.beetles-floor(vec.of.beetles)
+  
   list.random = list() 
   list.pos = list()
   list.dist = list()
@@ -271,7 +271,8 @@ mvt_beetles = function(sim_constants,params,vec.of.beetles,status_trees,type,VAR
         pos_of_H_in_neighbourhood = neighbours_pos[[i]][id] #position of each neighbour
         distance_of_H_in_neighbourhood = distance_neighbours[[i]][id] #distance of each neighbour
         
-        list.random[[i]] = sample(1:len,size=vec.of.beetles[i],replace = TRUE)#destination for the beetles choosen randomly
+        # list.random[[i]] = sample(1:len,size=vec.of.beetles[i],replace = TRUE)#destination for the beetles choosen randomly
+        list.random[[i]] = sample(1:len,size=ceiling(vec.of.beetles[i]),replace = TRUE)#destination for the beetles choosen randomly
         list.pos[[i]] = pos_of_H_in_neighbourhood[list.random[[i]]]#position of the destination trees
         
         list.dist[[i]] = proba.distance(sim_constants$default_params$maxD,distance_of_H_in_neighbourhood[list.random[[i]]]) #probability to survive the distance for the destination trees
@@ -298,20 +299,39 @@ mvt_beetles = function(sim_constants,params,vec.of.beetles,status_trees,type,VAR
             }
           }
         }
+        #choose where the decimal goes
+        id_deci = sample(1:dim(dtfr)[1],size=1,replace = TRUE)
+        if(status_beetles=="carrier" & type =="H"){
+          # print(dtfr)
+          if(dtfr$Survivals[id_deci]>0){#only beetles who survive can infect the destination tree ...
+            dtfr$Survivals[id_deci] = dtfr$Survivals[id_deci]-1+dec.beetles[i]
+            dtfr$New_infection[id_deci] = rbinom(1,floor(dtfr$Survival[id_deci]),proba_infection)+rbinom(1,1,proba_infection*dec.beetles[i])
+            if(dtfr$New_infection[id_deci]>0){#one successful infection suffices to infect the tree
+              dtfr$New_infection[id_deci]=1
+            }  
+          }else{
+            dtfr$New_infection[id_deci]=0
+          }
+          # print(dtfr)
+        }else{
+          if(dtfr$Survivals[id_deci]>0){#only beetles who survive can infect the destination tree ...
+            dtfr$Survivals[id_deci] = dtfr$Survivals[id_deci]-1+dec.beetles[i]
+          }
+        }
         
         #each destination tree receives the beetles that survived the travel:
-        result[as.numeric(as.vector(dtfr$nb))] = result[as.numeric(as.vector(dtfr$nb))] + dtfr$Survivals
+        movement[as.numeric(as.vector(dtfr$nb))] = movement[as.numeric(as.vector(dtfr$nb))] + dtfr$Survivals
         if(length(dtfr$New_infection)>0){
           Infection[as.numeric(as.vector(dtfr$nb))] = dtfr$New_infection
         }else{
-          Infection[as.numeric(as.vector(dtfr$nb))]=0
+           Infection[as.numeric(as.vector(dtfr$nb))]=0
         }
       }
     }
   }
   Infection[which(Infection>0)]=1
   #If a tree i is successfully infected by a beetle, then Infection[i]=1, else Infection[i]=0. This will be used to update the tree status at the right time
-  out=list(Movement=result,Infection=Infection)
+  out=list(Movement=movement,Infection=Infection)
   return(out)
 }
 
