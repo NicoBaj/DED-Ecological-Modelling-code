@@ -110,7 +110,6 @@ cluster_inf_trees = function(Elms,centre_world,r){
   return(idx_selected)
 }
 
-
 ###PROBA_INFECTION
 #
 #Set the probability that, if a tree is susceptible and with beetles that are supposed to infect these trees, compute the proba that these trees are going to be infected next year (year 1)

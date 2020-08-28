@@ -177,7 +177,6 @@ system_over_time=function(sim_param,sim_constants){
   return(out)
 }
 
-
 ###MERGE_UPDATES
 #
 #merge both routes of infection

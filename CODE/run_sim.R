@@ -3,6 +3,7 @@
 
 # LOGICAL GATES
 PLOT_SIM = TRUE #if sims are launched, do you want to see the DED spread evolution?
+SIM_SAVE = TRUE #do we save the outputs ?
 
 #The three following inputs are crucial for the type of simulations:
 #1- choose the neighbourhood
