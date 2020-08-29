@@ -303,8 +303,8 @@ set_demography_matrices = function(default_params){
   
   lH1 = c(s_dt*(s_J+s_JJp),0,0,0,0,0,0,0,0,0)
   lH2 = c(0,s_dt*s_Jp,0,0,0,0,0,0,0,0)
-  lH3 = c(s_dt*s_FJ,0,s_dt*Smbs,0,0,0,0,0,0,0)
-  lH4 = c(0,s_dt*s_FJp,0,s_dt*Smbi,0,0,0,0,0,0)
+  lH3 = c(s_dt*s_FJ,0,0,0,0,0,0,0,0,0)
+  lH4 = c(0,s_dt*s_FJp,0,0,0,0,0,0,0,0)
   lH5 = c(0,0,s_dt*SJMbs,0,s_dt*Sjs,0,0,0,0,0)
   lH6 = c(0,0,0,s_dt*SJMbi,0,s_dt*Sji,0,0,0,0)
   lH7 = c(0,0,0,0,0,0,0,0,0,0) # I force callow adults to become ms or mi
@@ -316,8 +316,8 @@ set_demography_matrices = function(default_params){
   
   lW1 = c(s_dt*s_J,0,0,0,0,0,0,0,0,0)
   lW2 = c(s_dt*s_JJp,s_dt*s_Jp,0,0,0,0,0,0,0,0)
-  lW3 = c(s_dt*s_FJ,0,s_dt*Smbs,0,0,0,0,0,0,0)
-  lW4 = c(0,s_dt*s_FJp,0,s_dt*Smbi,0,0,0,0,0,0)
+  lW3 = c(s_dt*s_FJ,0,0,0,0,0,0,0,0,0)
+  lW4 = c(0,s_dt*s_FJp,0,0,0,0,0,0,0,0)
   lW5 = c(0,0,s_dt*SJMbs,0,s_dt*Sjs,0,0,0,0,0)
   lW6 = c(0,0,0,s_dt*SJMbi,0,s_dt*Sji,0,0,0,0)
   lW7 = c(0,0,0,0,0,0,0,0,0,0)
@@ -330,8 +330,8 @@ set_demography_matrices = function(default_params){
   
   lW1 = c(s_dt*(s_J+s_JJp),0,0,0,0,0,0,0,0,0)
   lW2 = c(0,s_dt*s_Jp,0,0,0,0,0,0,0,0)
-  lW3 = c(s_dt*s_FJ,0,s_dt*Smbs,0,0,0,0,0,0,0)
-  lW4 = c(0,s_dt*s_FJp,0,s_dt*Smbi,0,0,0,0,0,0)
+  lW3 = c(s_dt*s_FJ,0,0,0,0,0,0,0,0,0)
+  lW4 = c(0,s_dt*s_FJp,0,0,0,0,0,0,0,0)
   lW5 = c(0,0,s_dt*SJMbs,0,s_dt*Sjs,0,0,0,0,0)
   lW6 = c(0,0,0,s_dt*SJMbi,0,s_dt*Sji,0,0,0,0)
   lW7 = c(0,0,0,0,0,0,0,0,0,0)
@@ -344,8 +344,8 @@ set_demography_matrices = function(default_params){
   
   lD1 = c(0,0,0,0,0,0,0,0,0,0)
   lD2 = c(s_dt*(s_JJp+s_J),s_dt*s_Jp,0,0,0,0,0,0,0,0)
-  lD3 = c(0,0,s_dt*Smbs,0,0,0,0,0,0,0)
-  lD4 = c(s_dt*s_FJ,s_dt*s_FJp,0,s_dt*Smbi,0,0,0,0,0,0)
+  lD3 = c(0,0,0,0,0,0,0,0,0,0)
+  lD4 = c(s_dt*s_FJ,s_dt*s_FJp,0,0,0,0,0,0,0,0)
   lD5 = c(0,0,s_dt*SJMbs,0,s_dt*Sjs,0,0,0,0,0)
   lD6 = c(0,0,0,s_dt*SJMbi,0,s_dt*Sji,0,0,0,0)
   lD7 = c(0,0,0,0,0,0,0,0,0,0)
@@ -357,8 +357,8 @@ set_demography_matrices = function(default_params){
   
   lD1 = c(s_dt*(s_J+s_JJp),0,0,0,0,0,0,0,0,0)
   lD2 = c(0,s_dt*s_Jp,0,0,0,0,0,0,0,0)
-  lD3 = c(s_dt*s_FJ,0,s_dt*Smbs,0,0,0,0,0,0,0)
-  lD4 = c(0,s_dt*s_FJp,0,s_dt*Smbi,0,0,0,0,0,0)
+  lD3 = c(s_dt*s_FJ,0,0,0,0,0,0,0,0,0)
+  lD4 = c(0,s_dt*s_FJp,0,0,0,0,0,0,0,0)
   lD5 = c(0,0,0,0,0,0,0,0,0,0)
   lD6 = c(0,0,0,0,0,0,0,0,0,0)
   lD7 = c(0,0,0,0,0,0,0,0,0,0)
