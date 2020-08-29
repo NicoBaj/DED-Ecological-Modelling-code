@@ -101,7 +101,7 @@ system_over_time=function(sim_param,sim_constants){
       
       root_or_beetle[idx,1] = nb_inf_trees_by_beetles
       
-      #for all other trees, we use the markov chain as before (transition for ageing)
+      #for all trees that are not infected by beetles, we use the markov
       other_trees = setdiff(1:sim_constants$default_params$N,vec_new_inf)
       for (k in other_trees){
         mcB <- new("markovchain", states = sim_constants$other$statesNames,
@@ -408,10 +408,10 @@ transition_matrix = function(params){
   env = environment()
   list2env(params,env)
   
-  lt1 = c(Ph,0,0,0,0)
-  lt2 = c(1-Ph,Pws,0,0,0)
+  lt1 = c(1-p_a,0,0,0,0)
+  lt2 = c(p_a,1-p_a,0,0,0)
   lt3 = c(0,0,0,0,0)
-  lt4 = c(0,1-Pws,0,1,0)
+  lt4 = c(0,p_a,0,1,0)
   lt5 = c(0,0,1,0,1)
   Lt=matrix(data = c(lt1,lt2,lt3,lt4,lt5),nrow=5,ncol=5,byrow = TRUE)
   
