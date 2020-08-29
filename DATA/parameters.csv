@@ -4,7 +4,7 @@ Nbts,5
 R_B,380
 l,53
 p_i,0.02
-Sdt,0.99
+s_dt,0.99
 p_r,0.5
 Sos,0.75
 Sosoi,0.05
