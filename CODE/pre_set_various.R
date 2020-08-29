@@ -227,8 +227,8 @@ set_demography_matrices = function(default_params){
   ####OLD CODE: les 2 lignes en commentaires etaient utilises avant de dire qu'on peut
   # lH1 = c(0,0,0,0,0,0,0,0,0,0)
   # lH2 = c(0,0,0,0,0,0,0,0,0,0)
-  lH1 = c(s_dt*(Sos+Sosoi+SmbOs),0,0,0,0,0,0,0,Fecs,Fecs)
-  lH2 = c(0,s_dt*(Soi+SmbOi),0,0,0,0,0,0,0,0)
+  lH1 = c(s_dt*(s_J+s_JJp+s_FJ),0,0,0,0,0,0,0,Fecs,Fecs)
+  lH2 = c(0,s_dt*(s_Jp+s_FJp),0,0,0,0,0,0,0,0)
   lH3 = c(0,0,0,0,0,0,0,0,0,0)
   lH4 = c(0,0,0,0,0,0,0,0,0,0)
   lH5 = c(0,0,0,0,0,0,0,0,0,0) # I remove juveniles
@@ -240,8 +240,8 @@ set_demography_matrices = function(default_params){
   LH_breeding=matrix(data = c(lH1,lH2,lH3,lH4,lH5,lH6,lH7,lH8,lH9,lH10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
   LH_breeding=as(LH_breeding,"sparseMatrix")
   
-  lW1 = c(s_dt*(Sos+SmbOs),0,0,0,0,0,0,0,Fecs,Fecs)
-  lW2 = c(s_dt*Sosoi,s_dt*(Soi+SmbOi),0,0,0,0,0,0,0,0)
+  lW1 = c(s_dt*(s_J+s_FJ),0,0,0,0,0,0,0,Fecs,Fecs)
+  lW2 = c(s_dt*s_JJp,s_dt*(s_Jp+s_FJp),0,0,0,0,0,0,0,0)
   lW3 = c(0,0,0,0,0,0,0,0,0,0)# these four stages are not possible at this moment 
   lW4 = c(0,0,0,0,0,0,0,0,0,0)
   lW5 = c(0,0,0,0,0,0,0,0,0,0) 
@@ -255,8 +255,8 @@ set_demography_matrices = function(default_params){
   # LIW_breeding=LIW_breeding
   LIW_breeding=as(LIW_breeding,"sparseMatrix")
   
-  lW1 = c(s_dt*(Sos+Sosoi+SmbOs),0,0,0,0,0,0,0,Fecs,Fecs)
-  lW2 = c(0,s_dt*(Soi+SmbOi),0,0,0,0,0,0,0,0)
+  lW1 = c(s_dt*(s_J+s_JJp+s_FJ),0,0,0,0,0,0,0,Fecs,Fecs)
+  lW2 = c(0,s_dt*(s_Jp+s_FJp),0,0,0,0,0,0,0,0)
   lW3 = c(0,0,0,0,0,0,0,0,0,0)# these four stages are not possible at this moment
   lW4 = c(0,0,0,0,0,0,0,0,0,0)
   lW5 = c(0,0,0,0,0,0,0,0,0,0) 
@@ -267,10 +267,10 @@ set_demography_matrices = function(default_params){
   lW10 = c(0,0,0,0,0,0,0,s_dt*SAMi,0,s_dt*Sai)
   LSW_breeding=matrix(data = c(lW1,lW2,lW3,lW4,lW5,lW6,lW7,lW8,lW9,lW10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
   LSW_breeding=as(LSW_breeding,"sparseMatrix")
-  #the same thing but SOsOi=0 (row2,col1)
+  #the same thing but s_JJp=0 (row2,col1)
   
   lD1 = c(0,0,0,0,0,0,0,0,Fecs,Fecs)
-  lD2 = c(s_dt*(Sosoi+Sos+SmbOs),s_dt*(Soi+SmbOi),0,0,0,0,0,0,0,0)
+  lD2 = c(s_dt*(s_JJp+s_J+s_FJ),s_dt*(s_Jp+s_FJp),0,0,0,0,0,0,0,0)
   lD3 = c(0,0,0,0,0,0,0,0,0,0) #if the beetle Os is in an infected dead tree, then it becomes automatically an Oi (not an MBOs)
   lD4 = c(0,0,0,0,0,0,0,0,0,0) # not possible at this moment
   lD5 = c(0,0,0,0,0,0,0,0,0,0)
@@ -282,8 +282,8 @@ set_demography_matrices = function(default_params){
   LID_breeding=matrix(data = c(lD1,lD2,lD3,lD4,lD5,lD6,lD7,lD8,lD9,lD10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
   LID_breeding=as(LID_breeding,"sparseMatrix")
   
-  lD1 = c(s_dt*(Sos+SmbOs+Sosoi),0,0,0,0,0,0,0,Fecs,Fecs)
-  lD2 = c(0,s_dt*(Soi+SmbOi),0,0,0,0,0,0,0,0)
+  lD1 = c(s_dt*(s_J+s_FJ+s_JJp),0,0,0,0,0,0,0,Fecs,Fecs)
+  lD2 = c(0,s_dt*(s_Jp+s_FJp),0,0,0,0,0,0,0,0)
   lD3 = c(0,0,0,0,0,0,0,0,0,0)
   lD4 = c(0,0,0,0,0,0,0,0,0,0)
   lD5 = c(0,0,0,0,0,0,0,0,0,0)
@@ -301,10 +301,10 @@ set_demography_matrices = function(default_params){
   ##Matrices for new generation event
   ################################################################
   
-  lH1 = c(s_dt*(Sos+Sosoi),0,0,0,0,0,0,0,0,0)
-  lH2 = c(0,s_dt*Soi,0,0,0,0,0,0,0,0)
-  lH3 = c(s_dt*SmbOs,0,s_dt*Smbs,0,0,0,0,0,0,0)
-  lH4 = c(0,s_dt*SmbOi,0,s_dt*Smbi,0,0,0,0,0,0)
+  lH1 = c(s_dt*(s_J+s_JJp),0,0,0,0,0,0,0,0,0)
+  lH2 = c(0,s_dt*s_Jp,0,0,0,0,0,0,0,0)
+  lH3 = c(s_dt*s_FJ,0,s_dt*Smbs,0,0,0,0,0,0,0)
+  lH4 = c(0,s_dt*s_FJp,0,s_dt*Smbi,0,0,0,0,0,0)
   lH5 = c(0,0,s_dt*SJMbs,0,s_dt*Sjs,0,0,0,0,0)
   lH6 = c(0,0,0,s_dt*SJMbi,0,s_dt*Sji,0,0,0,0)
   lH7 = c(0,0,0,0,0,0,0,0,0,0) # I force callow adults to become ms or mi
@@ -314,10 +314,10 @@ set_demography_matrices = function(default_params){
   LH_new_generation=matrix(data = c(lH1,lH2,lH3,lH4,lH5,lH6,lH7,lH8,lH9,lH10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
   LH_new_generation=as(LH_new_generation,"sparseMatrix")
   
-  lW1 = c(s_dt*Sos,0,0,0,0,0,0,0,0,0)
-  lW2 = c(s_dt*Sosoi,s_dt*Soi,0,0,0,0,0,0,0,0)
-  lW3 = c(s_dt*SmbOs,0,s_dt*Smbs,0,0,0,0,0,0,0)
-  lW4 = c(0,s_dt*SmbOi,0,s_dt*Smbi,0,0,0,0,0,0)
+  lW1 = c(s_dt*s_J,0,0,0,0,0,0,0,0,0)
+  lW2 = c(s_dt*s_JJp,s_dt*s_Jp,0,0,0,0,0,0,0,0)
+  lW3 = c(s_dt*s_FJ,0,s_dt*Smbs,0,0,0,0,0,0,0)
+  lW4 = c(0,s_dt*s_FJp,0,s_dt*Smbi,0,0,0,0,0,0)
   lW5 = c(0,0,s_dt*SJMbs,0,s_dt*Sjs,0,0,0,0,0)
   lW6 = c(0,0,0,s_dt*SJMbi,0,s_dt*Sji,0,0,0,0)
   lW7 = c(0,0,0,0,0,0,0,0,0,0)
@@ -328,10 +328,10 @@ set_demography_matrices = function(default_params){
   ## Check if this is good
   LIW_new_generation=as(LIW_new_generation,"sparseMatrix")
   
-  lW1 = c(s_dt*(Sos+Sosoi),0,0,0,0,0,0,0,0,0)
-  lW2 = c(0,s_dt*Soi,0,0,0,0,0,0,0,0)
-  lW3 = c(s_dt*SmbOs,0,s_dt*Smbs,0,0,0,0,0,0,0)
-  lW4 = c(0,s_dt*SmbOi,0,s_dt*Smbi,0,0,0,0,0,0)
+  lW1 = c(s_dt*(s_J+s_JJp),0,0,0,0,0,0,0,0,0)
+  lW2 = c(0,s_dt*s_Jp,0,0,0,0,0,0,0,0)
+  lW3 = c(s_dt*s_FJ,0,s_dt*Smbs,0,0,0,0,0,0,0)
+  lW4 = c(0,s_dt*s_FJp,0,s_dt*Smbi,0,0,0,0,0,0)
   lW5 = c(0,0,s_dt*SJMbs,0,s_dt*Sjs,0,0,0,0,0)
   lW6 = c(0,0,0,s_dt*SJMbi,0,s_dt*Sji,0,0,0,0)
   lW7 = c(0,0,0,0,0,0,0,0,0,0)
@@ -340,12 +340,12 @@ set_demography_matrices = function(default_params){
   lW10 = c(0,0,0,0,0,0,0,0,0,0)
   LSW_new_generation=matrix(data = c(lW1,lW2,lW3,lW4,lW5,lW6,lW7,lW8,lW9,lW10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
   LSW_new_generation=as(LSW_new_generation,"sparseMatrix")
-  #the same thing but SOsOi=0 (row2,col1)
+  #the same thing but s_JJp=0 (row2,col1)
   
   lD1 = c(0,0,0,0,0,0,0,0,0,0)
-  lD2 = c(s_dt*(Sosoi+Sos),s_dt*Soi,0,0,0,0,0,0,0,0)
+  lD2 = c(s_dt*(s_JJp+s_J),s_dt*s_Jp,0,0,0,0,0,0,0,0)
   lD3 = c(0,0,s_dt*Smbs,0,0,0,0,0,0,0)
-  lD4 = c(s_dt*SmbOs,s_dt*SmbOi,0,s_dt*Smbi,0,0,0,0,0,0)
+  lD4 = c(s_dt*s_FJ,s_dt*s_FJp,0,s_dt*Smbi,0,0,0,0,0,0)
   lD5 = c(0,0,s_dt*SJMbs,0,s_dt*Sjs,0,0,0,0,0)
   lD6 = c(0,0,0,s_dt*SJMbi,0,s_dt*Sji,0,0,0,0)
   lD7 = c(0,0,0,0,0,0,0,0,0,0)
@@ -355,10 +355,10 @@ set_demography_matrices = function(default_params){
   LID_new_generation=matrix(data = c(lD1,lD2,lD3,lD4,lD5,lD6,lD7,lD8,lD9,lD10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
   LID_new_generation=as(LID_new_generation,"sparseMatrix")
   
-  lD1 = c(s_dt*(Sos+Sosoi),0,0,0,0,0,0,0,0,0)
-  lD2 = c(0,s_dt*Soi,0,0,0,0,0,0,0,0)
-  lD3 = c(s_dt*SmbOs,0,s_dt*Smbs,0,0,0,0,0,0,0)
-  lD4 = c(0,s_dt*SmbOi,0,s_dt*Smbi,0,0,0,0,0,0)
+  lD1 = c(s_dt*(s_J+s_JJp),0,0,0,0,0,0,0,0,0)
+  lD2 = c(0,s_dt*s_Jp,0,0,0,0,0,0,0,0)
+  lD3 = c(s_dt*s_FJ,0,s_dt*Smbs,0,0,0,0,0,0,0)
+  lD4 = c(0,s_dt*s_FJp,0,s_dt*Smbi,0,0,0,0,0,0)
   lD5 = c(0,0,0,0,0,0,0,0,0,0)
   lD6 = c(0,0,0,0,0,0,0,0,0,0)
   lD7 = c(0,0,0,0,0,0,0,0,0,0)

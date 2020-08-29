@@ -6,11 +6,11 @@ l,53
 p_i,0.02
 s_dt,0.99
 p_r,0.5
-Sos,0.75
-Sosoi,0.05
-SmbOs,0.2
-Soi,0.75
-SmbOi,0.25
+s_J,0.75
+s_JJp,0.05
+s_FJ,0.2
+s_Jp,0.75
+s_FJp,0.25
 Smbs,0
 SJMbs,1
 Smbi,0
