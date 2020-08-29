@@ -149,7 +149,7 @@ set_other_constants = function(sim_constants) {
   indexMi = seq(8,sim_constants$default_params$Nbs*sim_constants$default_params$N,by=sim_constants$default_params$Nbs)
   indexAs = seq(9,sim_constants$default_params$Nbs*sim_constants$default_params$N,by=sim_constants$default_params$Nbs)
   indexAi = seq(10,sim_constants$default_params$Nbs*sim_constants$default_params$N,by=sim_constants$default_params$Nbs)
-  statesNames <- c("H", "Ws", "Wi", "Ds", "Di")
+  statesNames <- c("H", "S_W", "Wi", "Ds", "Di")
   # scenarii = c("bad","good","normal")
   out = list(statesNames=statesNames,indexOs=indexOs,indexOi=indexOi,indexMbs=indexMbs,indexJs=indexJs,indexMs=indexMs,indexAs=indexAs,indexMbi=indexMbi,indexJi=indexJi,indexMi=indexMi,indexAi=indexAi)
   return(out)

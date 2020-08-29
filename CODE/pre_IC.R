@@ -55,7 +55,7 @@ special_center3 = function(Elms){
 convert_state_to_number = function(M){
   res = mat.or.vec(dim(M)[1],dim(M)[2])
   res[which(M=="H")] = 1
-  res[which(M=="Ws")] = 2
+  res[which(M=="S_W")] = 2
   res[which(M=="Wi")] = 3
   res[which(M=="Ds")] = 4
   res[which(M=="Di")] = 5
@@ -71,7 +71,7 @@ initially_inf_trees = function(default_params,dead_sampling){
   current_stages[initially_dead_trees_idx]=5 #5 is for dead and infected tree
   
   current_stages[which(current_stages==1)] = "H"
-  current_stages[which(current_stages==2)] = "Ws"
+  current_stages[which(current_stages==2)] = "S_W"
   current_stages[which(current_stages==3)] = "Wi"
   current_stages[which(current_stages==4)] = "Ds"
   current_stages[which(current_stages==5)] = "Di"
@@ -119,7 +119,7 @@ proba_infection = function(default_params,pop0ByTrees,stages){
   idx_presence_Ji = which(pop0ByTrees[indexJi]>0)
   
   vec.inf = rep(0,default_params$N)
-  idx_H_or_Ws = which(stages=="H"|stages=="Ws")
+  idx_H_or_Ws = which(stages=="H"|stages=="S_W")
   
   vecvec = intersect(idx_presence_Ji,idx_H_or_Ws)
   for (k in vecvec){

@@ -81,7 +81,7 @@ system_over_time=function(sim_param,sim_constants){
         vec_idx = (idx-sim_constants$default_params$l):idx #take the l=53 weeks prior the update. Note it is not important that the year has 52 or 53 weeks since the infection only occurs when beetles feed (in spring/summer and this is not the week at which the update occurs)
       }
       
-      idx_susceptible_beetles = which(status_trees[,idx-1]=="H"|status_trees[,idx-1]=="Ws")#only these two types can be infected by beetles (because Fp can only go to S, Ws and Wi)
+      idx_susceptible_beetles = which(status_trees[,idx-1]=="H"|status_trees[,idx-1]=="S_W")#only these two types can be infected by beetles (because Fp can only go to S, Ws and Wi)
       
       ###############################
       # BEETLE INFECTION
@@ -114,7 +114,7 @@ system_over_time=function(sim_param,sim_constants){
       ###############################
       
       if (sim_constants$roots){
-        idx_susceptible_roots = which(status_trees[,(idx-1)]=="H"|status_trees[,(idx-1)]=="Ws"|status_trees[,(idx-1)]=="Ds")#this time, all susceptible trees are ... susceptible
+        idx_susceptible_roots = which(status_trees[,(idx-1)]=="H"|status_trees[,(idx-1)]=="S_W"|status_trees[,(idx-1)]=="Ds")#this time, all susceptible trees are ... susceptible
         status_trees_after_root = mat.or.vec(sim_constants$default_params$N,1)
         nb_inf_roots = 0#just to compute the number of infections by roots
         
@@ -135,7 +135,7 @@ system_over_time=function(sim_param,sim_constants){
               vec_proba_inf = sim_param$params$proba_roots$proba[row_inf]*sim_param$params$p_r
               poisson_binomial_run = rpoibin(1,vec_proba_inf)
               if(poisson_binomial_run>0){#means that the tree has been infected
-                if(status_trees[j,idx-1]=="H"|status_trees[j,idx-1]=="Ws"){
+                if(status_trees[j,idx-1]=="H"|status_trees[j,idx-1]=="S_W"){
                   status_trees_after_root[j]="Wi"
                 }else if(status_trees[j,idx-1]=="Ds"){
                   status_trees_after_root[j]="Di"
@@ -210,7 +210,7 @@ merge_updates = function(sim_constants,root,beetles){
   out[intersect(idx_root3,idx_beetles4)] = 5
   
   out[which(out==1)] = "H"
-  out[which(out==2)] = "Ws"
+  out[which(out==2)] = "S_W"
   out[which(out==3)] = "Wi"
   out[which(out==4)] = "Ds"
   out[which(out==5)] = "Di"
@@ -245,7 +245,7 @@ mvt_beetles = function(sim_constants,params,vec.of.beetles,status_trees,type,VAR
     if(vec.of.beetles[i]>0){#if beetles need to move :
       if (type == "H"){## then beetles are looking for Healthy or Weak trees
         id_H = which(status_trees[neighbours_pos[[i]]]=="H")
-        id_Ws = which(status_trees[neighbours_pos[[i]]]=="Ws")
+        id_Ws = which(status_trees[neighbours_pos[[i]]]=="S_W")
         id_Wi = which(status_trees[neighbours_pos[[i]]]=="Wi")
         id = c(id_H,id_Ws,id_Wi)
         len = length(neighbours_pos[[i]][id])
@@ -253,7 +253,7 @@ mvt_beetles = function(sim_constants,params,vec.of.beetles,status_trees,type,VAR
       else if (type == "all"){## then the beetles are looking for any type of tree
         id_Ds = which(status_trees[neighbours_pos[[i]]]=="Ds")
         id_Di = which(status_trees[neighbours_pos[[i]]]=="Wi")
-        id_Ws = which(status_trees[neighbours_pos[[i]]]=="Ws")
+        id_Ws = which(status_trees[neighbours_pos[[i]]]=="S_W")
         id_Wi = which(status_trees[neighbours_pos[[i]]]=="Wi")
         id_H  = which(status_trees[neighbours_pos[[i]]]=="H")
         id = c(id_H,id_Ws,id_Wi,id_Ds,id_Di)
@@ -382,7 +382,7 @@ demography_matrix = function(sim_constants,sim_param,stagesi,period){#function t
     if(s=="H"){
       L.list[[i]] = LH
     }
-    else if(s=="Ws"){
+    else if(s=="S_W"){
       L.list[[i]] = LSW
     }
     else if(s=="Wi"){
