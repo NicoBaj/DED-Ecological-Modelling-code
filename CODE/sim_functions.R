@@ -29,7 +29,7 @@ system_over_time=function(sim_param,sim_constants){
     plot(sim_constants$default_params$elms$X,
          sim_constants$default_params$elms$Y,
          col="green",xlab = "X", ylab = "Y", main = "Trees")
-    Di_Wi = which(status_trees[,1]=="Di"|status_trees[,1]=="I_W")
+    Di_Wi = which(status_trees[,1]=="I_D"|status_trees[,1]=="I_W")
     points(sim_constants$default_params$elms$X[Di_Wi],sim_constants$default_params$elms$Y[Di_Wi],col="red")
   }
   
@@ -114,7 +114,7 @@ system_over_time=function(sim_param,sim_constants){
       ###############################
       
       if (sim_constants$roots){
-        idx_susceptible_roots = which(status_trees[,(idx-1)]=="H"|status_trees[,(idx-1)]=="S_W"|status_trees[,(idx-1)]=="Ds")#this time, all susceptible trees are ... susceptible
+        idx_susceptible_roots = which(status_trees[,(idx-1)]=="H"|status_trees[,(idx-1)]=="S_W"|status_trees[,(idx-1)]=="S_D")#this time, all susceptible trees are ... susceptible
         status_trees_after_root = mat.or.vec(sim_constants$default_params$N,1)
         nb_inf_roots = 0#just to compute the number of infections by roots
         
@@ -126,19 +126,19 @@ system_over_time=function(sim_param,sim_constants){
           
           row_j = which(sim_param$params$proba_roots$idx_i==j)#indices of neighbours of j
           pos_neighbours = sim_param$params$proba_roots$idx_j[row_j]# their position in the system
-          inf_neighbours = pos_neighbours[which(status_trees[pos_neighbours,idx-1]=="Di")]#position of neighbours that are infected
+          inf_neighbours = pos_neighbours[which(status_trees[pos_neighbours,idx-1]=="I_D")]#position of neighbours that are infected
           
           if(length(inf_neighbours)>0){
             #save the rows at which we have j associated to an infected neighbour
-            row_inf = row_j[which(status_trees[sim_param$params$proba_roots$idx_j[row_j],idx-1]=="Di")]
+            row_inf = row_j[which(status_trees[sim_param$params$proba_roots$idx_j[row_j],idx-1]=="I_D")]
             if(length(row_inf)>0){
               vec_proba_inf = sim_param$params$proba_roots$proba[row_inf]*sim_param$params$p_r
               poisson_binomial_run = rpoibin(1,vec_proba_inf)
               if(poisson_binomial_run>0){#means that the tree has been infected
                 if(status_trees[j,idx-1]=="H"|status_trees[j,idx-1]=="S_W"){
                   status_trees_after_root[j]="I_W"
-                }else if(status_trees[j,idx-1]=="Ds"){
-                  status_trees_after_root[j]="Di"
+                }else if(status_trees[j,idx-1]=="S_D"){
+                  status_trees_after_root[j]="I_D"
                 }
                 nb_inf_roots = nb_inf_roots+1
               }
@@ -160,7 +160,7 @@ system_over_time=function(sim_param,sim_constants){
       if (sim_constants$GATES$PLOT_SIM){
         plot(sim_constants$default_params$elms$X,sim_constants$default_params$elms$Y,
              col="green",xlab = "X", ylab = "Y", main = "Trees")
-        Di_Wi = which(status_trees[,idx]=="Di"|status_trees[,idx]=="I_W")
+        Di_Wi = which(status_trees[,idx]=="I_D"|status_trees[,idx]=="I_W")
         points(sim_constants$default_params$elms$X[Di_Wi],sim_constants$default_params$elms$Y[Di_Wi],col="red")
       }
       
@@ -212,8 +212,8 @@ merge_updates = function(sim_constants,root,beetles){
   out[which(out==1)] = "H"
   out[which(out==2)] = "S_W"
   out[which(out==3)] = "I_W"
-  out[which(out==4)] = "Ds"
-  out[which(out==5)] = "Di"
+  out[which(out==4)] = "S_D"
+  out[which(out==5)] = "I_D"
   return(out)
 }
 
@@ -251,8 +251,8 @@ mvt_beetles = function(sim_constants,params,vec.of.beetles,status_trees,type,VAR
         len = length(neighbours_pos[[i]][id])
       }
       else if (type == "all"){## then the beetles are looking for any type of tree
-        id_Ds = which(status_trees[neighbours_pos[[i]]]=="Ds")
-        id_Di = which(status_trees[neighbours_pos[[i]]]=="Di")
+        id_Ds = which(status_trees[neighbours_pos[[i]]]=="S_D")
+        id_Di = which(status_trees[neighbours_pos[[i]]]=="I_D")
         id_Ws = which(status_trees[neighbours_pos[[i]]]=="S_W")
         id_Wi = which(status_trees[neighbours_pos[[i]]]=="I_W")
         id_H  = which(status_trees[neighbours_pos[[i]]]=="H")
@@ -388,10 +388,10 @@ demography_matrix = function(sim_constants,sim_param,stagesi,period){#function t
     else if(s=="I_W"){
       L.list[[i]] = LIW
     }
-    else if(s=="Ds"){
+    else if(s=="S_D"){
       L.list[[i]] = LSD
     }
-    else if(s=="Di"){
+    else if(s=="I_D"){
       L.list[[i]] = LID
     }
   }

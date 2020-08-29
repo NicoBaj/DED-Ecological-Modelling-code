@@ -57,8 +57,8 @@ convert_state_to_number = function(M){
   res[which(M=="H")] = 1
   res[which(M=="S_W")] = 2
   res[which(M=="I_W")] = 3
-  res[which(M=="Ds")] = 4
-  res[which(M=="Di")] = 5
+  res[which(M=="S_D")] = 4
+  res[which(M=="I_D")] = 5
   return(res)
 }
 
@@ -73,8 +73,8 @@ initially_inf_trees = function(default_params,dead_sampling){
   current_stages[which(current_stages==1)] = "H"
   current_stages[which(current_stages==2)] = "S_W"
   current_stages[which(current_stages==3)] = "I_W"
-  current_stages[which(current_stages==4)] = "Ds"
-  current_stages[which(current_stages==5)] = "Di"
+  current_stages[which(current_stages==4)] = "S_D"
+  current_stages[which(current_stages==5)] = "I_D"
   current_stages = as.matrix(current_stages)
   
   return(current_stages)
@@ -90,7 +90,7 @@ initial_beetles = function(default_params,stages,IC_beetles){
   pop0ByTrees = rep(0,N*Nbs)
   
   Oi = rep(0,N)
-  Oi[which(stages=="Di")] = IC_beetles
+  Oi[which(stages=="I_D")] = IC_beetles
   
   for (j in 1:N){
     pop0ByTrees[(j-1)*Nbs+2] = Oi[j]
