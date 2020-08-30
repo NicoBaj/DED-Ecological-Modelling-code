@@ -22,7 +22,7 @@ IC_type="cluster"
 #3- main parameters
 input = list()
 input$R_B   = 380 #max distance that beetles fly during one time step
-input$p_r   = 0.5 #max proba for an infected tree to infect another one by root infection
+input$p_r   = 0.1 #max proba for an infected tree to infect another one by root infection
 input$p_i   = 0.02 #proba that one beetle infects successfully one tree
 input$s_dt  = 0.98 #proba for beetles to survive one time step
 
@@ -68,7 +68,7 @@ IC_beetles = 500 #nb of inf beetles in each infected tree
 
 #Put here the initial and final dates for the simulation(s)
 start_date = "2019-08-01"
-end_date = "2020-12-31"
+end_date = "2030-12-31"
 
 # Libraries needed for all the processes
 library(sqldf)
