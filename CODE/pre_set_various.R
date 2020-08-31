@@ -3,7 +3,6 @@ set_directories = function(DIR_TOP) {
   out = list()
   out$TOP = DIR_TOP
   out$DATA = sprintf("%s/DATA",DIR_TOP)
-  # out$PARAM = sprintf("%s/PARAMS",DIR_TOP)
   out$RESULT = sprintf("%s/RESULTS",DIR_TOP)
   return(out)
 }
@@ -11,15 +10,14 @@ set_directories = function(DIR_TOP) {
 
 ### WEEK_TYPES
 #
-# For the moment, we assume the schedule of weeks is fixed in the year. In the future, the schedule might vary.
 # Given a vector v of week numbers, return a vector of same size with the type of week under consideration
 week_types = function(v,climate = NULL) {
   out = mat.or.vec(nr = length(v), nc = 1)
   weekType = list() #here is the regular year
   weekType[["Winter"]]        = c(1:21,45:53)
-  weekType[["Emerge"]]        = 22
+  weekType[["Emergence"]]     = 22
   weekType[["Breeding"]]      = 23:38
-  weekType[["Offspring"]]     = 39:44
+  weekType[["New_generation"]]     = 39:44
   for (wt in names(weekType)) {
     out[which(v %in% weekType[[wt]])] = wt
   }
@@ -29,10 +27,10 @@ week_types = function(v,climate = NULL) {
 ### READ_PARAMETERS 
 #
 # read parameters from the csv file and replace those choosen in the main file (input)
-# read the pre_processing files required for the given value of maxD (3 files per maxD)
+# read the pre_processing files required for the given value of R_B (3 files for each R_B)
 # read the tree database
 # read the initial condition
-# read the proba_root files created by the pre-processing of roots (Julien)
+# read the proba_root files created by the pre-processing of roots
 # also adjust some parameters in function of the read files (nb of trees for instance)
 read_parameters = function(sim_constants,input) {
   sim_constants$FILES = list()
@@ -43,20 +41,23 @@ read_parameters = function(sim_constants,input) {
   for (i in 1:dim(parameters)[1]) {
     sim_constants$default_params[[sprintf("%s",parameters[i,1])]] = as.numeric(parameters[i,2])
   }
-  sim_constants$default_params$proba_infection = input$pi
-  sim_constants$default_params$p_r             = input$pr
-  sim_constants$default_params$Sdt             = input$sdt
-  sim_constants$default_params$maxD            = input$maxD
+  sim_constants$default_params$p_i             = input$p_i
+  sim_constants$default_params$p_r             = input$p_r
+  sim_constants$default_params$s_dt             = input$s_dt
+  sim_constants$default_params$R_B             = input$R_B
   
-  ## Now we can load the good preprocessing since we have the right maxD
-  sim_constants$FILES[[2]] = sprintf("%s/Preprocessing/neighbours_%s_maxD%s.RData", sim_constants$DIRS$DATA, sim_constants$sim_core, sim_constants$default_params$maxD)
-  sim_constants$FILES[[3]] = sprintf("%s/Preprocessing/distance_neighbours_%s_maxD%s.RData", sim_constants$DIRS$DATA, sim_constants$sim_core, sim_constants$default_params$maxD)
-  sim_constants$FILES[[4]] = sprintf("%s/Preprocessing/neighbours_pos_%s_maxD%s.RData", sim_constants$DIRS$DATA,sim_constants$sim_core, sim_constants$default_params$maxD)
+  ## Now we can load the good preprocessing since we have the right R_B
+  sim_constants$FILES[[2]] = sprintf("%s/Preprocessing/neighbours_%s_maxD%s.RData", sim_constants$DIRS$DATA, sim_constants$sim_core, sim_constants$default_params$R_B)
+  sim_constants$FILES[[3]] = sprintf("%s/Preprocessing/distance_neighbours_%s_maxD%s.RData", sim_constants$DIRS$DATA, sim_constants$sim_core, sim_constants$default_params$R_B)
+  sim_constants$FILES[[4]] = sprintf("%s/Preprocessing/neighbours_pos_%s_maxD%s.RData", sim_constants$DIRS$DATA,sim_constants$sim_core, sim_constants$default_params$R_B)
   sim_constants$FILES[[5]] = sprintf("%s/Elms_Neighbourhood/Elms_%s.RData", sim_constants$DIRS$DATA, sim_constants$Neighbourhood)
   
   #the following file is just a default_file, then it changes when we set up the IC
   # sim_constants$FILES[[6]] = sprintf("%s/IC_PULBERRY_radius_60.RData", sim_constants$DIRS$DATA)
-  sim_constants$FILES[[7]] = sprintf("%s/Proba_roots/Proba_roots_%s_pr%s.RData",sim_constants$DIRS$DATA,sim_constants$Neighbourhood,sim_constants$default_params$p_r*100)
+  
+  # sim_constants$FILES[[7]] = sprintf("%s/Proba_roots/Proba_roots_%s_pr%s.RData",sim_constants$DIRS$DATA,sim_constants$Neighbourhood,sim_constants$default_params$p_r*100)
+  
+  sim_constants$FILES[[7]] = sprintf("%s/Proba_roots/Proba_roots_%s.Rds",sim_constants$DIRS$DATA,sim_constants$Neighbourhood)
   
   # parameters <- read.csv(sim_constants$FILES[[1]], header=TRUE)
   neighbours_circle = readRDS(sim_constants$FILES[[2]])
@@ -121,9 +122,7 @@ set_sim_time = function(sim_constants, startDate = start_date, endDate = end_dat
 set_sim_environment = function(sim_constants,input) {
   out = list()
   out$params = list()
-  #######################################################################################
-  ## Provide the range and the name of the parameters -> the order matters !!!!!!!!!!!!!!
-  # save the hypercube in the output file
+
   for (i in 1:sim_constants$nb_sims){
     out$params[[i]] = sim_constants$default_params
     varying_params = list()
@@ -132,29 +131,6 @@ set_sim_environment = function(sim_constants,input) {
     out$params[[i]]$matrices = set_demography_matrices(new_params)
   }
   return(out)
-}
-
-proba_infection = function(sim_constants,fileNb){
-  nb.of.files = 10
-  vec.pb = seq(0.01,0.1,length.out = nb.of.files)
-  sim_constants$default_params$proba_infection = vec.pb[as.numeric(fileNb)]
-  return(vec.pb[as.numeric(fileNb)])
-}
-
-set_maxD = function(sim_constants,fileNb){
-  nb.of.files = 10
-  # nb.of.files = 3
-  vec.maxD = seq(20,380,by = 40)
-  # vec.maxD = c(20,180,340)
-  sim_constants$default_params$maxD = vec.maxD[as.numeric(fileNb)]
-  return(vec.maxD[as.numeric(fileNb)])
-}
-
-set_maxD_IC_random = function(sim_constants,fileNb){
-  nb.of.files = 3
-  vec.maxD = c(300,300,300)
-  maxD = vec.maxD[as.numeric(fileNb)]
-  return(maxD)
 }
 
 # SET_OTHER_CONSTANTS
@@ -173,8 +149,8 @@ set_other_constants = function(sim_constants) {
   indexMi = seq(8,sim_constants$default_params$Nbs*sim_constants$default_params$N,by=sim_constants$default_params$Nbs)
   indexAs = seq(9,sim_constants$default_params$Nbs*sim_constants$default_params$N,by=sim_constants$default_params$Nbs)
   indexAi = seq(10,sim_constants$default_params$Nbs*sim_constants$default_params$N,by=sim_constants$default_params$Nbs)
-  statesNames <- c("H", "Ws", "Wi", "Ds", "Di")
-  # scenarii = c("bad","good","normal")
+  statesNames <- c("H", "S_W", "I_W", "S_D", "I_D")
+
   out = list(statesNames=statesNames,indexOs=indexOs,indexOi=indexOi,indexMbs=indexMbs,indexJs=indexJs,indexMs=indexMs,indexAs=indexAs,indexMbi=indexMbi,indexJi=indexJi,indexMi=indexMi,indexAi=indexAi)
   return(out)
 }
@@ -185,240 +161,216 @@ set_other_constants = function(sim_constants) {
 set_demography_matrices = function(default_params){
   env = environment()
   list2env(default_params,env)
+  
   ##########################################################################
-  ##matrices for winter event, mean year
+  ##matrices for winter event
   #######################################################################
   lH1 = c(0,0,0,0,0,0,0,0,0,0)
   lH2 = c(0,0,0,0,0,0,0,0,0,0)
   lH3 = c(0,0,0,0,0,0,0,0,0,0)
   lH4 = c(0,0,0,0,0,0,0,0,0,0)
-  lH5 = c(0,0,0,0,Sj_winter*Sdt,0,0,0,0,0)
-  lH6 = c(0,0,0,0,0,Sj_winter*Sdt,0,0,0,0)
+  lH5 = c(0,0,0,0,S_J_winter*s_dt,0,0,0,0,0)
+  lH6 = c(0,0,0,0,0,S_J_winter*s_dt,0,0,0,0)
   lH7 = c(0,0,0,0,0,0,0,0,0,0)
   lH8 = c(0,0,0,0,0,0,0,0,0,0)
   lH9 = c(0,0,0,0,0,0,0,0,0,0)
   lH10 = c(0,0,0,0,0,0,0,0,0,0)
-  LH_win_normal=matrix(data = c(lH1,lH2,lH3,lH4,lH5,lH6,lH7,lH8,lH9,lH10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
-  LH_win_normal=as(LH_win_normal,"sparseMatrix")
+  LH_winter=matrix(data = c(lH1,lH2,lH3,lH4,lH5,lH6,lH7,lH8,lH9,lH10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
+  LH_winter=as(LH_winter,"sparseMatrix")
   
-  LDs_win_normal = mat.or.vec(Nbs,Nbs)
-  LDs_win_normal = as(LDs_win_normal,"sparseMatrix")
-  LDi_win_normal = LDs_win_normal #beetles die if they overwinter in a dead or weak tree
-  LWi_win_normal = LDi_win_normal
-  LWs_win_normal = LDi_win_normal
+  LSD_winter = mat.or.vec(Nbs,Nbs)
+  LSD_winter = as(LSD_winter,"sparseMatrix")
+  LID_winter = LSD_winter #beetles die if they overwinter in a dead or weak tree
+  LIW_winter = LID_winter
+  LSW_winter = LID_winter
   
-  list_winter_normal = list(LH_win_normal=LH_win_normal,LDs_win_normal=LDs_win_normal,LDi_win_normal=LDi_win_normal,LWs_win_normal=LWs_win_normal,LWi_win_normal=LWi_win_normal)
+  list_winter = list(LH_winter=LH_winter,LSD_winter=LSD_winter,LID_winter=LID_winter,LSW_winter=LSW_winter,LIW_winter=LIW_winter)
   
   #######################################################################
-  ##matrices for Emergence1 event, mean year
+  ##matrices for Emergence event
   #######################################################################
   lH1 = c(0,0,0,0,0,0,0,0,0,0)
   lH2 = c(0,0,0,0,0,0,0,0,0,0)
   lH3 = c(0,0,0,0,0,0,0,0,0,0)
   lH4 = c(0,0,0,0,0,0,0,0,0,0)
-  lH5 = c(0,0,0,0,Sdt*Sjs,0,0,0,0,0)
-  lH6 = c(0,0,0,0,0,Sdt*Sji,0,0,0,0)
-  lH7 = c(0,0,0,0,Sdt*SMJs,0,Sdt*Sms,0,0,0)
-  lH8 = c(0,0,0,0,0,Sdt*SMJi,0,Sdt*Smi,0,0)
+  lH5 = c(0,0,0,0,s_dt*s_C,0,0,0,0,0)
+  lH6 = c(0,0,0,0,0,s_dt*s_C,0,0,0,0)
+  lH7 = c(0,0,0,0,s_dt*s_MC,0,0,0,0,0)
+  lH8 = c(0,0,0,0,0,s_dt*s_MC,0,0,0,0)
   lH9 = c(0,0,0,0,0,0,0,0,0,0)
   lH10 = c(0,0,0,0,0,0,0,0,0,0)
-  LH_em1_normal=matrix(data = c(lH1,lH2,lH3,lH4,lH5,lH6,lH7,lH8,lH9,lH10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
-  LH_em1_normal=as(LH_em1_normal,"sparseMatrix")
+  LH_emergence=matrix(data = c(lH1,lH2,lH3,lH4,lH5,lH6,lH7,lH8,lH9,lH10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
+  LH_emergence=as(LH_emergence,"sparseMatrix")
   
   lW1 = c(0,0,0,0,0,0,0,0,0,0)
   lW2 = c(0,0,0,0,0,0,0,0,0,0)
   lW3 = c(0,0,0,0,0,0,0,0,0,0)
   lW4 = c(0,0,0,0,0,0,0,0,0,0)
-  lW5 = c(0,0,0,0,Sdt*Sjs,0,0,0,0,0)
-  lW6 = c(0,0,0,0,0,Sdt*Sji,0,0,0,0)
-  lW7 = c(0,0,0,0,Sdt*SMJs,0,Sdt*Sms,0,0,0)
-  lW8 = c(0,0,0,0,0,Sdt*SMJi,0,Sdt*Smi,0,0)
+  lW5 = c(0,0,0,0,s_dt*s_C,0,0,0,0,0)
+  lW6 = c(0,0,0,0,0,s_dt*s_C,0,0,0,0)
+  lW7 = c(0,0,0,0,s_dt*s_MC,0,0,0,0,0)
+  lW8 = c(0,0,0,0,0,s_dt*s_MC,0,0,0,0)
   lW9 = c(0,0,0,0,0,0,0,0,0,0)
   lW10 = c(0,0,0,0,0,0,0,0,0,0)
-  LWi_em1_normal=matrix(data = c(lW1,lW2,lW3,lW4,lW5,lW6,lW7,lW8,lW9,lW10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
-  LWi_em1_normal=as(LWi_em1_normal,"sparseMatrix")
-  LWs_em1_normal=LWi_em1_normal
+  LIW_emergence=matrix(data = c(lW1,lW2,lW3,lW4,lW5,lW6,lW7,lW8,lW9,lW10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
+  LIW_emergence=as(LIW_emergence,"sparseMatrix")
+  LSW_emergence=LIW_emergence
   
-  LDs_em1_normal=mat.or.vec(Nbs,Nbs)
-  LDs_em1_normal=as(LDs_em1_normal,"sparseMatrix")
-  LDi_em1_normal = LDs_em1_normal #no beetle can be present in dead trees at this time of the year
+  LSD_emergence=mat.or.vec(Nbs,Nbs)
+  LSD_emergence=as(LSD_emergence,"sparseMatrix")
+  LID_emergence = LSD_emergence #no beetle can be present in dead trees at this time of the year
   
-  list_emergence1_normal = list(LH_em1_normal=LH_em1_normal,LWs_em1_normal=LWs_em1_normal,LWi_em1_normal=LWi_em1_normal,LDs_em1_normal=LDs_em1_normal,LDi_em1_normal=LDi_em1_normal)
+  list_emergence = list(LH_emergence=LH_emergence,LSW_emergence=LSW_emergence,LIW_emergence=LIW_emergence,LSD_emergence=LSD_emergence,LID_emergence=LID_emergence)
   ###############################################################
   ##Matrices for breeding
   ###############################################################
   ####OLD CODE: les 2 lignes en commentaires etaient utilises avant de dire qu'on peut
   # lH1 = c(0,0,0,0,0,0,0,0,0,0)
   # lH2 = c(0,0,0,0,0,0,0,0,0,0)
-  lH1 = c(Sdt*(Sos+Sosoi+SmbOs),0,0,0,0,0,0,0,Fecs,Fecs)
-  lH2 = c(0,Sdt*(Soi+SmbOi),0,0,0,0,0,0,0,0)
+  lH1 = c(s_dt*(s_J+s_JJp+s_FJ),0,0,0,0,0,0,0,f_JA,f_JA)
+  lH2 = c(0,s_dt*(s_Jp+s_FJp),0,0,0,0,0,0,0,0)
   lH3 = c(0,0,0,0,0,0,0,0,0,0)
   lH4 = c(0,0,0,0,0,0,0,0,0,0)
   lH5 = c(0,0,0,0,0,0,0,0,0,0) # I remove juveniles
   lH6 = c(0,0,0,0,0,0,0,0,0,0)
-  lH7 = c(0,0,0,0,Sdt,0,Sdt*Sms,0,0,0) # I force juveniles to become ms or mi
-  lH8 = c(0,0,0,0,0,Sdt,0,Sdt*Smi,0,0)
+  lH7 = c(0,0,0,0,s_dt,0,0,0,0,0) # I force juveniles to become ms or mi
+  lH8 = c(0,0,0,0,0,s_dt,0,0,0,0)
   lH9 = c(0,0,0,0,0,0,0,0,0,0)
   lH10 = c(0,0,0,0,0,0,0,0,0,0)
-  LH_bre_normal=matrix(data = c(lH1,lH2,lH3,lH4,lH5,lH6,lH7,lH8,lH9,lH10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
-  LH_bre_normal=as(LH_bre_normal,"sparseMatrix")
+  LH_breeding=matrix(data = c(lH1,lH2,lH3,lH4,lH5,lH6,lH7,lH8,lH9,lH10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
+  LH_breeding=as(LH_breeding,"sparseMatrix")
   
-  lW1 = c(Sdt*(Sos+SmbOs),0,0,0,0,0,0,0,Fecs,Fecs)
-  lW2 = c(Sdt*Sosoi,Sdt*(Soi+SmbOi),0,0,0,0,0,0,0,0)
+  lW1 = c(s_dt*(s_J+s_FJ),0,0,0,0,0,0,0,f_JA,f_JA)
+  lW2 = c(s_dt*s_JJp,s_dt*(s_Jp+s_FJp),0,0,0,0,0,0,0,0)
   lW3 = c(0,0,0,0,0,0,0,0,0,0)# these four stages are not possible at this moment 
   lW4 = c(0,0,0,0,0,0,0,0,0,0)
   lW5 = c(0,0,0,0,0,0,0,0,0,0) 
   lW6 = c(0,0,0,0,0,0,0,0,0,0)
-  lW7 = c(0,0,0,0,Sdt,0,Sdt*Sms,0,0,0)
-  lW8 = c(0,0,0,0,0,Sdt,0,Sdt*Smi,0,0)
-  lW9 = c(0,0,0,0,0,0,Sdt*SAMs,0,Sdt*Sas,0)
-  lW10 = c(0,0,0,0,0,0,0,Sdt*SAMi,0,Sdt*Sai)
-  LWi_bre_normal=matrix(data = c(lW1,lW2,lW3,lW4,lW5,lW6,lW7,lW8,lW9,lW10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
+  lW7 = c(0,0,0,0,s_dt,0,0,0,0,0)
+  lW8 = c(0,0,0,0,0,s_dt,0,0,0,0)
+  lW9 = c(0,0,0,0,0,0,s_dt,0,0,0)
+  lW10 = c(0,0,0,0,0,0,0,s_dt,0,0)
+  LIW_breeding=matrix(data = c(lW1,lW2,lW3,lW4,lW5,lW6,lW7,lW8,lW9,lW10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
   ## Check if this is good
-  # LWi_bre_normal=LWi_bre_normal
-  LWi_bre_normal=as(LWi_bre_normal,"sparseMatrix")
+  # LIW_breeding=LIW_breeding
+  LIW_breeding=as(LIW_breeding,"sparseMatrix")
   
-  lW1 = c(Sdt*(Sos+Sosoi+SmbOs),0,0,0,0,0,0,0,Fecs,Fecs)
-  lW2 = c(0,Sdt*(Soi+SmbOi),0,0,0,0,0,0,0,0)
+  lW1 = c(s_dt*(s_J+s_JJp+s_FJ),0,0,0,0,0,0,0,f_JA,f_JA)
+  lW2 = c(0,s_dt*(s_Jp+s_FJp),0,0,0,0,0,0,0,0)
   lW3 = c(0,0,0,0,0,0,0,0,0,0)# these four stages are not possible at this moment
   lW4 = c(0,0,0,0,0,0,0,0,0,0)
   lW5 = c(0,0,0,0,0,0,0,0,0,0) 
   lW6 = c(0,0,0,0,0,0,0,0,0,0)
-  lW7 = c(0,0,0,0,Sdt,0,Sdt*Sms,0,0,0)
-  lW8 = c(0,0,0,0,0,Sdt,0,Sdt*Smi,0,0)
-  lW9 = c(0,0,0,0,0,0,Sdt*SAMs,0,Sdt*Sas,0)
-  lW10 = c(0,0,0,0,0,0,0,Sdt*SAMi,0,Sdt*Sai)
-  LWs_bre_normal=matrix(data = c(lW1,lW2,lW3,lW4,lW5,lW6,lW7,lW8,lW9,lW10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
-  LWs_bre_normal=as(LWs_bre_normal,"sparseMatrix")
-  #the same thing but SOsOi=0 (row2,col1)
+  lW7 = c(0,0,0,0,s_dt,0,0,0,0,0)
+  lW8 = c(0,0,0,0,0,s_dt,0,0,0,0)
+  lW9 = c(0,0,0,0,0,0,s_dt,0,0,0)
+  lW10 = c(0,0,0,0,0,0,0,s_dt,0,0)
+  LSW_breeding=matrix(data = c(lW1,lW2,lW3,lW4,lW5,lW6,lW7,lW8,lW9,lW10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
+  LSW_breeding=as(LSW_breeding,"sparseMatrix")
+  #the same thing but s_JJp=0 (row2,col1)
   
-  lD1 = c(0,0,0,0,0,0,0,0,Fecs,Fecs)
-  lD2 = c(Sdt*(Sosoi+Sos+SmbOs),Sdt*(Soi+SmbOi),0,0,0,0,0,0,0,0)
+  lD1 = c(0,0,0,0,0,0,0,0,f_JA,f_JA)
+  lD2 = c(s_dt*(s_JJp+s_J+s_FJ),s_dt*(s_Jp+s_FJp),0,0,0,0,0,0,0,0)
   lD3 = c(0,0,0,0,0,0,0,0,0,0) #if the beetle Os is in an infected dead tree, then it becomes automatically an Oi (not an MBOs)
   lD4 = c(0,0,0,0,0,0,0,0,0,0) # not possible at this moment
   lD5 = c(0,0,0,0,0,0,0,0,0,0)
   lD6 = c(0,0,0,0,0,0,0,0,0,0)
   lD7 = c(0,0,0,0,0,0,0,0,0,0)
   lD8 = c(0,0,0,0,0,0,0,0,0,0)
-  lD9 = c(0,0,0,0,0,0,Sdt*SAMs,0,Sdt*Sas,0)
-  lD10 = c(0,0,0,0,0,0,0,Sdt*SAMi,0,Sdt*Sai)
-  LDi_bre_normal=matrix(data = c(lD1,lD2,lD3,lD4,lD5,lD6,lD7,lD8,lD9,lD10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
-  LDi_bre_normal=as(LDi_bre_normal,"sparseMatrix")
+  lD9 = c(0,0,0,0,0,0,s_dt,0,0,0)
+  lD10 = c(0,0,0,0,0,0,0,s_dt,0,0)
+  LID_breeding=matrix(data = c(lD1,lD2,lD3,lD4,lD5,lD6,lD7,lD8,lD9,lD10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
+  LID_breeding=as(LID_breeding,"sparseMatrix")
   
-  lD1 = c(Sdt*(Sos+SmbOs+Sosoi),0,0,0,0,0,0,0,Fecs,Fecs)
-  lD2 = c(0,Sdt*(Soi+SmbOi),0,0,0,0,0,0,0,0)
+  lD1 = c(s_dt*(s_J+s_FJ+s_JJp),0,0,0,0,0,0,0,f_JA,f_JA)
+  lD2 = c(0,s_dt*(s_Jp+s_FJp),0,0,0,0,0,0,0,0)
   lD3 = c(0,0,0,0,0,0,0,0,0,0)
   lD4 = c(0,0,0,0,0,0,0,0,0,0)
   lD5 = c(0,0,0,0,0,0,0,0,0,0)
   lD6 = c(0,0,0,0,0,0,0,0,0,0)
   lD7 = c(0,0,0,0,0,0,0,0,0,0)
   lD8 = c(0,0,0,0,0,0,0,0,0,0)
-  lD9 = c(0,0,0,0,0,0,Sdt*SAMs,0,Sdt*Sas,0)
-  lD10 = c(0,0,0,0,0,0,0,Sdt*SAMi,0,Sdt*Sai)
-  LDs_bre_normal=matrix(data = c(lD1,lD2,lD3,lD4,lD5,lD6,lD7,lD8,lD9,lD10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
-  LDs_bre_normal=as(LDs_bre_normal,"sparseMatrix")
+  lD9 = c(0,0,0,0,0,0,s_dt,0,0,0)
+  lD10 = c(0,0,0,0,0,0,0,s_dt,0,0)
+  LSD_breeding=matrix(data = c(lD1,lD2,lD3,lD4,lD5,lD6,lD7,lD8,lD9,lD10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
+  LSD_breeding=as(LSD_breeding,"sparseMatrix")
   
-  list_breeding_normal = list(LH_bre_normal=LH_bre_normal,LWs_bre_normal=LWs_bre_normal,LWi_bre_normal=LWi_bre_normal,LDs_bre_normal=LDs_bre_normal,LDi_bre_normal=LDi_bre_normal)
+  list_breeding = list(LH_breeding=LH_breeding,LSW_breeding=LSW_breeding,LIW_breeding=LIW_breeding,LSD_breeding=LSD_breeding,LID_breeding=LID_breeding)
   
   ################################################################
-  ##Matrices for Offsprings development
+  ##Matrices for new generation event
   ################################################################
   
-  #######OLD CODE
-  # lH1 = c(0,0,0,0,0,0,0,0,0,0)
-  # lH2 = c(0,0,0,0,0,0,0,0,0,0)
-  # lH3 = c(0,0,0,0,0,0,0,0,0,0)
-  # lH4 = c(0,0,0,0,0,0,0,0,0,0)
-  # lH5 = c(0,0,Sdt*SJMbs,0,Sdt*Sjs,0,0,0,0,0)
-  # lH6 = c(0,0,0,Sdt*SJMbi,0,Sdt*Sji,0,0,0,0)
-  # lH7 = c(0,0,0,0,0,0,0,0,0,0) # I force callow adults to become ms or mi
-  # lH8 = c(0,0,0,0,0,0,0,0,0,0)
-  # lH9 = c(0,0,0,0,0,0,0,0,0,0)
-  # lH10 = c(0,0,0,0,0,0,0,0,0,0)
-  
-  lH1 = c(Sdt*(Sos+Sosoi),0,0,0,0,0,0,0,0,0)
-  lH2 = c(0,Sdt*Soi,0,0,0,0,0,0,0,0)
-  lH3 = c(Sdt*SmbOs,0,Sdt*Smbs,0,0,0,0,0,0,0)
-  lH4 = c(0,Sdt*SmbOi,0,Sdt*Smbi,0,0,0,0,0,0)
-  lH5 = c(0,0,Sdt*SJMbs,0,Sdt*Sjs,0,0,0,0,0)
-  lH6 = c(0,0,0,Sdt*SJMbi,0,Sdt*Sji,0,0,0,0)
+  lH1 = c(s_dt*(s_J+s_JJp),0,0,0,0,0,0,0,0,0)
+  lH2 = c(0,s_dt*s_Jp,0,0,0,0,0,0,0,0)
+  lH3 = c(s_dt*s_FJ,0,0,0,0,0,0,0,0,0)
+  lH4 = c(0,s_dt*s_FJp,0,0,0,0,0,0,0,0)
+  lH5 = c(0,0,s_dt*s_CF,0,s_dt*s_C,0,0,0,0,0)
+  lH6 = c(0,0,0,s_dt*s_CF,0,s_dt*s_C,0,0,0,0)
   lH7 = c(0,0,0,0,0,0,0,0,0,0) # I force callow adults to become ms or mi
   lH8 = c(0,0,0,0,0,0,0,0,0,0)
   lH9 = c(0,0,0,0,0,0,0,0,0,0)
   lH10 = c(0,0,0,0,0,0,0,0,0,0)
-  LH_off_normal=matrix(data = c(lH1,lH2,lH3,lH4,lH5,lH6,lH7,lH8,lH9,lH10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
-  LH_off_normal=as(LH_off_normal,"sparseMatrix")
+  LH_new_generation=matrix(data = c(lH1,lH2,lH3,lH4,lH5,lH6,lH7,lH8,lH9,lH10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
+  LH_new_generation=as(LH_new_generation,"sparseMatrix")
   
-  lW1 = c(Sdt*Sos,0,0,0,0,0,0,0,0,0)
-  lW2 = c(Sdt*Sosoi,Sdt*Soi,0,0,0,0,0,0,0,0)
-  lW3 = c(Sdt*SmbOs,0,Sdt*Smbs,0,0,0,0,0,0,0)
-  lW4 = c(0,Sdt*SmbOi,0,Sdt*Smbi,0,0,0,0,0,0)
-  lW5 = c(0,0,Sdt*SJMbs,0,Sdt*Sjs,0,0,0,0,0)
-  lW6 = c(0,0,0,Sdt*SJMbi,0,Sdt*Sji,0,0,0,0)
+  lW1 = c(s_dt*s_J,0,0,0,0,0,0,0,0,0)
+  lW2 = c(s_dt*s_JJp,s_dt*s_Jp,0,0,0,0,0,0,0,0)
+  lW3 = c(s_dt*s_FJ,0,0,0,0,0,0,0,0,0)
+  lW4 = c(0,s_dt*s_FJp,0,0,0,0,0,0,0,0)
+  lW5 = c(0,0,s_dt*s_CF,0,s_dt*s_C,0,0,0,0,0)
+  lW6 = c(0,0,0,s_dt*s_CF,0,s_dt*s_C,0,0,0,0)
   lW7 = c(0,0,0,0,0,0,0,0,0,0)
   lW8 = c(0,0,0,0,0,0,0,0,0,0)
   lW9 = c(0,0,0,0,0,0,0,0,0,0)
   lW10 = c(0,0,0,0,0,0,0,0,0,0)
-  LWi_off_normal=matrix(data = c(lW1,lW2,lW3,lW4,lW5,lW6,lW7,lW8,lW9,lW10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
+  LIW_new_generation=matrix(data = c(lW1,lW2,lW3,lW4,lW5,lW6,lW7,lW8,lW9,lW10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
   ## Check if this is good
-  LWi_off_normal=as(LWi_off_normal,"sparseMatrix")
+  LIW_new_generation=as(LIW_new_generation,"sparseMatrix")
   
-  lW1 = c(Sdt*(Sos+Sosoi),0,0,0,0,0,0,0,0,0)
-  lW2 = c(0,Sdt*Soi,0,0,0,0,0,0,0,0)
-  lW3 = c(Sdt*SmbOs,0,Sdt*Smbs,0,0,0,0,0,0,0)
-  lW4 = c(0,Sdt*SmbOi,0,Sdt*Smbi,0,0,0,0,0,0)
-  lW5 = c(0,0,Sdt*SJMbs,0,Sdt*Sjs,0,0,0,0,0)
-  lW6 = c(0,0,0,Sdt*SJMbi,0,Sdt*Sji,0,0,0,0)
+  lW1 = c(s_dt*(s_J+s_JJp),0,0,0,0,0,0,0,0,0)
+  lW2 = c(0,s_dt*s_Jp,0,0,0,0,0,0,0,0)
+  lW3 = c(s_dt*s_FJ,0,0,0,0,0,0,0,0,0)
+  lW4 = c(0,s_dt*s_FJp,0,0,0,0,0,0,0,0)
+  lW5 = c(0,0,s_dt*s_CF,0,s_dt*s_C,0,0,0,0,0)
+  lW6 = c(0,0,0,s_dt*s_CF,0,s_dt*s_C,0,0,0,0)
   lW7 = c(0,0,0,0,0,0,0,0,0,0)
   lW8 = c(0,0,0,0,0,0,0,0,0,0)
   lW9 = c(0,0,0,0,0,0,0,0,0,0)
   lW10 = c(0,0,0,0,0,0,0,0,0,0)
-  LWs_off_normal=matrix(data = c(lW1,lW2,lW3,lW4,lW5,lW6,lW7,lW8,lW9,lW10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
-  LWs_off_normal=as(LWs_off_normal,"sparseMatrix")
-  #the same thing but SOsOi=0 (row2,col1)
+  LSW_new_generation=matrix(data = c(lW1,lW2,lW3,lW4,lW5,lW6,lW7,lW8,lW9,lW10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
+  LSW_new_generation=as(LSW_new_generation,"sparseMatrix")
+  #the same thing but s_JJp=0 (row2,col1)
   
   lD1 = c(0,0,0,0,0,0,0,0,0,0)
-  lD2 = c(Sdt*(Sosoi+Sos),Sdt*Soi,0,0,0,0,0,0,0,0)
-  lD3 = c(0,0,Sdt*Smbs,0,0,0,0,0,0,0)
-  lD4 = c(Sdt*SmbOs,Sdt*SmbOi,0,Sdt*Smbi,0,0,0,0,0,0)
-  lD5 = c(0,0,Sdt*SJMbs,0,Sdt*Sjs,0,0,0,0,0)
-  lD6 = c(0,0,0,Sdt*SJMbi,0,Sdt*Sji,0,0,0,0)
+  lD2 = c(s_dt*(s_JJp+s_J),s_dt*s_Jp,0,0,0,0,0,0,0,0)
+  lD3 = c(0,0,0,0,0,0,0,0,0,0)
+  lD4 = c(s_dt*s_FJ,s_dt*s_FJp,0,0,0,0,0,0,0,0)
+  lD5 = c(0,0,s_dt*s_CF,0,s_dt*s_C,0,0,0,0,0)
+  lD6 = c(0,0,0,s_dt*s_CF,0,s_dt*s_C,0,0,0,0)
   lD7 = c(0,0,0,0,0,0,0,0,0,0)
   lD8 = c(0,0,0,0,0,0,0,0,0,0)
   lD9 = c(0,0,0,0,0,0,0,0,0,0)
   lD10 = c(0,0,0,0,0,0,0,0,0,0)
-  LDi_off_normal=matrix(data = c(lD1,lD2,lD3,lD4,lD5,lD6,lD7,lD8,lD9,lD10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
-  LDi_off_normal=as(LDi_off_normal,"sparseMatrix")
+  LID_new_generation=matrix(data = c(lD1,lD2,lD3,lD4,lD5,lD6,lD7,lD8,lD9,lD10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
+  LID_new_generation=as(LID_new_generation,"sparseMatrix")
   
-  lD1 = c(Sdt*(Sos+Sosoi),0,0,0,0,0,0,0,0,0)
-  lD2 = c(0,Sdt*Soi,0,0,0,0,0,0,0,0)
-  lD3 = c(Sdt*SmbOs,0,Sdt*Smbs,0,0,0,0,0,0,0)
-  lD4 = c(0,Sdt*SmbOi,0,Sdt*Smbi,0,0,0,0,0,0)
+  lD1 = c(s_dt*(s_J+s_JJp),0,0,0,0,0,0,0,0,0)
+  lD2 = c(0,s_dt*s_Jp,0,0,0,0,0,0,0,0)
+  lD3 = c(s_dt*s_FJ,0,0,0,0,0,0,0,0,0)
+  lD4 = c(0,s_dt*s_FJp,0,0,0,0,0,0,0,0)
   lD5 = c(0,0,0,0,0,0,0,0,0,0)
   lD6 = c(0,0,0,0,0,0,0,0,0,0)
   lD7 = c(0,0,0,0,0,0,0,0,0,0)
   lD8 = c(0,0,0,0,0,0,0,0,0,0)
   lD9 = c(0,0,0,0,0,0,0,0,0,0)
   lD10 = c(0,0,0,0,0,0,0,0,0,0)
-  LDs_off_normal=matrix(data = c(lD1,lD2,lD3,lD4,lD5,lD6,lD7,lD8,lD9,lD10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
-  LDs_off_normal=as(LDs_off_normal,"sparseMatrix")
+  LSD_new_generation=matrix(data = c(lD1,lD2,lD3,lD4,lD5,lD6,lD7,lD8,lD9,lD10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
+  LSD_new_generation=as(LSD_new_generation,"sparseMatrix")
   
-  list_offsprings_normal = list(LH_off_normal=LH_off_normal,LWi_off_normal=LWi_off_normal,LWs_off_normal=LWs_off_normal,LDs_off_normal=LDs_off_normal,LDi_off_normal=LDi_off_normal)
+  list_new_generation = list(LH_new_generation=LH_new_generation,LIW_new_generation=LIW_new_generation,LSW_new_generation=LSW_new_generation,LSD_new_generation=LSD_new_generation,LID_new_generation=LID_new_generation)
   
-  lC1 = c(0,0,0,0,0,0,0,0,0,0)
-  lC2 = c(0,0,0,0,0,0,0,0,0,0)
-  lC3 = c(0,0,0,0,0,0,0,0,0,0)
-  lC4 = c(0,0,0,0,0,0,0,0,0,0)
-  lC5 = c(0,0,0,0,0,0,0,0,0,0)
-  lC6 = c(0,0,0,0,0,0,0,0,0,0)
-  lC7 = c(0,0,0,0,0,0,0,0,0,0)
-  lC8 = c(0,0,0,0,0,0,0,0,0,0)
-  lC9 = c(0,0,0,0,0,0,0,0,0,0)
-  lC10 = c(0,0,0,0,0,0,0,0,0,0)
-  LC=matrix(data = c(lC1,lC2,lC3,lC4,lC5,lC6,lC7,lC8,lC9,lC10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
-  # LCT=t(LC)
-  LC=as(LC,"sparseMatrix")
-  
-  out = list(list_offsprings_normal=list_offsprings_normal,list_winter_normal=list_winter_normal,list_emergence1_normal=list_emergence1_normal,list_breeding_normal=list_breeding_normal,LC=LC)
+  out = list(list_new_generation=list_new_generation,list_winter=list_winter,list_emergence=list_emergence,list_breeding=list_breeding
+             )
   return(out)
 }

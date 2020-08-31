@@ -6,9 +6,6 @@
 # Constants will go in a list called sim_constants.
 sim_constants = list()
 
-#################
-##NOTE_NB: I need to remove that once we change the way we save the pre_processing stuff
-#################
 # Set part of the name for the result directory
 sim_constants$sim_core = sim_core
 
@@ -17,12 +14,7 @@ sim_constants$DIRS = set_directories(TOP_DIR)
 
 # Set the neighbourhood
 sim_constants$Neighbourhood = Neighbourhood
-# Set the important initial parameters
-sim_constants$initial_set_up = list()
-sim_constants$initial_set_up$IC_type=IC_type
-sim_constants$initial_set_up$IC_radius=IC_radius
-sim_constants$initial_set_up$IC_beetles=IC_beetles
-sim_constants$initial_set_up$IC_number_dead_trees=IC_number_dead_trees
+
 
 # Read parameters from the csv file and replace those choosen in the main file (input)
 sim_constants = read_parameters(sim_constants,input) # create default_params
@@ -45,15 +37,6 @@ sim_constants$nb_sims = nb_sims
 # Set up other stuffs
 sim_constants$other = set_other_constants(sim_constants)
 
-#if we want to compare random IC
-if(IC_type == "random"){
-  if(is.null(sim_constants$fileNb)){
-    sim_constants$fileNb = 1
-  }
-  # sim_constants$default_params$maxD = set_maxD(sim_constants,sim_constants$fileNb)# ten values
-  sim_constants$default_params$maxD = set_maxD_IC_random(sim_constants,sim_constants$fileNb) #only 3 values
-}
-
 #Set the gates
 sim_constants$GATES = list()
 sim_constants$GATES$PLOT_SIM = PLOT_SIM #add other gates if needed
@@ -64,16 +47,23 @@ sims_params = list()
 sims = list()
 sims$params = set_sim_environment(sim_constants=sim_constants)
 
-# Choice of initial conditions
+# Set the initial conditions
+# sim_constants$initial_set_up = list()
+# sim_constants$initial_set_up$IC_type=IC_type
+# sim_constants$initial_set_up$IC_radius=IC_radius
+# sim_constants$initial_set_up$IC_beetles=IC_beetles
+
 if (IC_type=="random"){#if IC is random, then each sim has a different IC
   sims$IC = list()
   for (i in 1:nb_sims){
     sims$IC[[i]] = create_IC(sim_constants = sim_constants,Elms=sim_constants$default_params$elms,IC_type,IC_beetles,IC_radius,IC_number_dead_trees)
   }
 }else{#if IC is cluster or 2clusters
-  sims$IC = create_IC(sim_constants = sim_constants,Elms=sim_constants$default_params$elms,IC_type,IC_beetles,IC_radius,IC_number_dead_trees)
+  sims$IC = create_IC(sim_constants = sim_constants,Elms=sim_constants$default_params$elms,IC_type,IC_beetles,IC_radius,IC_number_dead_trees=0) #put IC_number_dead_trees to 0 here, the function will replace its value by the good nb of initially infected trees
 }
 sim_constants$default_params$IC= sims$IC
+
+# sim_constants$initial_set_up$IC_number_dead_trees=sims$IC$IC_number_dead_trees
 
 if (FALSE){#if needed, we can create an IC using the functions in pre_IC.R and read the file directly
   sims$IC = readRDS("name_file_IC.rds")
@@ -90,14 +80,6 @@ for (i in 1:sim_constants$nb_sims) {
   }
   
 }
-
-# sims_params[[1]]        = list()
-# sims_params[[1]]$params = sims$params$params[[1]]
-# sims_params[[1]]$IC     = sims$IC # only initial beetles, initial tree status and initial demography
-
-# Run simulations and plot in the same time the spread of the disease
-# results = lapply(X = sims_params, FUN = function(x) system.over.time(x,sim_constants))
-
 
 # Run simulations
 if (RUN_PARALLEL) {
@@ -123,14 +105,14 @@ if (RUN_PARALLEL) {
                   "new.transition.matrices"),
                 envir = .GlobalEnv)
   # Run computation
-  results = parLapply(cl = cl, X = sims_params, fun =  function(x) system.over.time(x,sim_constants))
+  results = parLapply(cl = cl, X = sims_params, fun =  function(x) system_over_time(x,sim_constants))
   # Stop cluster
   stopCluster(cl)
   timeProcessing=tictoc::toc()
 } else {
   tictoc::tic()
   # Run computation
-  results = lapply(X = sims_params, FUN = function(x) system.over.time(x,sim_constants))
+  results = lapply(X = sims_params, FUN = function(x) system_over_time(x,sim_constants))
   timeProcessing=tictoc::toc()
 }
 
@@ -143,41 +125,44 @@ if (RUN_PARALLEL) {
 
 
 ## We just need to save the output results: tree states and beetle populations in results[[i]]$sim_output
-tree_states = list()
-beetles = list()
-paramet = list()
-vec_year = seq(1,length(sim_constants$time$idx),by=53)
-
-for (i in 1:sim_constants$nb_sims){
-  tree_states[[i]] = results[[i]]$sim_output$status_trees[,vec_year]
-  beetles[[i]]     = results[[i]]$sim_output$matPopByTrees
-  paramet[[i]]     = results[[i]]$sim_param$params
-}
-
-saveRDS(sims$IC, 
-        file = sprintf("%s/ic.Rds",sim_constants$output_dir))
-
-saveRDS(tree_states, 
-        file = sprintf("%s/tree_states_maxD%03g_pb_inf%03g_pr%03g.Rds",
-                       sim_constants$output_dir,
-                       sim_constants$default_params$maxD,
-                       sim_constants$default_params$proba_infection*100,
-                       sim_constants$default_params$p_r*100))
-
-saveRDS(beetles, 
-        file = sprintf("%s/beetles_maxD%03g_pb_inf%03g_pr%03g.Rds",
-                       sim_constants$output_dir,
-                       sim_constants$default_params$maxD,
-                       sim_constants$default_params$proba_infection*100,
-                       sim_constants$default_params$p_r*100))  
-
-# If needed, save the parameters as well (can be a large file)
-if(FALSE){
-  saveRDS(paramet,
-          file = sprintf("%s/parameters_maxD%03g_pb_inf%03g_pr%03g.Rds",
+if (SIM_SAVE){
+  tree_states = list()
+  beetles = list()
+  paramet = list()
+  vec_year = seq(1,length(sim_constants$time$idx),by=53)
+  
+  for (i in 1:sim_constants$nb_sims){
+    tree_states[[i]] = results[[i]]$sim_output$status_trees[,vec_year]
+    beetles[[i]]     = results[[i]]$sim_output$matPopByTrees
+    paramet[[i]]     = results[[i]]$sim_param$params
+  }
+  
+  saveRDS(sims$IC, 
+          file = sprintf("%s/ic.Rds",sim_constants$output_dir))
+  
+  saveRDS(tree_states, 
+          file = sprintf("%s/tree_states_Rb%03g_pb_inf%03g_pr%03g.Rds",
                          sim_constants$output_dir,
-                         sim_constants$default_params$maxD,
-                         sim_constants$default_params$proba_infection*100,
+                         sim_constants$default_params$R_B,
+                         sim_constants$default_params$p_i*100,
                          sim_constants$default_params$p_r*100))
+  
+  saveRDS(beetles, 
+          file = sprintf("%s/beetles_Rb%03g_pb_inf%03g_pr%03g.Rds",
+                         sim_constants$output_dir,
+                         sim_constants$default_params$R_B,
+                         sim_constants$default_params$p_i*100,
+                         sim_constants$default_params$p_r*100))  
+  
+  # If needed, save the parameters as well (can be a large file)
+  if(FALSE){
+    saveRDS(paramet,
+            file = sprintf("%s/parameters_Rb%03g_pb_inf%03g_pr%03g.Rds",
+                           sim_constants$output_dir,
+                           sim_constants$default_params$R_B,
+                           sim_constants$default_params$p_i*100,
+                           sim_constants$default_params$p_r*100))
+  }
+  
+  
 }
-
