@@ -16,11 +16,16 @@ library(rprojroot)
 # Set directories
 source(sprintf("%s/CODE/set_directories.R", here::here()))
 
+# LOGICAL GATES
 # If you want to refresh the OSM data, set this to TRUE. Otherwise, pre-saved data is used
 REFRESH_OSM_DATA = FALSE
-
+# This code can be hard to run. Should we show progress?
+VERBOSE_OUTPUT = TRUE
 
 if (REFRESH_OSM_DATA) {
+  if (VERBOSE_OUTPUT) {
+    writeLines("Starting refresh of OSM data")
+  }
   # Get exact bounding polygon for Winnipeg
   bb_poly = getbb(place_name = "winnipeg", format_out = "polygon")
   # Road types to download from OSM
@@ -65,6 +70,9 @@ if (REFRESH_OSM_DATA) {
   all_root_cutters = c(roads, rail, rivers, parkings)
   saveRDS(all_root_cutters,sprintf("%s/Winnipeg_all_root_cutters.Rds",DIRS$DATA))
 } else {
+  if (VERBOSE_OUTPUT) {
+    writeLines("Starting load of existing OSM data")
+  }
   roads = readRDS(sprintf("%s/Winnipeg_roads.Rds",DIRS$DATA))
   rail = readRDS(sprintf("%s/Winnipeg_rail.Rds",DIRS$DATA))
   rivers = readRDS(sprintf("%s/Winnipeg_rivers.Rds",DIRS$DATA))
@@ -80,6 +88,9 @@ latest_TI_file = sort(TI_files, decreasing = TRUE)[1]
 # Read elms csv file (could also read the RDS..)
 elms <- readRDS(sprintf("%s/%s", DIRS$DATA, latest_TI_file))
 
+if (VERBOSE_OUTPUT) {
+  writeLines("Computing distances between all tree pairs")
+}
 # Compute distances and select the ones matching the criterion. 
 # Work with X,Y (which are in metres), rather than lon,lat
 elms_xy = cbind(elms$X, elms$Y)
@@ -99,7 +110,13 @@ D_mat[idx_D_mat] = 0
 rm(idx_D_mat)
 gc()
 
+# Save the distance matrix (can save time next time)
+if (VERBOSE_OUTPUT) {
+  writeLines("Saving D_mat matrix")
+}
 saveRDS(D_mat, file = sprintf("%s/matrix_tmp.Rds", DIRS$DATA))
+
+
 # Keep only pairs with nonzero distance (i.e., <= 6*elms_max_height).
 indices = which(D_mat !=0, arr.ind = TRUE)
 # Also, only keep one of the edges, not both directions.
@@ -127,8 +144,11 @@ DISTS = data.frame(idx_i = indices[,1],
 rm(D_mat)
 gc()
 
-# Save 
-saveRDS(DISTS, file = sprintf("%s/elms_distances_roots.Rds",DIRS$DATA))
+# Save distances table
+if (VERBOSE_OUTPUT) {
+  writeLines("Saving DISTS table")
+}
+saveRDS(DISTS, file = sprintf("%s/elms_distances_roots.Rds", DIRS$DATA))
 
 
 # The locations of the origins of the pairs
@@ -136,6 +156,9 @@ tree_locs_orig = cbind(DISTS$lon_i, DISTS$lat_i)
 # The locations of the destinations of the pairs
 tree_locs_dest = cbind(DISTS$lon_j, DISTS$lat_j)
 
+if (VERBOSE_OUTPUT) {
+  writeLines("Creating line segments between all sufficiently close trees")
+}
 tree_pairs = do.call(sf::st_sfc,
                      lapply(
                        1:nrow(tree_locs_orig),
@@ -162,10 +185,12 @@ if (FALSE) {
 # Set both crs to be the same
 st_crs(tree_pairs) = st_crs(all_root_cutters$osm_lines$geometry)
 
-tictoc::tic()
+# The main cut stage: compute all intersections
+if (VERBOSE_OUTPUT) {
+  writeLines("Computing intersections between tree pairs segments and OSM objects")
+}
 tree_pairs_all_root_cutters = sf::st_intersects(x = all_root_cutters$osm_lines$geometry,
                                                 y = tree_pairs)
-tictoc::toc()
 
 tree_pairs_all_root_cutters_intersect = c()
 for (i in 1:length(tree_pairs_all_root_cutters)) {
@@ -197,5 +222,8 @@ DISTS = cbind(DISTS, h_tmp)
 # Keep only the edges not intersected by a road or a river
 DISTS = DISTS[to_keep,]
 
-# Save
-saveRDS(DISTS, file = sprintf("%s/elms_distances_roots.Rds",DIR$DATA))
+# Final save of the results
+if (VERBOSE_OUTPUT) {
+  writeLines("Final save, we're almost done")
+}
+saveRDS(DISTS, file = sprintf("%s/elms_distances_roots.Rds",DIRS$DATA))
