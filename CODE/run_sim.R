@@ -68,7 +68,7 @@ IC_beetles = 500 #nb of inf beetles in each infected tree
 
 #Put here the initial and final dates for the simulation(s)
 start_date = "2019-08-01"
-end_date = "2030-12-31"
+end_date = "2020-12-31"
 
 # Libraries needed for all the processes
 library(sqldf)
