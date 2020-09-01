@@ -26,7 +26,7 @@ input$p_r   = 0.1 #max proba for an infected tree to infect another one by root 
 input$p_i   = 0.02 #proba that one beetle infects successfully one tree
 input$s_dt  = 0.98 #proba for beetles to survive one time step
 
-#Set up the simulation in function of choices in 2- and 3-:
+#Set up the simulation in function of choices in 1- and 2-:
 if(Neighbourhood=="MIXED_PULBERRY_CRESCENT_PARK"){
   sim_core = "1513Trees"
   if(IC_type == "cluster"){
