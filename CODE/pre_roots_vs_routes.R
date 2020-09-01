@@ -19,7 +19,7 @@ source(sprintf("%s/CODE/set_directories.R", here::here()))
 # If you want to refresh the OSM data, set this to TRUE. Otherwise, pre-saved data is used
 REFRESH_OSM_DATA = FALSE
 # This code can be hard to run. Should we show progress?
-VERBOSE_OUTPUT = TRUE
+VERBOSE_OUTPUT = FALSE
 # Plot networks
 PLOT_NETWORKS = FALSE
 
