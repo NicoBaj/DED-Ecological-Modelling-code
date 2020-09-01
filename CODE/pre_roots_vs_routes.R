@@ -20,6 +20,8 @@ source(sprintf("%s/CODE/set_directories.R", here::here()))
 REFRESH_OSM_DATA = FALSE
 # This code can be hard to run. Should we show progress?
 VERBOSE_OUTPUT = TRUE
+# Plot networks
+PLOT_NETWORKS = FALSE
 
 if (REFRESH_OSM_DATA) {
   if (VERBOSE_OUTPUT) {
@@ -178,7 +180,7 @@ tree_pairs = do.call(sf::st_sfc,
                      )
 )
 
-if (FALSE) {
+if (PLOT_NETWORKS) {
   pdf(file = sprintf("%s/elms_pairs_preproc.pdf", DIRS$RESULTS),
       width = 50, height = 50)
   plot(tree_pairs)
@@ -207,7 +209,7 @@ tree_pairs_all_root_cutters_intersect = sort(tree_pairs_all_root_cutters_interse
 to_keep = 1:dim(tree_locs_orig)[1]
 to_keep = setdiff(to_keep,tree_pairs_all_root_cutters_intersect)
 
-if(FALSE){
+if(PLOT_NETWORKS){
   pdf(file = sprintf("%s/elms_pairs_postproc.pdf", DIRS$RESULTS),
       width = 50, height = 50)
   plot(tree_pairs[to_keep])
