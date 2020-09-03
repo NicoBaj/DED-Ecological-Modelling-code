@@ -27,33 +27,37 @@ input$p_i   = 0.02 #proba that one beetle infects successfully one tree
 input$s_dt  = 0.98 #proba for beetles to survive one time step
 
 #Set up the simulation in function of choices in 1- and 2-:
-if(Neighbourhood=="MIXED_PULBERRY_CRESCENT_PARK"){
-  sim_core = "1513Trees"
-  if(IC_type == "cluster"){
-    IC_radius = 96
-  }else if(IC_type == "2clusters"){
-    IC_radius1 = 47.5
-    IC_radius2 = 280
-    IC_radius = list(r1=IC_radius1,r2=IC_radius2)
-    #These values of radii are done to get the same nb of infected trees at the initial time than in one cluster (96m)
-  }else{
-    IC_radius = 96
-    IC_number_dead_trees = 38
-  }
-}else if (Neighbourhood == "NORTH_RIVER_HEIGHTS"){
-  sim_core = "2004Trees"
-  if(IC_type == "cluster"){
-    IC_radius = 100
-  }else if(IC_type == "2clusters"){
-    IC_radius1 = 84
-    IC_radius2 = 84
-    IC_radius = list(r1=IC_radius1,r2=IC_radius2)
-    #These values of radii are done to get the same nb of infected trees at the initial time than in one cluster (100m)
-  }else{
-    IC_radius = 100
-    IC_number_dead_trees = 50
+SIMULATIONS_ARTICLE = TRUE
+if(SIMULATIONS_ARTICLE){
+  if(Neighbourhood=="MIXED_PULBERRY_CRESCENT_PARK"){
+    sim_core = "1513Trees"
+    if(IC_type == "cluster"){
+      IC_radius = 96
+    }else if(IC_type == "2clusters"){
+      IC_radius1 = 47.5
+      IC_radius2 = 280
+      IC_radius = list(r1=IC_radius1,r2=IC_radius2)
+      #These values of radii are done to get the same nb of infected trees at the initial time than in one cluster (96m)
+    }else{
+      IC_radius = 96
+      IC_number_dead_trees = 38
+    }
+  }else if (Neighbourhood == "NORTH_RIVER_HEIGHTS"){
+    sim_core = "2004Trees"
+    if(IC_type == "cluster"){
+      IC_radius = 100
+    }else if(IC_type == "2clusters"){
+      IC_radius1 = 84
+      IC_radius2 = 84
+      IC_radius = list(r1=IC_radius1,r2=IC_radius2)
+      #These values of radii are done to get the same nb of infected trees at the initial time than in one cluster (100m)
+    }else{
+      IC_radius = 100
+      IC_number_dead_trees = 50
+    }
   }
 }
+
 
 #do we want to run the code with the root infection route ?
 roots = TRUE
