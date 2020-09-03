@@ -47,17 +47,21 @@ read_parameters = function(sim_constants,input) {
   sim_constants$default_params$R_B             = input$R_B
   
   ## Now we can load the good preprocessing since we have the right R_B
-  sim_constants$FILES[[2]] = sprintf("%s/Preprocessing/old_pre_processing/neighbours_%s_maxD%s.RData", sim_constants$DIRS$DATA, sim_constants$sim_core, sim_constants$default_params$R_B)
-  sim_constants$FILES[[3]] = sprintf("%s/Preprocessing/old_pre_processing/distance_neighbours_%s_maxD%s.RData", sim_constants$DIRS$DATA, sim_constants$sim_core, sim_constants$default_params$R_B)
-  sim_constants$FILES[[4]] = sprintf("%s/Preprocessing/old_pre_processing/neighbours_pos_%s_maxD%s.RData", sim_constants$DIRS$DATA,sim_constants$sim_core, sim_constants$default_params$R_B)
-  sim_constants$FILES[[5]] = sprintf("%s/Elms_%s.RData", sim_constants$DIRS$DATA, sim_constants$Neighbourhood)
+  if(sim_constants$GATES$SIMULATIONS_ARTICLE){
+    sim_constants$FILES[[2]] = sprintf("%s/Preprocessing/article_pre_processing/neighbours_%s_maxD%s.RData", sim_constants$DIRS$DATA, sim_constants$sim_core, sim_constants$default_params$R_B)
+    sim_constants$FILES[[3]] = sprintf("%s/Preprocessing/article_pre_processing/distance_neighbours_%s_maxD%s.RData", sim_constants$DIRS$DATA, sim_constants$sim_core, sim_constants$default_params$R_B)
+    sim_constants$FILES[[4]] = sprintf("%s/Preprocessing/article_pre_processing/neighbours_pos_%s_maxD%s.RData", sim_constants$DIRS$DATA,sim_constants$sim_core, sim_constants$default_params$R_B)
+    sim_constants$FILES[[5]] = sprintf("%s/Elms_%s_2020-01-28.RData", sim_constants$DIRS$DATA, sim_constants$Neighbourhood)
+    sim_constants$FILES[[7]] = sprintf("%s/Proba_roots_%s_2020-01-28.Rds",sim_constants$DIRS$DATA,sim_constants$Neighbourhood)
+  }else{
+    sim_constants$FILES[[2]] = sprintf("%s/Preprocessing/new_pre_processing/neighbours_%s_RB%s_%s.Rds", sim_constants$DIRS$DATA, sim_constants$sim_core, sim_constants$default_params$R_B,sim_constants$Neighbourhood)
+    sim_constants$FILES[[3]] = sprintf("%s/Preprocessing/new_pre_processing/distance_neighbours_%s_RB%s_%s.Rds", sim_constants$DIRS$DATA, sim_constants$sim_core, sim_constants$default_params$R_B,sim_constants$Neighbourhood)
+    sim_constants$FILES[[4]] = sprintf("%s/Preprocessing/new_pre_processing/neighbours_pos_%s_RB%s_%s.Rds", sim_constants$DIRS$DATA,sim_constants$sim_core, sim_constants$default_params$R_B,sim_constants$Neighbourhood)
+    sim_constants$FILES[[5]] = sprintf("%s/Elms_Neighbourhood/Elms_%s.Rds", sim_constants$DIRS$DATA, sim_constants$Neighbourhood)
+    sim_constants$FILES[[7]] = sprintf("%s/Roots/Proba_roots_%s.Rds",sim_constants$DIRS$DATA,sim_constants$Neighbourhood)
+  }
   
-  #the following file is just a default_file, then it changes when we set up the IC
-  # sim_constants$FILES[[6]] = sprintf("%s/IC_PULBERRY_radius_60.RData", sim_constants$DIRS$DATA)
   
-  # sim_constants$FILES[[7]] = sprintf("%s/Proba_roots/Proba_roots_%s_pr%s.RData",sim_constants$DIRS$DATA,sim_constants$Neighbourhood,sim_constants$default_params$p_r*100)
-  
-  sim_constants$FILES[[7]] = sprintf("%s/Proba_roots_%s.Rds",sim_constants$DIRS$DATA,sim_constants$Neighbourhood)
   
   # parameters <- read.csv(sim_constants$FILES[[1]], header=TRUE)
   neighbours_circle = readRDS(sim_constants$FILES[[2]])

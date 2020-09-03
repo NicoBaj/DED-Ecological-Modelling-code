@@ -108,13 +108,12 @@ TOP_DIR <- dirname(TOP_DIR_CODE)
 dir_data <- sprintf("%s/DATA",TOP_DIR)
 dir_save <- sprintf("%s/Preprocessing/new_pre_processing",dir_data)
 
-# name_ngh = "MIXED_PULBERRY_CRESCENT_PARK"
 name_ngh = "NORTH_RIVER_HEIGHTS"
-# 
-Elms = readRDS(sprintf("%s/Elms_%s.RData",dir_data,name_ngh))
+
+Elms = readRDS(sprintf("%s/Elms_Neighbourhood/Elms_%s.Rds",dir_data,name_ngh))
 
 list.R_B = list()
-seq_R_B = seq(20,40,by=20) #list of values of R_B
+seq_R_B = seq(20,100,by=20) #list of values of R_B
 for (i in 1:length(seq_R_B)){
   list.R_B[[i]] = seq_R_B[i]
 }
@@ -149,7 +148,7 @@ for (i in 1:length(outputs)){
   neighbours_pos = neighb_pos(Elms,output[[1]])
   Nb_trees = length(neighbours_circle)
 
-  saveRDS(neighbours_circle,sprintf("%s/neighbours_%sTrees_RB%s.RData",dir_save,Nb_trees,R_B))
-  saveRDS(distance_neighbours,sprintf("%s/distance_neighbours_%sTrees_RB%s.RData",dir_save,Nb_trees,R_B))
-  saveRDS(neighbours_pos,sprintf("%s/neighbours_pos_%sTrees_RB%s.RData",dir_save,Nb_trees,R_B))
+  saveRDS(neighbours_circle,sprintf("%s/neighbours_%sTrees_RB%s_%s.Rds",dir_save,Nb_trees,R_B,name_ngh))
+  saveRDS(distance_neighbours,sprintf("%s/distance_neighbours_%sTrees_RB%s_%s.Rds",dir_save,Nb_trees,R_B,name_ngh))
+  saveRDS(neighbours_pos,sprintf("%s/neighbours_pos_%sTrees_RB%s_%s.Rds",dir_save,Nb_trees,R_B,name_ngh))
 }

@@ -117,33 +117,81 @@ system_over_time=function(sim_param,sim_constants){
         idx_susceptible_roots = which(status_trees[,(idx-1)]=="H"|status_trees[,(idx-1)]=="S_W"|status_trees[,(idx-1)]=="S_D")#this time, all susceptible trees are ... susceptible
         status_trees_after_root = mat.or.vec(sim_constants$default_params$N,1)
         nb_inf_roots = 0#just to compute the number of infections by roots
+        # sim_param$params$proba_roots = sim_param$params$proba_roots[which(sim_param$params$proba_roots$proba>0),]
         
-        for (j in idx_susceptible_roots){#look up over susceptible trees
+        for (k in idx_susceptible_roots){#look up over susceptible trees
+          # print(k)
           # j is the index of the tree in the "neighbourhood"
-          
-          #sim_param$params$proba_roots is the data frame
-          #first the rows that have j as a connected tree in proba_roots and find the associated neighbours
-          
-          row_j = which(sim_param$params$proba_roots$idx_i==j)#indices of neighbours of j
-          pos_neighbours = sim_param$params$proba_roots$idx_j[row_j]# their position in the system
-          inf_neighbours = pos_neighbours[which(status_trees[pos_neighbours,idx-1]=="I_D")]#position of neighbours that are infected
-          
-          if(length(inf_neighbours)>0){
-            #save the rows at which we have j associated to an infected neighbour
-            row_inf = row_j[which(status_trees[sim_param$params$proba_roots$idx_j[row_j],idx-1]=="I_D")]
-            if(length(row_inf)>0){
-              vec_proba_inf = sim_param$params$proba_roots$proba[row_inf]*sim_param$params$p_r
-              poisson_binomial_run = rpoibin(1,vec_proba_inf)
-              if(poisson_binomial_run>0){#means that the tree has been infected
-                if(status_trees[j,idx-1]=="H"|status_trees[j,idx-1]=="S_W"){
-                  status_trees_after_root[j]="I_W"
-                }else if(status_trees[j,idx-1]=="S_D"){
-                  status_trees_after_root[j]="I_D"
+          if(sim_constants$GATES$SIMULATIONS_ARTICLE){
+            #sim_param$params$proba_roots is the data frame
+            #first the rows that have j as a connected tree in proba_roots and find the associated neighbours
+            
+            row_k = which(sim_param$params$proba_roots$idx_i==k)#indices of neighbours of j
+            pos_neighbours = sim_param$params$proba_roots$idx_j[row_k]# their position in the system
+            inf_neighbours = pos_neighbours[which(status_trees[pos_neighbours,idx-1]=="I_D")]#position of neighbours that are infected
+            
+            if(length(inf_neighbours)>0){
+              #save the rows at which we have j associated to an infected neighbour
+              row_inf = row_k[which(status_trees[sim_param$params$proba_roots$idx_j[row_k],idx-1]=="I_D")]
+              if(length(row_inf)>0){
+                vec_proba_inf = sim_param$params$proba_roots$proba[row_inf]*sim_param$params$p_r
+                # print(vec_proba_inf)
+                poisson_binomial_run = rpoibin(1,vec_proba_inf)
+                # print(poisson_binomial_run)
+                if(poisson_binomial_run>0){#means that the tree has been infected
+                  if(status_trees[k,idx-1]=="H"|status_trees[k,idx-1]=="S_W"){
+                    status_trees_after_root[k]="I_W"
+                  }else if(status_trees[k,idx-1]=="S_D"){
+                    status_trees_after_root[k]="I_D"
+                  }
+                  nb_inf_roots = nb_inf_roots+1
                 }
-                nb_inf_roots = nb_inf_roots+1
+              }
+              if(k == 23){
+                print(vec_proba_inf)
+                print(poisson_binomial_run)
+              }
+            }
+          }else{
+            #sim_param$params$proba_roots is the data frame
+            #first the rows that have k as a connected tree in proba_roots and find the associated neighbours
+            
+            ID_k = sim_constants$default_params$elms$Tree.ID[k]#Tree ID of k
+            row_k = which(sim_param$params$proba_roots$ID_i == ID_k)#where is ID_k in the dataframe of proba (as a source)
+            ID_neighbours = sim_param$params$proba_roots$ID_j[row_k]#IDs of neighbours (destinations)
+            pos_neighbours = which(sim_constants$default_params$elms$Tree.ID %in% ID_neighbours) #their position in the system
+            
+            # row_j = which(sim_param$params$proba_roots$idx_i==j)#indices of neighbours of j
+            # pos_neighbours = sim_param$params$proba_roots$idx_j[row_j]# their position in the system
+            inf_neighbours = pos_neighbours[which(status_trees[pos_neighbours,idx-1]=="I_D")]#position of neighbours that are infected
+            
+            if(length(inf_neighbours)>0){
+              inf_neighbours_ID = sim_constants$default_params$elms$Tree.ID[inf_neighbours] #ID of infected neighbours
+              
+              #save the rows at which we have j associated to an infected neighbour
+              # row_inf = row_j[which(status_trees[sim_param$params$proba_roots$idx_j[row_j],idx-1]=="I_D")]
+              row_inf = which((sim_param$params$proba_roots$ID_j %in% inf_neighbours_ID) & (sim_param$params$proba_roots$ID_i == ID_k))
+              if(length(row_inf)>0){
+                vec_proba_inf = sim_param$params$proba_roots$proba[row_inf]*sim_param$params$p_r
+                # print(vec_proba_inf)
+                poisson_binomial_run = rpoibin(1,vec_proba_inf)
+                # print(poisson_binomial_run)
+                if(poisson_binomial_run>0){#means that the tree has been infected
+                  if(status_trees[k,idx-1]=="H"|status_trees[k,idx-1]=="S_W"){
+                    status_trees_after_root[k]="I_W"
+                  }else if(status_trees[k,idx-1]=="S_D"){
+                    status_trees_after_root[k]="I_D"
+                  }
+                  nb_inf_roots = nb_inf_roots+1
+                }
+              }
+              if(k==23){
+                print(vec_proba_inf)
+                print(poisson_binomial_run)
               }
             }
           }
+          
         }
         print(sprintf("nb of new infected trees by roots = %s",nb_inf_roots))
         root_or_beetle[idx,2] = length(nb_inf_roots)

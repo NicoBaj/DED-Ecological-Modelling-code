@@ -2,6 +2,7 @@
 # File that conducts the main simulation run.
 
 # LOGICAL GATES
+SIMULATIONS_ARTICLE = TRUE #if true, launch simulations to obtain the outputs from the article, else launch new simulation (require pre_processings)
 PLOT_SIM = TRUE #if sims are launched, do you want to see the DED spread evolution?
 SIM_SAVE = TRUE #do we save the outputs ?
 
@@ -11,8 +12,8 @@ SIM_SAVE = TRUE #do we save the outputs ?
 #3- choose the values of the main parameters
 
 # 1- Neighbourhood
-Neighbourhood = "MIXED_PULBERRY_CRESCENT_PARK" #PCP
-# Neighbourhood = "NORTH_RIVER_HEIGHTS" #NRH
+# Neighbourhood = "MIXED_PULBERRY_CRESCENT_PARK" #PCP
+Neighbourhood = "NORTH_RIVER_HEIGHTS" #NRH
 
 #2- IC
 IC_type="cluster"
@@ -21,13 +22,12 @@ IC_type="cluster"
 
 #3- main parameters
 input = list()
-input$R_B   = 380 #max distance that beetles fly during one time step
-input$p_r   = 0.1 #max proba for an infected tree to infect another one by root infection
-input$p_i   = 0.02 #proba that one beetle infects successfully one tree
+input$R_B   = 100 #max distance that beetles fly during one time step
+input$p_r   = 0.5 #max proba for an infected tree to infect another one by root infection
+input$p_i   = 0.2 #proba that one beetle infects successfully one tree
 input$s_dt  = 0.98 #proba for beetles to survive one time step
 
 #Set up the simulation in function of choices in 1- and 2-:
-SIMULATIONS_ARTICLE = TRUE
 if(SIMULATIONS_ARTICLE){
   if(Neighbourhood=="MIXED_PULBERRY_CRESCENT_PARK"){
     sim_core = "1513Trees"
@@ -56,6 +56,18 @@ if(SIMULATIONS_ARTICLE){
       IC_number_dead_trees = 50
     }
   }
+}else{#if this is a new simulation, put whatever you want in the following
+  if(IC_type == "cluster"){
+    IC_radius = 100
+  }else if(IC_type == "2clusters"){
+    IC_radius1 = 84
+    IC_radius2 = 84
+    IC_radius = list(r1=IC_radius1,r2=IC_radius2)
+    #These values of radii are done to get the same nb of infected trees at the initial time than in one cluster (100m)
+  }else{
+    IC_radius = 100
+    IC_number_dead_trees = 50
+  }
 }
 
 
@@ -72,7 +84,7 @@ IC_beetles = 500 #nb of inf beetles in each infected tree
 
 #Put here the initial and final dates for the simulation(s)
 start_date = "2019-08-01"
-end_date = "2020-12-31"
+end_date = "2021-12-31"
 
 # Libraries needed for all the processes
 library(sqldf)
