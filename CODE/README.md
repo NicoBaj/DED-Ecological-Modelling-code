@@ -18,11 +18,14 @@ Although the `R` scripts are in the directory `CODE`, they are documented here. 
 -`pre_network_beetles.R` loads one tree inventory of a given neighbourhood and returns, for the selected values of the beetle maximum dispersal distance $R_B$, three things (all are lists): 1) the neighbours of 
 each tree, 2) their position in the neighbourhood and 3) their distance.
 
-
--`run_sim.R` launches one simulation. Once the pre-processing done, it selects the neighbourhood, the main parameter values and initial conditions. Then, it sources the functions required for the simulation.
-- `pre_functions_IC.R` stores functions to set initial conditions.
-- `pre_set_various.R` sets the environment to run simulations.
- 
- 
+#### Processing
 - `sim_functions.R` stores functions required during one simulation.
+- `functions_IC.R` stores functions to set initial conditions.
+- `set_various.R` sets the environment to run simulations.
 - `sim.R` is the code that runs 
+-`run_sim.R` launches one simulation. Once the pre-processing done, it selects the neighbourhood, the main parameter values and initial conditions. Then, it sources the functions required for the simulation.
+
+### New simulation vs simulation from the article
+- To launch a simulation that uses the same dataset than the article (tree inventory is dated of the 28th January 2020), run the script `run_sim.R` and set the gate `SIMULATIONS_ARTICLE` to `TRUE`. Then choose the neighbourhood, the type of initial conditions and the values of the main parameters.
+
+- To launch a new simulation, here are the steps to follow: 1) run `pre_load_trees_and_compute_tree_heights.R`, 2) run `pre_roots_vs_routes.R`, 3) run `pre_neighbourhoods_proba_roots.R` with a selected neighbourhood, 4) run `pre_network_beetles.R` with the values of the beetle maximum dispersal distance $R_B$ required and finally 5) run `run_sim.R` with `SIMULATIONS_ARTICLE = TRUE` and the right set up wanted.
