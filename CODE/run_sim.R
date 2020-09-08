@@ -116,10 +116,10 @@ TOP_DIR <- dirname(TOP_DIR_CODE)
 #source(sprintf("%s/set_directories.R", TOP_DIR_CODE))
 
 # Source the pre processing (create env,loading files...)
-source(sprintf("%s/pre_set_various.R",TOP_DIR_CODE))
+source(sprintf("%s/set_various.R",TOP_DIR_CODE))
 # Source all the functions needed for the simulation
 source(sprintf("%s/sim_functions.R",TOP_DIR_CODE))
 # Source the functions that create initial condition
-source(sprintf("%s/pre_IC.R",TOP_DIR_CODE))
+source(sprintf("%s/functions_IC.R",TOP_DIR_CODE))
 # Source the R script for the simulation
 source(sprintf("%s/sim.R",TOP_DIR_CODE))

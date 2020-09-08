@@ -108,6 +108,7 @@ TOP_DIR <- dirname(TOP_DIR_CODE)
 dir_data <- sprintf("%s/DATA",TOP_DIR)
 dir_save <- sprintf("%s/Preprocessing/new_pre_processing",dir_data)
 
+### Replace spaces by ""
 name_ngh = "NORTH_RIVER_HEIGHTS"
 
 Elms = readRDS(sprintf("%s/Elms_Neighbourhood/Elms_%s.Rds",dir_data,name_ngh))
