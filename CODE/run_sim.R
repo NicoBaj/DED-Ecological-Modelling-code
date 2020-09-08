@@ -1,4 +1,4 @@
-##run_one_sim.R: 
+##run_sim.R: 
 # File that conducts the main simulation run.
 
 # LOGICAL GATES
