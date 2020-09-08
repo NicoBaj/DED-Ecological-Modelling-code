@@ -84,10 +84,14 @@ if (REFRESH_OSM_DATA) {
 # There can be several versions of the tree inventory file, load the latest
 TI_files = list.files(path = DIRS$DATA,
                       pattern = glob2rx("tree_inventory_elms*.Rds"))
-latest_TI_file = sort(TI_files, decreasing = TRUE)[1]
+selected_TI_file = sort(TI_files, decreasing = TRUE)[1]
+# Override if needed by selecting manually one of the files in TI_files, for instance
+# selected_TI_file = TI_files[1]
+# Get the date, to save distance files with that information
+date_TI_file = substr(selected_TI_file, 21, 30)
 
 # Read elms csv file (could also read the RDS..)
-elms <- readRDS(sprintf("%s/%s", DIRS$DATA, latest_TI_file))
+elms <- readRDS(sprintf("%s/%s", DIRS$DATA, selected_TI_file))
 
 if (VERBOSE_OUTPUT) {
   writeLines("Computing distances between all tree pairs")
@@ -149,13 +153,6 @@ DISTS$dist = D_mat[indices]
 # Clean up and garbage collect
 rm(D_mat)
 gc()
-
-# Save distances table
-if (VERBOSE_OUTPUT) {
-  writeLines("Saving DISTS table")
-}
-saveRDS(DISTS, file = sprintf("%s/elms_distances_roots.Rds", DIRS$DATA))
-
 
 # The locations of the origins of the pairs
 tree_locs_orig = cbind(DISTS$lon_i, DISTS$lat_i)
@@ -232,4 +229,4 @@ DISTS = DISTS[to_keep,]
 if (VERBOSE_OUTPUT) {
   writeLines("Final save, we're almost done")
 }
-saveRDS(DISTS, file = sprintf("%s/elms_distances_roots.Rds",DIRS$DATA))
+saveRDS(DISTS, file = sprintf("%s/elms_distances_roots_%s.Rds", DIRS$DATA, date_TI_file))
