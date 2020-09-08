@@ -12,8 +12,8 @@ To launch a new simulation, here are the steps to follow:
 1. Run `pre_load_trees_and_compute_tree_heights.R`.
 2. Run `pre_roots_vs_routes.R`. ***Warning: 128 GB of RAM required***. Default file provided to skip steps 1 and 2.
 3. Run `pre_neighbourhoods_proba_roots.R` with a selected neighbourhood.
-4. Run `pre_network_beetles.R` with the chosen values of the beetle maximum dispersal distance `R_B` and the selected neighbourhood.
-5. Run `run_sim.R` with `SIMULATIONS_ARTICLE = FALSE`, one value of `R_B`, the name of the neighbourhood.
+4. Run `pre_network_beetles.R` with the chosen values for the beetle maximum dispersal distance `R_B` and the selected neighbourhood.
+5. Run `run_sim.R` with `SIMULATIONS_ARTICLE = FALSE`, a value of `R_B` within the chosen values and the name of the neighbourhood.
 
 ### R scripts
 All `R` scripts are documented here. Most scripts have a prefixed name to indicate the stage at which they come into play.
