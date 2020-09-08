@@ -19,7 +19,6 @@ Although the `R` scripts are in the directory `CODE`, they are documented here. 
 
 - `pre_` are preprocessing scripts that typically need to be run before simulations can be performed.
 - `run_` scripts run the simulations.
-- `post_` scripts are run after simulations to process the results.
 
 #### Preprocessing 
 - `pre_load_trees_and_compute_tree_heights.R` loads the tree inventory from the [City of Winnipeg Open Data Portal](), selects American Elms, computes the heights of each tree, extracts lat/lon information for each tree and saves the result for later use.
@@ -28,9 +27,9 @@ Although the `R` scripts are in the directory `CODE`, they are documented here. 
 - `pre_network_beetles.R` loads the tree inventory created by `pre_neighbourhoods_proba_roots.R` and saves, for the selected values of the beetle maximum dispersal distance $R_B$: the neighbours of each tree and information on neighbour trees.
 
 #### Processing
-- `sim_functions.R` stores functions required during one simulation.
+- `set_directories.R` sets the directories.
 - `functions_IC.R` stores functions to set initial conditions.
 - `set_various.R` sets the environment to run simulations.
-- `set_directories.R` sets the directories.
+- `sim_functions.R` stores functions required during one simulation.
 - `sim.R` is the simulation code.
 - `run_sim.R` launches one simulation. Once the pre-processing done, it selects the neighbourhood, the main parameter values and initial conditions. Then, it sources the functions required for the simulation.
