@@ -2,6 +2,14 @@
 #load the right dataset
 #split the dataset for each neighbourhood
 
+####################################################################################
+### SELECTION OF NEIGHBOURHOODS
+#Select the neighbourhood(s) you want to study
+# to see the names of neighbourhoods: unique(all_trees$Neighbourhood)
+list.of.neighbourhoods      = list()
+list.of.neighbourhoods[[1]] = "NORTH RIVER HEIGHTS"
+####################################################################################
+
 #libraries
 library(sqldf)
 library(igraph)
@@ -78,10 +86,6 @@ all_trees = all_trees[which(all_trees$DBH>5),] #remove trees too small
 all_trees$Index = 1:dim(all_trees)[1]
 distances = readRDS(sprintf("%s/elms_distances_roots.Rds",dir_prefix))
 
-#Select the neighbourhood(s) you want to study
-# to see the names of neighbourhoods: unique(all_trees$Neighbourhood)
-list.of.neighbourhoods      = list()
-list.of.neighbourhoods[[1]] = "NORTH RIVER HEIGHTS"
 
 #The following loop makes 1) the separation into neighbourhoods for the selected neighbourhoods in list.neighbourhoods, 2) select the right lines in the elm_distances_root that correspond to the trees in the neighbourhood and 3) compute the probabilities that two close trees infect can infect each other through the roots
 list_trees = list()

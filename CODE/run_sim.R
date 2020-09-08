@@ -12,6 +12,7 @@ SIM_SAVE = TRUE #do we save the outputs ?
 #3- choose the values of the main parameters
 
 # 1- Neighbourhood: uncomment your choice
+# replace spaces by "_" in the neighbourhood name
 # Neighbourhood = "MIXED_PULBERRY_CRESCENT_PARK" #PCP
 Neighbourhood = "NORTH_RIVER_HEIGHTS" #NRH
 

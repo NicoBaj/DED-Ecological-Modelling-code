@@ -1,6 +1,13 @@
 ##pre_network_beetles.R
 # File that produces 
 
+######################################################################
+### SELECTION OF NEIGHBOURHOOD AND VALUES OF R_B
+### replace spaces by "_" in the neighbourhood name
+name_ngh = "NORTH_RIVER_HEIGHTS"
+seq_R_B = seq(20,100,by=20) #list of values of R_B
+######################################################################
+
 library(sqldf)
 library(igraph)
 library(Matrix)
@@ -108,13 +115,10 @@ TOP_DIR <- dirname(TOP_DIR_CODE)
 dir_data <- sprintf("%s/DATA",TOP_DIR)
 dir_save <- sprintf("%s/Preprocessing/new_pre_processing",dir_data)
 
-### Replace spaces by ""
-name_ngh = "NORTH_RIVER_HEIGHTS"
-
 Elms = readRDS(sprintf("%s/Elms_Neighbourhood/Elms_%s.Rds",dir_data,name_ngh))
 
 list.R_B = list()
-seq_R_B = seq(20,100,by=20) #list of values of R_B
+
 for (i in 1:length(seq_R_B)){
   list.R_B[[i]] = seq_R_B[i]
 }
