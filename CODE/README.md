@@ -10,7 +10,7 @@ To launch a simulation that uses the same dataset than the article (tree invento
 ### Simulation from newly updated inventory trees
 To launch a new simulation, here are the steps to follow: 
 1. Run `pre_load_trees_and_compute_tree_heights.R`.
-2. Run `pre_roots_vs_routes.R`. ***Warning: 128 GB of RAM required***. Default file provided to skip step 2.
+2. Run `pre_roots_vs_routes.R`. ***Warning: 128 GB of RAM required***. Default file provided to skip steps 1 and 2.
 3. Run `pre_neighbourhoods_proba_roots.R` with a selected neighbourhood.
 4. Run `pre_network_beetles.R` with the values of the beetle maximum dispersal distance `R_B` required.
 5. Run `run_sim.R` with `SIMULATIONS_ARTICLE = FALSE` and the right set up wanted.
