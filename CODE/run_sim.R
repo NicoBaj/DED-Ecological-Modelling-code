@@ -2,7 +2,7 @@
 # File that conducts the main simulation run.
 
 # LOGICAL GATES
-SIMULATIONS_ARTICLE = TRUE #if true, launch simulations to obtain the outputs from the article, else launch new simulation (require pre_processings)
+SIMULATIONS_ARTICLE = TRUE #if true, launch simulations with tree inventory used in the article (dated from 28th January 2020), else launch new simulation (require pre-processings)
 PLOT_SIM = TRUE #if sims are launched, do you want to see the DED spread evolution?
 SIM_SAVE = TRUE #do we save the outputs ?
 

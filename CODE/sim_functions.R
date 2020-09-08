@@ -319,7 +319,7 @@ mvt_beetles = function(sim_constants,params,vec.of.beetles,status_trees,type,VAR
         distance_of_H_in_neighbourhood = distance_neighbours[[i]][id] #distance of each neighbour
         
         # list.random[[i]] = sample(1:len,size=vec.of.beetles[i],replace = TRUE)#destination for the beetles choosen randomly
-        list.random[[i]] = sample(1:len,size=ceiling(vec.of.beetles[i]),replace = TRUE)#destination for the beetles choosen randomly
+        list.random[[i]] = sample(1:len,size=ceiling(vec.of.beetles[i]),replace = TRUE)#destination for the beetles choosen randomly: ceiling because the decimals
         list.pos[[i]] = pos_of_H_in_neighbourhood[list.random[[i]]]#position of the destination trees
         
         list.dist[[i]] = proba_distance(sim_constants$default_params$R_B,distance_of_H_in_neighbourhood[list.random[[i]]]) #probability to survive the distance for the destination trees
