@@ -1,60 +1,34 @@
-##run_one_sim.R: 
+##run_sim.R: 
 # File that conducts the main simulation run.
 
 # LOGICAL GATES
+SIMULATIONS_ARTICLE = TRUE #if true, launch simulations with tree inventory used in the article (dated from 28th January 2020), else launch new simulation (require pre-processings)
 PLOT_SIM = TRUE #if sims are launched, do you want to see the DED spread evolution?
 SIM_SAVE = TRUE #do we save the outputs ?
 
-#The three following inputs are crucial for the type of simulations:
+#Inputs to define the type of simulations:
 #1- choose the neighbourhood
 #2- choose the initial condition (IC)
 #3- choose the values of the main parameters
 
-# 1- Neighbourhood
-Neighbourhood = "MIXED_PULBERRY_CRESCENT_PARK" #PCP
-# Neighbourhood = "NORTH_RIVER_HEIGHTS" #NRH
+# 1- Neighbourhood: uncomment your choice
+# replace spaces by "_" in the neighbourhood name
+# Neighbourhood = "MIXED_PULBERRY_CRESCENT_PARK" #PCP
+Neighbourhood = "NORTH_RIVER_HEIGHTS" #NRH
 
-#2- IC
+#2- IC: uncomment your choice
 IC_type="cluster"
 # IC_type = "2clusters"
 # IC_type = "random"
 
-#3- main parameters
+#3- Main model parameters: update the values 
 input = list()
-input$R_B   = 380 #max distance that beetles fly during one time step
-input$p_r   = 0.1 #max proba for an infected tree to infect another one by root infection
+input$R_B   = 100 #max distance that beetles fly during one time step. If using data from article, then choose from 20 to 380 by steps of 40. 
+input$p_r   = 0.5 #max proba for an infected tree to infect another one by root infection
 input$p_i   = 0.02 #proba that one beetle infects successfully one tree
 input$s_dt  = 0.98 #proba for beetles to survive one time step
 
-#Set up the simulation in function of choices in 1- and 2-:
-if(Neighbourhood=="MIXED_PULBERRY_CRESCENT_PARK"){
-  sim_core = "1513Trees"
-  if(IC_type == "cluster"){
-    IC_radius = 96
-  }else if(IC_type == "2clusters"){
-    IC_radius1 = 47.5
-    IC_radius2 = 280
-    IC_radius = list(r1=IC_radius1,r2=IC_radius2)
-    #These values of radii are done to get the same nb of infected trees at the initial time than in one cluster (96m)
-  }else{
-    IC_radius = 96
-    IC_number_dead_trees = 38
-  }
-}else if (Neighbourhood == "NORTH_RIVER_HEIGHTS"){
-  sim_core = "2004Trees"
-  if(IC_type == "cluster"){
-    IC_radius = 100
-  }else if(IC_type == "2clusters"){
-    IC_radius1 = 84
-    IC_radius2 = 84
-    IC_radius = list(r1=IC_radius1,r2=IC_radius2)
-    #These values of radii are done to get the same nb of infected trees at the initial time than in one cluster (100m)
-  }else{
-    IC_radius = 100
-    IC_number_dead_trees = 50
-  }
-}
-
+#
 #do we want to run the code with the root infection route ?
 roots = TRUE
 
@@ -68,7 +42,51 @@ IC_beetles = 500 #nb of inf beetles in each infected tree
 
 #Put here the initial and final dates for the simulation(s)
 start_date = "2019-08-01"
-end_date = "2020-12-31"
+end_date = "2021-12-31"
+
+###############################################################
+#Set up the simulation in function of choices in 1- and 2-:
+if(SIMULATIONS_ARTICLE){
+  if(Neighbourhood=="MIXED_PULBERRY_CRESCENT_PARK"){
+    sim_core = "1513Trees"
+    if(IC_type == "cluster"){
+      IC_radius = 96
+    }else if(IC_type == "2clusters"){
+      IC_radius1 = 47.5
+      IC_radius2 = 280
+      IC_radius = list(r1=IC_radius1,r2=IC_radius2)
+      #These values of radii are done to get the same nb of infected trees at the initial time than in one cluster (96m)
+    }else{
+      IC_radius = 96
+      IC_number_dead_trees = 38
+    }
+  }else if (Neighbourhood == "NORTH_RIVER_HEIGHTS"){
+    sim_core = "2004Trees"
+    if(IC_type == "cluster"){
+      IC_radius = 100
+    }else if(IC_type == "2clusters"){
+      IC_radius1 = 84
+      IC_radius2 = 84
+      IC_radius = list(r1=IC_radius1,r2=IC_radius2)
+      #These values of radii are done to get the same nb of infected trees at the initial time than in one cluster (100m)
+    }else{
+      IC_radius = 100
+      IC_number_dead_trees = 50
+    }
+  }
+}else{#if this is a new simulation, put whatever you want in the following
+  if(IC_type == "cluster"){
+    IC_radius = 100
+  }else if(IC_type == "2clusters"){
+    IC_radius1 = 84
+    IC_radius2 = 84
+    IC_radius = list(r1=IC_radius1,r2=IC_radius2)
+    #These values of radii are done to get the same nb of infected trees at the initial time than in one cluster (100m)
+  }else{
+    IC_radius = 100
+    IC_number_dead_trees = 50
+  }
+}
 
 # Libraries needed for all the processes
 library(sqldf)
@@ -99,10 +117,10 @@ TOP_DIR <- dirname(TOP_DIR_CODE)
 #source(sprintf("%s/set_directories.R", TOP_DIR_CODE))
 
 # Source the pre processing (create env,loading files...)
-source(sprintf("%s/pre_set_various.R",TOP_DIR_CODE))
+source(sprintf("%s/set_various.R",TOP_DIR_CODE))
 # Source all the functions needed for the simulation
 source(sprintf("%s/sim_functions.R",TOP_DIR_CODE))
 # Source the functions that create initial condition
-source(sprintf("%s/pre_IC.R",TOP_DIR_CODE))
+source(sprintf("%s/functions_IC.R",TOP_DIR_CODE))
 # Source the R script for the simulation
 source(sprintf("%s/sim.R",TOP_DIR_CODE))

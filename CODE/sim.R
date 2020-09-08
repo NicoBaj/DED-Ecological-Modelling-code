@@ -6,14 +6,24 @@
 # Constants will go in a list called sim_constants.
 sim_constants = list()
 
-# Set part of the name for the result directory
-sim_constants$sim_core = sim_core
+#Set the gates
+sim_constants$GATES = list()
+sim_constants$GATES$PLOT_SIM = PLOT_SIM #add other gates if needed
+sim_constants$GATES$SIMULATIONS_ARTICLE = SIMULATIONS_ARTICLE
 
 # Set directories
 sim_constants$DIRS = set_directories(TOP_DIR)
 
 # Set the neighbourhood
 sim_constants$Neighbourhood = Neighbourhood
+
+# Set part of the name for the result directory
+if(SIMULATIONS_ARTICLE){
+  sim_constants$sim_core = sim_core
+}else{
+  nb_trees = readRDS(sprintf("%s/sim_core_%s.Rds",sim_constants$DIRS$DATA,Neighbourhood))
+  sim_constants$sim_core = sprintf("%sTrees",nb_trees)
+}
 
 
 # Read parameters from the csv file and replace those choosen in the main file (input)
@@ -36,10 +46,6 @@ sim_constants$nb_sims = nb_sims
 
 # Set up other stuffs
 sim_constants$other = set_other_constants(sim_constants)
-
-#Set the gates
-sim_constants$GATES = list()
-sim_constants$GATES$PLOT_SIM = PLOT_SIM #add other gates if needed
 
 # Parameters (and almost everything else) will go in a list called sim_params.
 sims_params = list()
