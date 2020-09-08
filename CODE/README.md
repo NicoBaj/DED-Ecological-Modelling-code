@@ -8,11 +8,11 @@ Some of the code requires substantial computing power (multiple cores) or RAM (>
 - To launch a simulation that uses the same dataset than the article (tree inventory is dated of the 28th January 2020), run the script `run_sim.R` and set the gate `SIMULATIONS_ARTICLE` to `TRUE`. Then choose the neighbourhood, the type of initial conditions and the values of the main parameters.
 
 - To launch a new simulation, here are the steps to follow: 
-1) run `pre_load_trees_and_compute_tree_heights.R`, 
-2) run `pre_roots_vs_routes.R`, 
-3) run `pre_neighbourhoods_proba_roots.R` with a selected neighbourhood, 
-4) run `pre_network_beetles.R` with the values of the beetle maximum dispersal distance `R_B` required,
-5) run `run_sim.R` with `SIMULATIONS_ARTICLE = FALSE` and the right set up wanted.
+1. Run `pre_load_trees_and_compute_tree_heights.R`.
+2. Run `pre_roots_vs_routes.R`.
+3. Run `pre_neighbourhoods_proba_roots.R` with a selected neighbourhood.
+4. Run `pre_network_beetles.R` with the values of the beetle maximum dispersal distance `R_B` required.
+5. Run `run_sim.R` with `SIMULATIONS_ARTICLE = FALSE` and the right set up wanted.
 
 ### R scripts
 Although the `R` scripts are in the directory `CODE`, they are documented here. Most scripts have a prefixed name to indicate the stage at which they come into play.
@@ -23,7 +23,7 @@ Although the `R` scripts are in the directory `CODE`, they are documented here. 
 
 #### Preprocessing 
 - `pre_load_trees_and_compute_tree_heights.R` loads the tree inventory from the [City of Winnipeg Open Data Portal](), selects American Elms, computes the heights of each tree, extracts lat/lon information for each tree and saves the result for later use.
-- `pre_roots_vs_routes.R` (where route is intended as the French for road) loads Openstreetmap (OSM) data for the geography: roads, parking lots, railroads and rivers. It computes the distance between each pair of trees in the elms file then sets up line segments between all trees that are less than some threshold maximum distance away (we use 6 times the tree heights). It then removes from this graph all edges that intersect at least one of the OSM objects. ***Remark that we compute distances in the entire city. The amount of RAM required for some of the operations is therefore quite substantial. To run the code comfortably if other programs are running, 128 GB of RAM is therefore recommended.***
+- `pre_roots_vs_routes.R` (where route is intended as the French for road) loads Openstreetmap (OSM) data for the geography: roads, parking lots, railroads and rivers. It computes the distance between each pair of trees in the elms file then sets up line segments between all trees that are less than some threshold maximum distance away (we use 6 times the tree heights). It then removes from this graph all edges that intersect at least one of the OSM objects. Remark that we compute distances in the entire city. ***The amount of RAM required for some of the operations is therefore quite substantial. To run the code comfortably if other programs are running, 128 GB of RAM is therefore recommended.***
 - `pre_neighbourhoods_proba_roots.R` loads the elm tree inventory created in `pre_load_trees_and_compute_tree_heights.R` and the roots-related dataset obtained in `pre_roots_vs_routes.R`. It selects trees from chosen neighbourhoods and saves this new tree inventory. Then, it selects in the roots-related dataset the rows for which the trees are in the neighbourhood. It then computes, for all couples of trees in the neighbourhood, the probability to become infected through the root system. It saves this dataset as "Proba_roots_Neighbourhood.Rds".
 -`pre_network_beetles.R` loads one tree inventory of a given neighbourhood and returns, for the selected values of the beetle maximum dispersal distance $R_B$, three things (all are lists): 1) the neighbours of 
 each tree, 2) their position in the neighbourhood and 3) their distance.
