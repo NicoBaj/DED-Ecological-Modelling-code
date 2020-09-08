@@ -16,7 +16,7 @@ To launch a new simulation, here are the steps to follow:
 5. Run `run_sim.R` with `SIMULATIONS_ARTICLE = FALSE` and the right set up wanted.
 
 ### R scripts
-Although the `R` scripts are in the directory `CODE`, they are documented here. Most scripts have a prefixed name to indicate the stage at which they come into play.
+All `R` scripts are documented here. Most scripts have a prefixed name to indicate the stage at which they come into play.
 
 - `pre_` are preprocessing scripts that typically need to be run before simulations can be performed.
 - `run_` scripts run the simulations.
