@@ -11,10 +11,17 @@ SIM_SAVE = TRUE #do we save the outputs ?
 #2- choose the initial condition (IC)
 #3- choose the values of the main parameters
 
-# 1- Neighbourhood: uncomment your choice
-# replace spaces by "_" in the neighbourhood name
-# Neighbourhood = "MIXED_PULBERRY_CRESCENT_PARK" #PCP
-Neighbourhood = "NORTH_RIVER_HEIGHTS" #NRH
+# 1- Neighbourhood
+# Neighbourhoods from the articles are "MIXED_PULBERRY_CRESCENT_PARK" (PCP) and "NORTH_RIVER_HEIGHTS" (NRH)
+if(SIMULATIONS_ARTICLE){ # uncomment your choice
+  # Neighbourhood = "MIXED_PULBERRY_CRESCENT_PARK" #PCP
+  Neighbourhood = "NORTH_RIVER_HEIGHTS" #NRH
+}else{
+  Neighbourhood = "your_pick" # and replace spaces by "_" in the neighbourhood name
+}
+
+
+
 
 #2- IC: uncomment your choice
 IC_type="cluster"
