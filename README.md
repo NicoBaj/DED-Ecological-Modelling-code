@@ -7,7 +7,7 @@ Some of the code requires substantial computing power (multiple cores) or RAM (>
 ### Directories
 -`CODE` contains all R scripts.
 
--`DATA` contains all data used for simulations (tree inventories, model parameter values and beetle <img src="https://render.githubusercontent.com/render/math?math=\mathcal{N}^B"> and root $\mathcal{N}^R$ networks).
+-`DATA` contains all data used for simulations (tree inventories, model parameter values and beetle <img src="https://render.githubusercontent.com/render/math?math=\mathcal{N}^B"> and root <img src="https://render.githubusercontent.com/render/math?math=\mathcal{N}^R"> networks).
 
 -`RESULTS` will contain results of simulations (data and figures).
 
