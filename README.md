@@ -12,10 +12,10 @@ Some of the code requires substantial computing power (multiple cores) or RAM (>
 ### Run simulations
 
 #### Simulations on data used in the article
-To launch one simulation using data from the article: go to `/CODE/run_sim.R` and assign `SIMULATIONS_ARTICLE` to `TRUE` and other inputs of the code (neighbourhood, initial conditions and main parameters). Then you are ready to source.
+To launch one simulation using data from the article: go to `/CODE/run_sim.R` and assign `SIMULATIONS_ARTICLE` to `TRUE` and other inputs of the code (neighbourhood, initial conditions and main parameters). Then you are ready to source. See for details the instructions in `/CODE/README.md`
 
 #### Simulations on newly updated inventory trees
-To launch one simulation using newly updated data: see the instructions in the `/CODE/README`.
+To launch one simulation using newly updated data: see the instructions in `/CODE/README.md`.
 
 ### R scripts
 Although the `R` scripts are in the directory `CODE`, they are documented here. Most scripts have a prefixed name to indicate the stage at which they come into play.
