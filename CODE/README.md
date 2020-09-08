@@ -31,5 +31,6 @@ Although the `R` scripts are in the directory `CODE`, they are documented here. 
 - `sim_functions.R` stores functions required during one simulation.
 - `functions_IC.R` stores functions to set initial conditions.
 - `set_various.R` sets the environment to run simulations.
+- `set_directories.R` sets the directories.
 - `sim.R` is the simulation code.
 - `run_sim.R` launches one simulation. Once the pre-processing done, it selects the neighbourhood, the main parameter values and initial conditions. Then, it sources the functions required for the simulation.
