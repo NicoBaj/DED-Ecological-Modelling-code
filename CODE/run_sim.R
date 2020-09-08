@@ -6,27 +6,28 @@ SIMULATIONS_ARTICLE = TRUE #if true, launch simulations with tree inventory used
 PLOT_SIM = TRUE #if sims are launched, do you want to see the DED spread evolution?
 SIM_SAVE = TRUE #do we save the outputs ?
 
-#The three following inputs are crucial for the type of simulations:
+#Inputs to define the type of simulations:
 #1- choose the neighbourhood
 #2- choose the initial condition (IC)
 #3- choose the values of the main parameters
 
-# 1- Neighbourhood
+# 1- Neighbourhood: uncomment your choice
 # Neighbourhood = "MIXED_PULBERRY_CRESCENT_PARK" #PCP
 Neighbourhood = "NORTH_RIVER_HEIGHTS" #NRH
 
-#2- IC
+#2- IC: uncomment your choice
 IC_type="cluster"
 # IC_type = "2clusters"
 # IC_type = "random"
 
-#3- main parameters
+#3- Main model parameters: update the values 
 input = list()
-input$R_B   = 100 #max distance that beetles fly during one time step
+input$R_B   = 100 #max distance that beetles fly during one time step. If using data from article, then choose from 20 to 380 by steps of 40. 
 input$p_r   = 0.5 #max proba for an infected tree to infect another one by root infection
-input$p_i   = 0.2 #proba that one beetle infects successfully one tree
+input$p_i   = 0.02 #proba that one beetle infects successfully one tree
 input$s_dt  = 0.98 #proba for beetles to survive one time step
 
+###############################################################
 #Set up the simulation in function of choices in 1- and 2-:
 if(SIMULATIONS_ARTICLE){
   if(Neighbourhood=="MIXED_PULBERRY_CRESCENT_PARK"){
