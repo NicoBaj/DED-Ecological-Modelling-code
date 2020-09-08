@@ -22,8 +22,8 @@ each tree, 2) their position in the neighbourhood and 3) their distance.
 - `sim_functions.R` stores functions required during one simulation.
 - `functions_IC.R` stores functions to set initial conditions.
 - `set_various.R` sets the environment to run simulations.
-- `sim.R` is the code that runs 
--`run_sim.R` launches one simulation. Once the pre-processing done, it selects the neighbourhood, the main parameter values and initial conditions. Then, it sources the functions required for the simulation.
+- `sim.R` is the simulation code.
+- `run_sim.R` launches one simulation. Once the pre-processing done, it selects the neighbourhood, the main parameter values and initial conditions. Then, it sources the functions required for the simulation.
 
 ### New simulation vs simulation from the article
 - To launch a simulation that uses the same dataset than the article (tree inventory is dated of the 28th January 2020), run the script `run_sim.R` and set the gate `SIMULATIONS_ARTICLE` to `TRUE`. Then choose the neighbourhood, the type of initial conditions and the values of the main parameters.
