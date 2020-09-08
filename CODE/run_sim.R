@@ -27,6 +27,22 @@ input$p_r   = 0.5 #max proba for an infected tree to infect another one by root 
 input$p_i   = 0.02 #proba that one beetle infects successfully one tree
 input$s_dt  = 0.98 #proba for beetles to survive one time step
 
+#
+#do we want to run the code with the root infection route ?
+roots = TRUE
+
+#number of simulations required for the set of parameters given above
+nb_sims = 1
+
+#if nb_sims>1, say if you want to run sims in parallel
+RUN_PARALLEL = FALSE
+
+IC_beetles = 500 #nb of inf beetles in each infected tree
+
+#Put here the initial and final dates for the simulation(s)
+start_date = "2019-08-01"
+end_date = "2021-12-31"
+
 ###############################################################
 #Set up the simulation in function of choices in 1- and 2-:
 if(SIMULATIONS_ARTICLE){
@@ -70,22 +86,6 @@ if(SIMULATIONS_ARTICLE){
     IC_number_dead_trees = 50
   }
 }
-
-
-#do we want to run the code with the root infection route ?
-roots = TRUE
-
-#number of simulations required for the set of parameters given above
-nb_sims = 1
-
-#if nb_sims>1, say if you want to run sims in parallel
-RUN_PARALLEL = FALSE
-
-IC_beetles = 500 #nb of inf beetles in each infected tree
-
-#Put here the initial and final dates for the simulation(s)
-start_date = "2019-08-01"
-end_date = "2021-12-31"
 
 # Libraries needed for all the processes
 library(sqldf)
