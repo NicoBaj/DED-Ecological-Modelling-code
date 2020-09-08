@@ -79,6 +79,7 @@ all_trees$Index = 1:dim(all_trees)[1]
 distances = readRDS(sprintf("%s/elms_distances_roots.Rds",dir_prefix))
 
 #Select the neighbourhood(s) you want to study
+# to see the names of neighbourhoods: unique(all_trees$Neighbourhood)
 list.of.neighbourhoods      = list()
 list.of.neighbourhoods[[1]] = "NORTH RIVER HEIGHTS"
 
