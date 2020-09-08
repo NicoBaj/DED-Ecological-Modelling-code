@@ -1,7 +1,7 @@
 # RESULTS directory
 
-This directory will contain results of the simulations, both data and figures.
-Outputs of the simulation:
+This directory will contain results of the simulations, both data and figures (if any).
+Outputs of the simulation are stored in a new folder; three files are created:
 
 - `beetles_*.Rds` stores the beetle population sizes in all trees at each week of the simulation.
 
