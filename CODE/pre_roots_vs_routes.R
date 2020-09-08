@@ -85,6 +85,8 @@ if (REFRESH_OSM_DATA) {
 TI_files = list.files(path = DIRS$DATA,
                       pattern = glob2rx("tree_inventory_elms*.Rds"))
 latest_TI_file = sort(TI_files, decreasing = TRUE)[1]
+# Override if needed by selecting manually one of the files in TI_files, for instance
+# latest_TI_file = TI_files[1]
 
 # Read elms csv file (could also read the RDS..)
 elms <- readRDS(sprintf("%s/%s", DIRS$DATA, latest_TI_file))
@@ -149,13 +151,6 @@ DISTS$dist = D_mat[indices]
 # Clean up and garbage collect
 rm(D_mat)
 gc()
-
-# Save distances table
-if (VERBOSE_OUTPUT) {
-  writeLines("Saving DISTS table")
-}
-saveRDS(DISTS, file = sprintf("%s/elms_distances_roots.Rds", DIRS$DATA))
-
 
 # The locations of the origins of the pairs
 tree_locs_orig = cbind(DISTS$lon_i, DISTS$lat_i)
