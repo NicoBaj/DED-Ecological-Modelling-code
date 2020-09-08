@@ -66,7 +66,9 @@ dir_prefix = sprintf("%s/DATA",TOP_DIR)
 dir_prefix_save_roots = sprintf("%s/DATA/Roots",TOP_DIR) 
 dir_prefix_save_elms = sprintf("%s/DATA/Elms_Neighbourhood",TOP_DIR) 
 
+# Put the name of the last tree inventory created by pre_roots_vs_routes.R
 all_trees = readRDS(sprintf("%s/tree_inventory_elms_2020-08-26.Rds",dir_prefix))
+
 #not needed anymore
 elms_idx = grep("American Elm",
                 all_trees$Common.Name,
