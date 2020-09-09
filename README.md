@@ -2,19 +2,19 @@
 This repository contains R code for a paper by Bajeux, Arino, Portet and Westwood, published in Ecological Modelling in 2020. The code here does not cover the entirety of the content of the paper. In particular, we do not provide specific code to generate all the figures in the paper, although they can easily be generated using the code here.
 
 ### Important
-Some of the code requires substantial computing power (multiple cores) or RAM (>128 GB). This will be indicated in the function description below.
+Some of the code requires substantial computing power (multiple cores) or RAM (>90 GB). This will be indicated in the function descriptions.
 
 ### Directories
 -`CODE` contains all R scripts.
 
--`DATA` contains all data used for simulations (tree inventories, model parameter values and beetle <img src="https://render.githubusercontent.com/render/math?math=\mathcal{N}^B"> and root <img src="https://render.githubusercontent.com/render/math?math=\mathcal{N}^R"> networks).
+-`DATA` contains all data used for simulations (tree inventories, model parameter values, beetle <img src="https://render.githubusercontent.com/render/math?math=\mathcal{N}^B"> and root <img src="https://render.githubusercontent.com/render/math?math=\mathcal{N}^R"> networks).
 
--`RESULTS` will contain results of simulations (data and figures).
+-`RESULTS` will contain simulation results (data and figures).
 
 ### Run simulations
 
-#### Simulations on data used in the article
-To launch one simulation using data from the article: go to `/CODE/run_sim.R` and assign `SIMULATIONS_ARTICLE` to `TRUE` and other inputs of the code (neighbourhood, initial conditions and main parameters). Then you are ready to source. See for more details `/CODE/README.md`
+#### Simulations on data and neighbourhoods used in the article
+To launch one simulation using data and neighbourhoods from the article, go to `/CODE/run_sim.R` and set `SIMULATIONS_ARTICLE` to `TRUE` and other inputs of the code (neighbourhood, initial conditions and main parameters). See `/CODE/README.md` for more details.
 
-#### Simulations on newly updated inventory trees
-To launch one simulation using newly updated data: see the instructions in `/CODE/README.md`.
+#### Simulations on newly updated tree inventory 
+To launch one simulation using newly updated data, see instructions in `/CODE/README.md`.
