@@ -237,10 +237,8 @@ read_parameters = function(sim_constants, input) {
                                              distance_neighbours = distance_neighbours,
                                              neighbours_pos = neighbours_pos
   )
-  
   #### Sublist with initial conditions
   # sim_constants$default_params$IC = readRDS(sim_constants$FILES[[6]])
-  
   #### Sublist with selected elms
   sim_constants$default_params$elms = elms
   
@@ -249,12 +247,11 @@ read_parameters = function(sim_constants, input) {
 
 ### SET_OUTPUT_LOCATION
 #
-# set up the directory for the output with a name sim_date for the repertory
+# set up the directory for the output with a name sim_date for the directory
 set_output_location = function(sim_constants) {
   current_date_time = format(Sys.time(), "%Y_%m_%d_%H_%M")
   abb_nbhd = abbreviate(sim_constants$Neighbourhood,minlength = 5)
-  
-  #we create the folder for the outputs
+  # Create the folder for the output
   output_dir = paste(sim_constants$DIRS$RESULTS,
                      "/sim",
                      current_date_time,
@@ -262,7 +259,7 @@ set_output_location = function(sim_constants) {
                      abb_nbhd,
                      sep = "")
   dir.create(output_dir)
-  sim_constants$output_dir = output_dir
+  sim_constants$DIRS$output_dir = output_dir
   return(sim_constants)
 }
 

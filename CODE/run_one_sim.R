@@ -181,11 +181,21 @@ if (IC_type=="random") {
   #if IC is random, then each sim has a different IC
   sims$IC = list()
   for (i in 1:nb_sims) {
-    sims$IC[[i]] = create_IC(sim_constants = sim_constants,Elms=sim_constants$default_params$elms,IC_type,IC_beetles,IC_radius,IC_number_dead_trees)
+    sims$IC[[i]] = create_IC(sim_constants = sim_constants,
+                             elms = sim_constants$default_params$elms,
+                             IC_type,
+                             IC_beetles,
+                             IC_radius,
+                             IC_number_dead_trees)
   }
 } else {
   #if IC is cluster or 2clusters
-  sims$IC = create_IC(sim_constants = sim_constants,Elms=sim_constants$default_params$elms,IC_type,IC_beetles,IC_radius,IC_number_dead_trees=0) #put IC_number_dead_trees to 0 here, the function will replace its value by the good nb of initially infected trees
+  sims$IC = create_IC(sim_constants = sim_constants,
+                      elms = sim_constants$default_params$elms,
+                      IC_type,
+                      IC_beetles,
+                      IC_radius,
+                      IC_number_dead_trees = 0) #put IC_number_dead_trees to 0 here, the function will replace its value by the good nb of initially infected trees
 }
 sim_constants$default_params$IC= sims$IC
 
@@ -246,7 +256,7 @@ if (RUN_PARALLEL) {
 
 
 #########################################################################
-## Here, we save all the results in one file
+## Save all the results in one file
 #########################################################################
 
 
@@ -262,17 +272,17 @@ if (SIM_SAVE) {
     paramet[[i]]     = results[[i]]$sim_param$params
   }
   saveRDS(sims$IC, 
-          file = sprintf("%s/ic.Rds",sim_constants$output_dir))
+          file = sprintf("%s/ic.Rds",sim_constants$DIRS$output_dir))
   saveRDS(tree_states, 
           file = sprintf("%s/tree_states_Rb%03g_pb_inf%03g_pr%03g.Rds",
-                         sim_constants$output_dir,
+                         sim_constants$DIRS$output_dir,
                          sim_constants$default_params$R_B,
                          sim_constants$default_params$p_i*100,
                          sim_constants$default_params$p_r*100))
   
   saveRDS(beetles, 
           file = sprintf("%s/beetles_Rb%03g_pb_inf%03g_pr%03g.Rds",
-                         sim_constants$output_dir,
+                         sim_constants$DIRS$output_dir,
                          sim_constants$default_params$R_B,
                          sim_constants$default_params$p_i*100,
                          sim_constants$default_params$p_r*100))  
@@ -281,7 +291,7 @@ if (SIM_SAVE) {
   if (FALSE) {
     saveRDS(paramet,
             file = sprintf("%s/parameters_Rb%03g_pb_inf%03g_pr%03g.Rds",
-                           sim_constants$output_dir,
+                           sim_constants$DIRS$output_dir,
                            sim_constants$default_params$R_B,
                            sim_constants$default_params$p_i*100,
                            sim_constants$default_params$p_r*100))
