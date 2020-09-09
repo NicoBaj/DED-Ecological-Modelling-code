@@ -95,7 +95,7 @@ set_output_location = function(sim_constants) {
   abb_nbhd = abbreviate(sim_constants$Neighbourhood,minlength = 5)
   
   #we create the folder for the outputs
-  output_dir = paste(sim_constants$DIRS$RESULT,
+  output_dir = paste(sim_constants$DIRS$RESULTS,
                      "/sim",
                      current_date_time,
                      "_",
