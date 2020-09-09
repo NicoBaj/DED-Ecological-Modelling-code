@@ -1,13 +1,3 @@
-### SET_DIRECTORIES for outputs and data
-set_directories = function(DIR_TOP) {
-  out = list()
-  out$TOP = DIR_TOP
-  out$DATA = sprintf("%s/DATA",DIR_TOP)
-  out$RESULT = sprintf("%s/RESULTS",DIR_TOP)
-  return(out)
-}
-
-
 ### WEEK_TYPES
 #
 # Given a vector v of week numbers, return a vector of same size with the type of week under consideration
@@ -39,7 +29,8 @@ read_parameters = function(sim_constants,input) {
   #### Sublist with parameters
   sim_constants$default_params = list()
   for (i in 1:dim(parameters)[1]) {
-    sim_constants$default_params[[sprintf("%s",parameters[i,1])]] = as.numeric(parameters[i,2])
+    sim_constants$default_params[[sprintf("%s",parameters[i,1])]] = 
+      as.numeric(parameters[i,2])
   }
   sim_constants$default_params$p_i             = input$p_i
   sim_constants$default_params$p_r             = input$p_r
@@ -110,7 +101,7 @@ set_sim_time = function(sim_constants, startDate = start_date, endDate = end_dat
   out = list()
   start_date = ISOweek2date(sprintf("%s-1",substr(date2ISOweek(startDate),1,8)))
   end_date =  ISOweek2date(sprintf("%s-1",substr(date2ISOweek(endDate),1,8)))  
-  dates = readRDS(sprintf("%s/allDays_1958_to_2049.RData",sim_constants$DIRS$DATA))
+  dates = readRDS(sprintf("%s/all_days_1958_to_2049.RData",sim_constants$DIRS$DATA))
   weeksSims = seq(start_date, end_date, by = "week")
   idx = which(dates$dateFull %in% weeksSims)
   out = data.frame(idx = 1:length(weeksSims), dates[idx,])
