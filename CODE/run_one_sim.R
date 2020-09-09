@@ -71,7 +71,7 @@ end_date = "2021-12-31"
 #Set up the simulation in function of choices in 1- and 2-:
 if(SIMULATIONS_ARTICLE){
   if (neighbourhood == "MIXED_PULBERRY_CRESCENT_PARK") {
-    sim_core = "1513Trees"
+    sim_core = "1513trees"
     if (IC_type == "cluster") {
       IC_radius = 96
     } else if (IC_type == "2clusters") {
@@ -84,7 +84,7 @@ if(SIMULATIONS_ARTICLE){
       IC_number_dead_trees = 38
     }
   } else if (neighbourhood == "NORTH_RIVER_HEIGHTS") {
-    sim_core = "2004Trees"
+    sim_core = "2004trees"
     if (IC_type == "cluster") {
       IC_radius = 100
     } else if (IC_type == "2clusters") {
@@ -144,7 +144,7 @@ if (SIMULATIONS_ARTICLE) {
   sim_constants$sim_core = sim_core
 } else {
   nb_trees = readRDS(sprintf("%s/sim_core_%s.Rds",sim_constants$DIRS$DATA,neighbourhood))
-  sim_constants$sim_core = sprintf("%sTrees",nb_trees)
+  sim_constants$sim_core = sprintf("%strees",nb_trees)
 }
 
 # Read parameters from the csv file and replace those choosen in the main file (input)
