@@ -23,7 +23,7 @@ library(R.utils)
 #Compute the probability to be infected through the roots using the distance dist
 proba_roots = function(dist, minDist, maxDist){
   #p_r proba to infect another tree if dist<min, where min is h(T)
-  if(dist<=minDist){
+  if(dist<minDist){
     out = 1
   } else if (dist>=maxDist) {
     out = 0
@@ -41,8 +41,8 @@ proba_all_roots = function(distances_Neighbourhood){
   n = dim(distances_Neighbourhood)[1]
   vec_proba = mat.or.vec(n,1)
   for (i in 1:n){
-    min_d = distances_Neighbourhood$height_i+distances_Neighbourhood$height_j
-    max_d = 3*(distances_Neighbourhood$height_i+distances_Neighbourhood$height_j)
+    min_d = distances_Neighbourhood$height_i[i]+distances_Neighbourhood$height_j[i]
+    max_d = 3*(distances_Neighbourhood$height_i[i]+distances_Neighbourhood$height_j[i])
     vec_proba[i] = proba_roots(distances_Neighbourhood$dist[i],min_d,max_d)
   }
   return(vec_proba)
@@ -107,7 +107,7 @@ for (Neighbourhood in list.of.neighbourhoods){
   super_sub = cbind(sub_j,sub_i,sub_k)
   colnames(super_sub) = colnames(distances_Neighbourhood)
   double_distances_Neighbourhood = rbind(distances_Neighbourhood,super_sub)
-  saveRDS(distances_Neighbourhood,sprintf("%s/proba_roots_%s.Rds",
+  saveRDS(double_distances_Neighbourhood,sprintf("%s/proba_roots_%s.Rds",
                                           DIRS$roots,
                                           Neighbourhood_norm))
   #Finally, save the number of trees
