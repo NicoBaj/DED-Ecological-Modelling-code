@@ -10,6 +10,10 @@ DIRS$CODE = sprintf("%s/CODE", DIRS$prefix_github)
 DIRS$DATA = sprintf("%s/DATA", DIRS$prefix_github)
 DIRS$RESULTS = sprintf("%s/RESULTS", DIRS$prefix_github)
 
+# Where we save some of the processed data (finer than just DATA)
+DIRS$roots = sprintf("%s/roots", DIRS$DATA)
+DIRS$elms = sprintf("%s/elms_neighbourhood", DIRS$DATA)
+
 # # DATA AND OUTPUT
 # # If we are working on the cluster, use absolute path, otherwise use relative to the user
 # if (Sys.info()["nodename"] %in% nodes) { 

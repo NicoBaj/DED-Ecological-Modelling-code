@@ -25,9 +25,9 @@ proba_roots = function(dist,minDist,maxDist){
   #p_r proba to infect another tree if dist<min, where min is h(T)
   if(dist<=minDist){
     out = 1
-  }else if (dist>=maxDist){
+  } else if (dist>=maxDist) {
     out = 0
-  }else{
+  } else {
     out = (maxDist-dist)/(maxDist-minDist)
   }
   return(out)
@@ -57,17 +57,8 @@ select_trees_neighbourhood = function(all_trees,Neighbourhood,save_file){
   return(elms)
 }
 
-# Make code location aware using the library rprojroot
-if(!require("rprojroot")){
-  install.packages("rprojroot")
-  require("rprojroot")
-}
-# Where is the current file? Needs to be sourced
-this_file <- rprojroot::thisfile()
-# Set code directory
-TOP_DIR_CODE <- dirname(this_file)
-# Set top directory
-TOP_DIR <- dirname(TOP_DIR_CODE)
+# Set directories
+source(sprintf("%s/CODE/set_directories.R", here::here()))
 
 ## Loading the tree inventory
 dir_prefix = sprintf("%s/DATA",TOP_DIR) 
