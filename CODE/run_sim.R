@@ -13,7 +13,7 @@ SIM_SAVE = TRUE #do we save the outputs ?
 
 # 1- Neighbourhood
 # Neighbourhoods from the articles are "MIXED_PULBERRY_CRESCENT_PARK" (PCP) and "NORTH_RIVER_HEIGHTS" (NRH)
-if(SIMULATIONS_ARTICLE){ # uncomment your choice
+if(SIMULATIONS_ARTICLE){ # (un)comment to choose a neighbourhood
   # Neighbourhood = "MIXED_PULBERRY_CRESCENT_PARK" #PCP
   Neighbourhood = "NORTH_RIVER_HEIGHTS" #NRH
 }else{
@@ -61,7 +61,7 @@ if(SIMULATIONS_ARTICLE){
     }else if(IC_type == "2clusters"){
       IC_radius1 = 47.5
       IC_radius2 = 280
-      IC_radius = list(r1=IC_radius1,r2=IC_radius2)
+      IC_radius = list(r1=IC_radius1, r2=IC_radius2)
       #These values of radii are done to get the same nb of infected trees at the initial time than in one cluster (96m)
     }else{
       IC_radius = 96
@@ -74,7 +74,7 @@ if(SIMULATIONS_ARTICLE){
     }else if(IC_type == "2clusters"){
       IC_radius1 = 84
       IC_radius2 = 84
-      IC_radius = list(r1=IC_radius1,r2=IC_radius2)
+      IC_radius = list(r1=IC_radius1, r2=IC_radius2)
       #These values of radii are done to get the same nb of infected trees at the initial time than in one cluster (100m)
     }else{
       IC_radius = 100
@@ -87,7 +87,7 @@ if(SIMULATIONS_ARTICLE){
   }else if(IC_type == "2clusters"){
     IC_radius1 = 84
     IC_radius2 = 84
-    IC_radius = list(r1=IC_radius1,r2=IC_radius2)
+    IC_radius = list(r1=IC_radius1, r2=IC_radius2)
     #These values of radii are done to get the same nb of infected trees at the initial time than in one cluster (100m)
   }else{
     IC_radius = 100
@@ -108,26 +108,14 @@ library(tictoc)
 library(tgp)
 library(poibin)
 
-# Make code location aware using the library rprojroot
-if(!require("rprojroot")){
-  install.packages("rprojroot")
-  require("rprojroot")
-}
-# Where is the current file? Needs to be sourced
-this_file <- rprojroot::thisfile()
-# Set code directory
-TOP_DIR_CODE <- dirname(this_file)
-# Set top directory
-TOP_DIR <- dirname(TOP_DIR_CODE)
-
-# Source code that sets directories. Always run. NO: The TOP_DIR_CODE
-#source(sprintf("%s/set_directories.R", TOP_DIR_CODE))
+# Set directories
+source(sprintf("%s/CODE/set_directories.R", here::here()))
 
 # Source the pre processing (create env,loading files...)
-source(sprintf("%s/set_various.R",TOP_DIR_CODE))
+source(sprintf("%s/set_various.R", DIRS$CODE))
 # Source all the functions needed for the simulation
-source(sprintf("%s/sim_functions.R",TOP_DIR_CODE))
+source(sprintf("%s/sim_functions.R", DIRS$CODE))
 # Source the functions that create initial condition
-source(sprintf("%s/functions_IC.R",TOP_DIR_CODE))
+source(sprintf("%s/functions_IC.R", DIRS$CODE))
 # Source the R script for the simulation
-source(sprintf("%s/sim.R",TOP_DIR_CODE))
+source(sprintf("%s/sim.R", DIRS$CODE))
