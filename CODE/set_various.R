@@ -111,7 +111,7 @@ set_sim_time = function(sim_constants, startDate = start_date, endDate = end_dat
   out = list()
   start_date = ISOweek2date(sprintf("%s-1",substr(date2ISOweek(startDate),1,8)))
   end_date =  ISOweek2date(sprintf("%s-1",substr(date2ISOweek(endDate),1,8)))  
-  dates = readRDS(sprintf("%s/all_days_1958_to_2049.RData",sim_constants$DIRS$DATA))
+  dates = readRDS(sprintf("%s/all_days_1958_to_2049.Rds",sim_constants$DIRS$DATA))
   weeksSims = seq(start_date, end_date, by = "week")
   idx = which(dates$dateFull %in% weeksSims)
   out = data.frame(idx = 1:length(weeksSims), dates[idx,])
