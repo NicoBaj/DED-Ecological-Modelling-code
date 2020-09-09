@@ -12,7 +12,9 @@ sim_constants$GATES$PLOT_SIM = PLOT_SIM #add other gates if needed
 sim_constants$GATES$SIMULATIONS_ARTICLE = SIMULATIONS_ARTICLE
 
 # Set directories
-sim_constants$DIRS = set_directories(TOP_DIR)
+source(sprintf("%s/CODE/set_directories.R", here::here()))
+# Add directories to constants for easy use
+sim_constants$DIRS = DIRS
 
 # Set the neighbourhood
 sim_constants$Neighbourhood = Neighbourhood
