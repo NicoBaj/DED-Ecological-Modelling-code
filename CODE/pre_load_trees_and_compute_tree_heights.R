@@ -48,5 +48,5 @@ colnames(elms)[(idx_dbh+1)] = "TreeHeight"
 elms$lat = lapply(strsplit(elms$Location, ","), function(x) as.numeric(substr(x[1], 2, nchar(x[1]))))
 elms$lon = lapply(strsplit(elms$Location, ","), function(x) as.numeric(substr(x[2], 1, (nchar(x[2])-1))))
 
-# Save the resulting file
-saveRDS(elms, file = sprintf("%s/tree_inventory_elms.Rds", DIRS$DATA))
+# Save the resulting file, suffixing with today's date
+saveRDS(elms, file = sprintf("%s/tree_inventory_elms_%s.Rds", DIRS$DATA, Sys.Date()))
