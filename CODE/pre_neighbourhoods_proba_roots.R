@@ -60,8 +60,17 @@ select_trees_neighbourhood = function(all_trees,Neighbourhood,save_file){
 # Set directories
 source(sprintf("%s/CODE/set_directories.R", here::here()))
 
-# Put the name of the last tree inventory created by pre_roots_vs_routes.R
-all_trees = readRDS(sprintf("%s/tree_inventory_elms_2020-08-26.Rds", DIRS$DATA))
+# There can be several versions of the tree inventory file, load the latest
+TI_files = list.files(path = DIRS$DATA,
+                      pattern = glob2rx("tree_inventory_elms*.Rds"))
+selected_TI_file = sort(TI_files, decreasing = TRUE)[1]
+# Override if needed by selecting manually one of the files in TI_files, for instance
+# selected_TI_file = TI_files[1]
+# Get the date, to save distance files with that information
+date_TI_file = substr(selected_TI_file, 21, 30)
+# Load file
+all_trees = readRDS(file = sprintf("%s/%s", DIRS$DAT, selected_TI_file))
+
 
 #not needed anymore
 elms_idx = grep("American Elm",
@@ -70,7 +79,7 @@ elms_idx = grep("American Elm",
 all_trees = all_trees[elms_idx,]
 all_trees = all_trees[which(all_trees$DBH>5),] #remove trees too small
 all_trees$Index = 1:dim(all_trees)[1]
-distances = readRDS(sprintf("%s/elms_distances_roots.Rds",DIRS$DATA))
+distances = readRDS(sprintf("%s/elms_distances_roots_%s.Rds", DIRS$DATA, date_TI_file))
 
 
 #The following loop makes 1) the separation into neighbourhoods for the selected neighbourhoods in list.neighbourhoods, 2) select the right lines in the elm_distances_root that correspond to the trees in the neighbourhood and 3) compute the probabilities that two close trees infect can infect each other through the roots
