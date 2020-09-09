@@ -38,18 +38,28 @@ read_parameters = function(sim_constants,input) {
   sim_constants$default_params$R_B             = input$R_B
   
   ## Now we can load the good preprocessing since we have the right R_B
-  if(sim_constants$GATES$SIMULATIONS_ARTICLE){
-    sim_constants$FILES[[2]] = sprintf("%s/Preprocessing/article_pre_processing/neighbours_%s_maxD%s.RData", sim_constants$DIRS$DATA, sim_constants$sim_core, sim_constants$default_params$R_B)
-    sim_constants$FILES[[3]] = sprintf("%s/Preprocessing/article_pre_processing/distance_neighbours_%s_maxD%s.RData", sim_constants$DIRS$DATA, sim_constants$sim_core, sim_constants$default_params$R_B)
-    sim_constants$FILES[[4]] = sprintf("%s/Preprocessing/article_pre_processing/neighbours_pos_%s_maxD%s.RData", sim_constants$DIRS$DATA,sim_constants$sim_core, sim_constants$default_params$R_B)
-    sim_constants$FILES[[5]] = sprintf("%s/Elms_%s_2020-01-28.RData", sim_constants$DIRS$DATA, sim_constants$Neighbourhood)
-    sim_constants$FILES[[7]] = sprintf("%s/Proba_roots_%s_2020-01-28.Rds",sim_constants$DIRS$DATA,sim_constants$Neighbourhood)
-  }else{
-    sim_constants$FILES[[2]] = sprintf("%s/Preprocessing/new_pre_processing/neighbours_%s_RB%s_%s.Rds", sim_constants$DIRS$DATA, sim_constants$sim_core, sim_constants$default_params$R_B,sim_constants$Neighbourhood)
-    sim_constants$FILES[[3]] = sprintf("%s/Preprocessing/new_pre_processing/distance_neighbours_%s_RB%s_%s.Rds", sim_constants$DIRS$DATA, sim_constants$sim_core, sim_constants$default_params$R_B,sim_constants$Neighbourhood)
-    sim_constants$FILES[[4]] = sprintf("%s/Preprocessing/new_pre_processing/neighbours_pos_%s_RB%s_%s.Rds", sim_constants$DIRS$DATA,sim_constants$sim_core, sim_constants$default_params$R_B,sim_constants$Neighbourhood)
-    sim_constants$FILES[[5]] = sprintf("%s/Elms_Neighbourhood/Elms_%s.Rds", sim_constants$DIRS$DATA, sim_constants$Neighbourhood)
-    sim_constants$FILES[[7]] = sprintf("%s/Roots/Proba_roots_%s.Rds",sim_constants$DIRS$DATA,sim_constants$Neighbourhood)
+  if (sim_constants$GATES$SIMULATIONS_ARTICLE) {
+    sim_constants$FILES[[2]] = sprintf("%s/neighbours_%s_maxD%s.RData", 
+                                       sim_constants$DIRS$save_paper_preproc, sim_constants$sim_core, sim_constants$default_params$R_B)
+    sim_constants$FILES[[3]] = sprintf("%s/distance_neighbours_%s_maxD%s.RData", 
+                                       sim_constants$DIRS$save_paper_preproc, sim_constants$sim_core, sim_constants$default_params$R_B)
+    sim_constants$FILES[[4]] = sprintf("%s/neighbours_pos_%s_maxD%s.RData", 
+                                       sim_constants$DIRS$save_paper_preproc, sim_constants$sim_core, sim_constants$default_params$R_B)
+    sim_constants$FILES[[5]] = sprintf("%s/elms_%s_2020-01-28.RData", 
+                                       sim_constants$DIRS$elms, sim_constants$Neighbourhood)
+    sim_constants$FILES[[7]] = sprintf("%s/proba_roots_%s_2020-01-28.Rds",
+                                       sim_constants$DIRS$roots,sim_constants$Neighbourhood)
+  } else {
+    sim_constants$FILES[[2]] = sprintf("%s/neighbours_%s_RB%s_%s.Rds", 
+                                       sim_constants$DIRS$save_new_preproc, sim_constants$sim_core, sim_constants$default_params$R_B,sim_constants$Neighbourhood)
+    sim_constants$FILES[[3]] = sprintf("%s/distance_neighbours_%s_RB%s_%s.Rds", 
+                                       sim_constants$DIRS$save_new_preproc, sim_constants$sim_core, sim_constants$default_params$R_B,sim_constants$Neighbourhood)
+    sim_constants$FILES[[4]] = sprintf("%s/neighbours_pos_%s_RB%s_%s.Rds", 
+                                       sim_constants$DIRS$save_new_preproc,sim_constants$sim_core, sim_constants$default_params$R_B,sim_constants$Neighbourhood)
+    sim_constants$FILES[[5]] = sprintf("%s/elms_%s.Rds", 
+                                       sim_constants$DIRS$elms, sim_constants$Neighbourhood)
+    sim_constants$FILES[[7]] = sprintf("%s/proba_roots_%s.Rds",
+                                       sim_constants$DIRS$roots,sim_constants$Neighbourhood)
   }
   
   
@@ -82,14 +92,14 @@ read_parameters = function(sim_constants,input) {
 # set up the directory for the output with a name sim_date for the repertory
 set_output_location = function(sim_constants) {
   current_date_time = format(Sys.time(), "%Y_%m_%d_%H_%M")
-  abb_ngh = abbreviate(sim_constants$Neighbourhood,minlength = 5)
+  abb_nbhd = abbreviate(sim_constants$Neighbourhood,minlength = 5)
   
   #we create the folder for the outputs
   output_dir = paste(sim_constants$DIRS$RESULT,
                      "/sim",
                      current_date_time,
                      "_",
-                     abb_ngh,
+                     abb_nbhd,
                      sep = "")
   dir.create(output_dir)
   sim_constants$output_dir = output_dir
@@ -133,7 +143,6 @@ set_sim_environment = function(sim_constants,input) {
 # Gives constants that can be used and that will never be changed
 # indexes and state names are defined here
 set_other_constants = function(sim_constants) {
-  
   indexOs = seq(1,sim_constants$default_params$Nbs*sim_constants$default_params$N,by=sim_constants$default_params$Nbs)
   indexOi = seq(2,sim_constants$default_params$Nbs*sim_constants$default_params$N,by=sim_constants$default_params$Nbs)
   indexMbs = seq(3,sim_constants$default_params$Nbs*sim_constants$default_params$N,by=sim_constants$default_params$Nbs)
@@ -207,15 +216,20 @@ set_demography_matrices = function(default_params){
   lW8 = c(0,0,0,0,0,s_dt*s_MC,0,0,0,0)
   lW9 = c(0,0,0,0,0,0,0,0,0,0)
   lW10 = c(0,0,0,0,0,0,0,0,0,0)
-  LIW_emergence=matrix(data = c(lW1,lW2,lW3,lW4,lW5,lW6,lW7,lW8,lW9,lW10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
-  LIW_emergence=as(LIW_emergence,"sparseMatrix")
+  LIW_emergence=matrix(data = c(lW1,lW2,lW3,lW4,lW5,lW6,lW7,lW8,lW9,lW10),
+                       nrow=Nbs, ncol=Nbs, byrow = TRUE)
+  LIW_emergence=as(LIW_emergence, "sparseMatrix")
   LSW_emergence=LIW_emergence
   
   LSD_emergence=mat.or.vec(Nbs,Nbs)
   LSD_emergence=as(LSD_emergence,"sparseMatrix")
   LID_emergence = LSD_emergence #no beetle can be present in dead trees at this time of the year
   
-  list_emergence = list(LH_emergence=LH_emergence,LSW_emergence=LSW_emergence,LIW_emergence=LIW_emergence,LSD_emergence=LSD_emergence,LID_emergence=LID_emergence)
+  list_emergence = list(LH_emergence = LH_emergence,
+                        LSW_emergence = LSW_emergence,
+                        LIW_emergence = LIW_emergence,
+                        LSD_emergence = LSD_emergence,
+                        LID_emergence = LID_emergence)
   ###############################################################
   ##Matrices for breeding
   ###############################################################
@@ -232,7 +246,8 @@ set_demography_matrices = function(default_params){
   lH8 = c(0,0,0,0,0,s_dt,0,0,0,0)
   lH9 = c(0,0,0,0,0,0,0,0,0,0)
   lH10 = c(0,0,0,0,0,0,0,0,0,0)
-  LH_breeding=matrix(data = c(lH1,lH2,lH3,lH4,lH5,lH6,lH7,lH8,lH9,lH10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
+  LH_breeding=matrix(data = c(lH1,lH2,lH3,lH4,lH5,lH6,lH7,lH8,lH9,lH10),
+                     nrow=Nbs, ncol=Nbs, byrow = TRUE)
   LH_breeding=as(LH_breeding,"sparseMatrix")
   
   lW1 = c(s_dt*(s_J+s_FJ),0,0,0,0,0,0,0,f_JA,f_JA)
@@ -245,7 +260,8 @@ set_demography_matrices = function(default_params){
   lW8 = c(0,0,0,0,0,s_dt,0,0,0,0)
   lW9 = c(0,0,0,0,0,0,s_dt,0,0,0)
   lW10 = c(0,0,0,0,0,0,0,s_dt,0,0)
-  LIW_breeding=matrix(data = c(lW1,lW2,lW3,lW4,lW5,lW6,lW7,lW8,lW9,lW10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
+  LIW_breeding=matrix(data = c(lW1,lW2,lW3,lW4,lW5,lW6,lW7,lW8,lW9,lW10),
+                      nrow = Nbs, ncol = Nbs, byrow = TRUE)
   ## Check if this is good
   # LIW_breeding=LIW_breeding
   LIW_breeding=as(LIW_breeding,"sparseMatrix")
@@ -260,7 +276,8 @@ set_demography_matrices = function(default_params){
   lW8 = c(0,0,0,0,0,s_dt,0,0,0,0)
   lW9 = c(0,0,0,0,0,0,s_dt,0,0,0)
   lW10 = c(0,0,0,0,0,0,0,s_dt,0,0)
-  LSW_breeding=matrix(data = c(lW1,lW2,lW3,lW4,lW5,lW6,lW7,lW8,lW9,lW10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
+  LSW_breeding=matrix(data = c(lW1,lW2,lW3,lW4,lW5,lW6,lW7,lW8,lW9,lW10),
+                      nrow=Nbs, ncol=Nbs, byrow = TRUE)
   LSW_breeding=as(LSW_breeding,"sparseMatrix")
   #the same thing but s_JJp=0 (row2,col1)
   
@@ -274,7 +291,8 @@ set_demography_matrices = function(default_params){
   lD8 = c(0,0,0,0,0,0,0,0,0,0)
   lD9 = c(0,0,0,0,0,0,s_dt,0,0,0)
   lD10 = c(0,0,0,0,0,0,0,s_dt,0,0)
-  LID_breeding=matrix(data = c(lD1,lD2,lD3,lD4,lD5,lD6,lD7,lD8,lD9,lD10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
+  LID_breeding=matrix(data = c(lD1,lD2,lD3,lD4,lD5,lD6,lD7,lD8,lD9,lD10),
+                      nrow=Nbs, ncol=Nbs, byrow = TRUE)
   LID_breeding=as(LID_breeding,"sparseMatrix")
   
   lD1 = c(s_dt*(s_J+s_FJ+s_JJp),0,0,0,0,0,0,0,f_JA,f_JA)
@@ -287,10 +305,14 @@ set_demography_matrices = function(default_params){
   lD8 = c(0,0,0,0,0,0,0,0,0,0)
   lD9 = c(0,0,0,0,0,0,s_dt,0,0,0)
   lD10 = c(0,0,0,0,0,0,0,s_dt,0,0)
-  LSD_breeding=matrix(data = c(lD1,lD2,lD3,lD4,lD5,lD6,lD7,lD8,lD9,lD10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
+  LSD_breeding=matrix(data = c(lD1,lD2,lD3,lD4,lD5,lD6,lD7,lD8,lD9,lD10),
+                      nrow=Nbs, ncol=Nbs, byrow = TRUE)
   LSD_breeding=as(LSD_breeding,"sparseMatrix")
-  
-  list_breeding = list(LH_breeding=LH_breeding,LSW_breeding=LSW_breeding,LIW_breeding=LIW_breeding,LSD_breeding=LSD_breeding,LID_breeding=LID_breeding)
+  list_breeding = list(LH_breeding = LH_breeding,
+                       LSW_breeding = LSW_breeding,
+                       LIW_breeding = LIW_breeding,
+                       LSD_breeding = LSD_breeding,
+                       LID_breeding = LID_breeding)
   
   ################################################################
   ##Matrices for new generation event
@@ -306,8 +328,9 @@ set_demography_matrices = function(default_params){
   lH8 = c(0,0,0,0,0,0,0,0,0,0)
   lH9 = c(0,0,0,0,0,0,0,0,0,0)
   lH10 = c(0,0,0,0,0,0,0,0,0,0)
-  LH_new_generation=matrix(data = c(lH1,lH2,lH3,lH4,lH5,lH6,lH7,lH8,lH9,lH10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
-  LH_new_generation=as(LH_new_generation,"sparseMatrix")
+  LH_new_generation=matrix(data = c(lH1,lH2,lH3,lH4,lH5,lH6,lH7,lH8,lH9,lH10),
+                           nrow = Nbs, ncol = Nbs, byrow = TRUE)
+  LH_new_generation=as(LH_new_generation, "sparseMatrix")
   
   lW1 = c(s_dt*s_J,0,0,0,0,0,0,0,0,0)
   lW2 = c(s_dt*s_JJp,s_dt*s_Jp,0,0,0,0,0,0,0,0)
@@ -319,9 +342,10 @@ set_demography_matrices = function(default_params){
   lW8 = c(0,0,0,0,0,0,0,0,0,0)
   lW9 = c(0,0,0,0,0,0,0,0,0,0)
   lW10 = c(0,0,0,0,0,0,0,0,0,0)
-  LIW_new_generation=matrix(data = c(lW1,lW2,lW3,lW4,lW5,lW6,lW7,lW8,lW9,lW10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
+  LIW_new_generation = matrix(data = c(lW1,lW2,lW3,lW4,lW5,lW6,lW7,lW8,lW9,lW10),
+                              nrow = Nbs,ncol = Nbs,byrow = TRUE)
   ## Check if this is good
-  LIW_new_generation=as(LIW_new_generation,"sparseMatrix")
+  LIW_new_generation = as(LIW_new_generation, "sparseMatrix")
   
   lW1 = c(s_dt*(s_J+s_JJp),0,0,0,0,0,0,0,0,0)
   lW2 = c(0,s_dt*s_Jp,0,0,0,0,0,0,0,0)
@@ -333,8 +357,9 @@ set_demography_matrices = function(default_params){
   lW8 = c(0,0,0,0,0,0,0,0,0,0)
   lW9 = c(0,0,0,0,0,0,0,0,0,0)
   lW10 = c(0,0,0,0,0,0,0,0,0,0)
-  LSW_new_generation=matrix(data = c(lW1,lW2,lW3,lW4,lW5,lW6,lW7,lW8,lW9,lW10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
-  LSW_new_generation=as(LSW_new_generation,"sparseMatrix")
+  LSW_new_generation = matrix(data = c(lW1,lW2,lW3,lW4,lW5,lW6,lW7,lW8,lW9,lW10),
+                              nrow = Nbs, ncol = Nbs, byrow = TRUE)
+  LSW_new_generation = as(LSW_new_generation,"sparseMatrix")
   #the same thing but s_JJp=0 (row2,col1)
   
   lD1 = c(0,0,0,0,0,0,0,0,0,0)
@@ -347,8 +372,9 @@ set_demography_matrices = function(default_params){
   lD8 = c(0,0,0,0,0,0,0,0,0,0)
   lD9 = c(0,0,0,0,0,0,0,0,0,0)
   lD10 = c(0,0,0,0,0,0,0,0,0,0)
-  LID_new_generation=matrix(data = c(lD1,lD2,lD3,lD4,lD5,lD6,lD7,lD8,lD9,lD10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
-  LID_new_generation=as(LID_new_generation,"sparseMatrix")
+  LID_new_generation=matrix(data = c(lD1,lD2,lD3,lD4,lD5,lD6,lD7,lD8,lD9,lD10),
+                            nrow=Nbs, ncol=Nbs, byrow = TRUE)
+  LID_new_generation=as(LID_new_generation, "sparseMatrix")
   
   lD1 = c(s_dt*(s_J+s_JJp),0,0,0,0,0,0,0,0,0)
   lD2 = c(0,s_dt*s_Jp,0,0,0,0,0,0,0,0)
@@ -360,12 +386,19 @@ set_demography_matrices = function(default_params){
   lD8 = c(0,0,0,0,0,0,0,0,0,0)
   lD9 = c(0,0,0,0,0,0,0,0,0,0)
   lD10 = c(0,0,0,0,0,0,0,0,0,0)
-  LSD_new_generation=matrix(data = c(lD1,lD2,lD3,lD4,lD5,lD6,lD7,lD8,lD9,lD10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
+  LSD_new_generation=matrix(data = c(lD1,lD2,lD3,lD4,lD5,lD6,lD7,lD8,lD9,lD10),
+                            nrow=Nbs, ncol=Nbs, byrow = TRUE)
   LSD_new_generation=as(LSD_new_generation,"sparseMatrix")
   
-  list_new_generation = list(LH_new_generation=LH_new_generation,LIW_new_generation=LIW_new_generation,LSW_new_generation=LSW_new_generation,LSD_new_generation=LSD_new_generation,LID_new_generation=LID_new_generation)
+  list_new_generation = list(LH_new_generation = LH_new_generation,
+                             LIW_new_generation = LIW_new_generation,
+                             LSW_new_generation = LSW_new_generation,
+                             LSD_new_generation = LSD_new_generation,
+                             LID_new_generation = LID_new_generation)
   
-  out = list(list_new_generation=list_new_generation,list_winter=list_winter,list_emergence=list_emergence,list_breeding=list_breeding
-             )
+  out = list(list_new_generation = list_new_generation,
+             list_winter = list_winter,
+             list_emergence = list_emergence,
+             list_breeding = list_breeding)
   return(out)
 }
