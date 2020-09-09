@@ -92,7 +92,7 @@ neighb_pos = function(Elms,neighbours_circle){#position of neighbours (return a 
       }
     }
     else {
-      nb_pos[[i]] = mat.or.vec(1,0) #put the zero value, it is the same than put an empty list
+      nb_pos[[i]] = mat.or.vec(1,0) #put the zero value (same as an empty list)
     }
   }
   return(nb_pos)
