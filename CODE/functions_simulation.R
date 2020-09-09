@@ -72,16 +72,23 @@ system_over_time=function(sim_param,sim_constants){
     matPopByTrees[,idx] = Demog%*%matPopByTrees[,idx]
     
     ## 3) update tree status
-    if(period == "Winter" & sim_constants$time$phase[idx+1] == "Emergence" & idx != length(sim_constants$time$idx)){
-      print(sprintf("Update tree states %d",idx))
-      
-      if(sim_constants$time$simple_year[idx]==1){#if this is the the first time we update
+    if (period == "Winter" & 
+        sim_constants$time$phase[idx+1] == "Emergence" & 
+        idx != length(sim_constants$time$idx)) {
+      writeLines(sprintf("Update tree states %d",idx))
+      if(sim_constants$time$simple_year[idx]==1) {
+        #if this is the the first time we update
         vec_idx = 1:idx #take all the weeks from the beginning
-      }else{#for the other years
-        vec_idx = (idx-sim_constants$default_params$l):idx #take the l=53 weeks prior the update. Note it is not important that the year has 52 or 53 weeks since the infection only occurs when beetles feed (in spring/summer and this is not the week at which the update occurs)
+      } else { 
+        #for the other years
+        vec_idx = (idx-sim_constants$default_params$l):idx 
+        # take the l=53 weeks prior to the update. Note it is not important that the year has 52 or 
+        # 53 weeks since the infection only occurs when beetles feed (in spring/summer and this is not
+        # the week at which the update occurs)
       }
-      
-      idx_susceptible_beetles = which(status_trees[,idx-1]=="H"|status_trees[,idx-1]=="S_W")#only these two types can be infected by beetles (because Fp can only go to S, Ws and Wi)
+      idx_susceptible_beetles = which(status_trees[,idx-1]=="H"|status_trees[,idx-1]=="S_W")
+      #only these two types can be infected by beetles (because Fp can only go to S, Ws and Wi)
+      writeLines("Look where I am, mum!!")
       
       ###############################
       # BEETLE INFECTION
@@ -455,13 +462,12 @@ demography_matrix = function(sim_constants,sim_param,stagesi,period){#function t
 transition_matrix = function(params){
   env = environment()
   list2env(params,env)
-  
   lt1 = c(1-p_a,0,0,0,0)
   lt2 = c(p_a,1-p_a,0,0,0)
   lt3 = c(0,0,0,0,0)
   lt4 = c(0,p_a,0,1,0)
   lt5 = c(0,0,1,0,1)
-  Lt=matrix(data = c(lt1,lt2,lt3,lt4,lt5),nrow=5,ncol=5,byrow = TRUE)
-  
+  Lt = matrix(data = c(lt1,lt2,lt3,lt4,lt5),
+            nrow = 5, ncol = 5, byrow = TRUE)
   return(t(Lt))
 }
