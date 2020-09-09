@@ -4,8 +4,9 @@
 
 ####################################################################################
 ### SELECTION OF NEIGHBOURHOODS
-#Select the neighbourhood(s) you want to study
-# to see the names of neighbourhoods: unique(all_trees$Neighbourhood)
+# Select the neighbourhood(s) you want to study
+# To see the names of neighbourhoods: unique(all_trees$Neighbourhood), once you have 
+# loaded this variable (a little below)
 list.of.neighbourhoods      = list()
 list.of.neighbourhoods[[1]] = "NORTH RIVER HEIGHTS"
 ####################################################################################
@@ -37,13 +38,13 @@ proba_roots = function(dist, minDist, maxDist){
 #
 #returns a vector that, for each couple of trees, compute the probability to be infected through roots
 #Here, the maximum distance at which trees can be connected is given by 3 times the sum of each 
-proba_all_roots = function(distances_Neighbourhood){
-  n = dim(distances_Neighbourhood)[1]
+proba_all_roots = function(distances_nbhd){
+  n = dim(distances_nbhd)[1]
   vec_proba = mat.or.vec(n,1)
   for (i in 1:n){
-    min_d = distances_Neighbourhood$height_i[i]+distances_Neighbourhood$height_j[i]
-    max_d = 3*(distances_Neighbourhood$height_i[i]+distances_Neighbourhood$height_j[i])
-    vec_proba[i] = proba_roots(distances_Neighbourhood$dist[i],min_d,max_d)
+    min_d = distances_nbhd$height_i[i]+distances_nbhd$height_j[i]
+    max_d = 3*(distances_nbhd$height_i[i]+distances_nbhd$height_j[i])
+    vec_proba[i] = proba_roots(distances_nbhd$dist[i],min_d,max_d)
   }
   return(vec_proba)
 }
@@ -51,8 +52,8 @@ proba_all_roots = function(distances_Neighbourhood){
 ###SELECT_TREES_NEIGHBOURHOOD
 #
 #For a given neighbourhood, select elms from the entire dataset all_trees
-select_trees_neighbourhood = function(all_trees,Neighbourhood,save_file){
-  elms = all_trees[which(all_trees$Neighbourhood == Neighbourhood),]
+select_trees_neighbourhood = function(all_trees, nbhd, save_file){
+  elms = all_trees[which(all_trees$Neighbourhood == nbhd),]
   saveRDS(elms,file = save_file)
   return(elms)
 }
@@ -68,49 +69,46 @@ selected_TI_file = sort(TI_files, decreasing = TRUE)[1]
 # selected_TI_file = TI_files[1]
 # Get the date, to save distance files with that information
 date_TI_file = substr(selected_TI_file, 21, 30)
-# Load file
+# Load elms inventory file
 all_trees = readRDS(file = sprintf("%s/%s", DIRS$DAT, selected_TI_file))
-
-
-#not needed anymore
-elms_idx = grep("American Elm",
-                all_trees$Common.Name,
-                ignore.case = TRUE)
-all_trees = all_trees[elms_idx,]
-all_trees = all_trees[which(all_trees$DBH>5),] #remove trees too small
-all_trees$Index = 1:dim(all_trees)[1]
+# Load all distances between these trees
 distances = readRDS(sprintf("%s/elms_distances_roots_%s.Rds", DIRS$DATA, date_TI_file))
+# Set save directory to include date of data file
+DIRS$nbhd_and_date = sprintf("%s%s", DIRS$prefix_data_date, date_TI_file)
 
 
-#The following loop makes 1) the separation into neighbourhoods for the selected neighbourhoods in list.neighbourhoods, 2) select the right lines in the elm_distances_root that correspond to the trees in the neighbourhood and 3) compute the probabilities that two close trees infect can infect each other through the roots
+# The following loop makes 1) the separation into neighbourhoods for the selected neighbourhoods in 
+# list.neighbourhoods, 2) select the right lines in the elm_distances_root that correspond to the 
+# trees in the neighbourhood and 3) compute the probabilities that two close trees infect can infect 
+# each other through the roots
 list_trees = list()
-for (Neighbourhood in list.of.neighbourhoods){
-  Neighbourhood_norm = gsub(" ", "_", as.character(Neighbourhood), fixed = TRUE)
-  Neighbourhood_norm = gsub(".", "", as.character(Neighbourhood_norm), fixed = TRUE)
-  Neighbourhood_norm = gsub("'", "", as.character(Neighbourhood_norm), fixed = TRUE)
-  #first, save the dataset of trees for each neighbourhood
-  save_file = sprintf("%s/elms_%s.Rds", DIRS$elms, Neighbourhood_norm)
-  trees = select_trees_neighbourhood(all_trees, Neighbourhood, save_file)
-  list_trees[[Neighbourhood_norm]] = trees
-  #second, take the dataframe with distances and select source and destination trees that are in the Neighbourhood (all elms in trees)
+for (nbhd in list.of.neighbourhoods){
+  nbhd_norm = gsub(" ", "_", as.character(nbhd), fixed = TRUE)
+  nbhd_norm = gsub(".", "", as.character(nbhd_norm), fixed = TRUE)
+  nbhd_norm = gsub("'", "", as.character(nbhd_norm), fixed = TRUE)
+  # first, save the dataset of trees for each neighbourhood
+  save_file = sprintf("%s/elms_%s.Rds", DIRS$nbhd_and_date, nbhd_norm)
+  trees = select_trees_neighbourhood(all_trees, nbhd, save_file)
+  list_trees[[nbhd_norm]] = trees
+  #second, take the dataframe with distances and select source and destination trees that are in the nbhd (all elms in trees)
   idx_sources = distances$ID_i %in% trees$Tree.ID
   idx_sources = which(idx_sources)
   idx_destinations = distances$ID_j[idx_sources] %in% trees$Tree.ID
   idx_destinations = which(idx_destinations)
-  distances_Neighbourhood = distances[idx_sources,][idx_destinations,]
-  #third, compute the probabilities for each tree to 
-  distances_Neighbourhood$proba    = proba_all_roots(distances_Neighbourhood)
+  distances_nbhd = distances[idx_sources,][idx_destinations,]
+  #third, compute the probabilities for each tree to connect to neighbours
+  distances_nbhd$proba = proba_all_roots(distances_nbhd)
   #and we need to double the dataframe, so that in the simulations, we just look once over sources.
-  sub_i = distances_Neighbourhood[,1:8]
-  sub_j = distances_Neighbourhood[,9:16]
-  sub_k = distances_Neighbourhood[,17:23]
+  sub_i = distances_nbhd[,1:8]
+  sub_j = distances_nbhd[,9:16]
+  sub_k = distances_nbhd[,17:23]
   super_sub = cbind(sub_j,sub_i,sub_k)
-  colnames(super_sub) = colnames(distances_Neighbourhood)
-  double_distances_Neighbourhood = rbind(distances_Neighbourhood,super_sub)
-  saveRDS(double_distances_Neighbourhood,sprintf("%s/proba_roots_%s.Rds",
-                                          DIRS$roots,
-                                          Neighbourhood_norm))
+  colnames(super_sub) = colnames(distances_nbhd)
+  double_distances_nbhd = rbind(distances_nbhd,super_sub)
+  saveRDS(double_distances_nbhd,sprintf("%s/proba_roots_%s.Rds",
+                                        DIRS$nbhd_and_date,
+                                        nbhd_norm))
   #Finally, save the number of trees
   sim_core = dim(trees)[1]
-  saveRDS(sim_core,sprintf("%s/sim_core_%s.Rds", DIRS$DATA, Neighbourhood_norm))
+  saveRDS(sim_core,sprintf("%s/sim_core_%s.Rds", DIRS$nbhd_and_date, nbhd_norm))
 }
