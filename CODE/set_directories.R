@@ -12,7 +12,9 @@ DIRS$RESULTS = sprintf("%s/RESULTS", DIRS$prefix_github)
 
 # Where we save some of the processed data (finer than just DATA)
 DIRS$roots = sprintf("%s/roots", DIRS$DATA)
-DIRS$elms = sprintf("%s/elms_neighbourhood", DIRS$DATA)
+DIRS$elms = sprintf("%s/elms_neighbouhood", DIRS$DATA)
+DIRS$save_new_preproc <- sprintf("%s/preprocessing/new_pre_processing",DIRS$DATA)
+
 
 # # DATA AND OUTPUT
 # # If we are working on the cluster, use absolute path, otherwise use relative to the user

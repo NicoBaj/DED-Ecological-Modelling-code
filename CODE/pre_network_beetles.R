@@ -4,7 +4,7 @@
 ######################################################################
 ### SELECTION OF NEIGHBOURHOOD AND VALUES OF R_B
 ### replace spaces by "_" in the neighbourhood name
-name_ngh = "NORTH_RIVER_HEIGHTS"
+name_nbhd = "NORTH_RIVER_HEIGHTS"
 seq_R_B = seq(20,100,by=20) #list of values of R_B
 ######################################################################
 
@@ -100,23 +100,11 @@ neighb_pos = function(Elms,neighbours_circle){#position of neighbours (return a 
 
 ###############################################################################
 
-# Make code location aware using the library rprojroot
-if(!require("rprojroot")){
-  install.packages("rprojroot")
-  require("rprojroot")
-}
-# Where is the current file? Needs to be sourced
-this_file <- rprojroot::thisfile()
-# Set code directory
-TOP_DIR_CODE <- dirname(this_file)
-# Set top directory
-TOP_DIR <- dirname(TOP_DIR_CODE)
+# Set directories
+source(sprintf("%s/CODE/set_directories.R", here::here()))
 
-dir_data <- sprintf("%s/DATA",TOP_DIR)
-dir_save <- sprintf("%s/Preprocessing/new_pre_processing",dir_data)
-
-Elms = readRDS(sprintf("%s/Elms_Neighbourhood/Elms_%s.Rds",dir_data,name_ngh))
-
+# Read file
+Elms = readRDS(sprintf("%s/Elms_%s.Rds", DIRS$elms, name_nbhd))
 list.R_B = list()
 
 for (i in 1:length(seq_R_B)){
@@ -152,8 +140,11 @@ for (i in 1:length(outputs)){
   distance_neighbours = output[[2]]
   neighbours_pos = neighb_pos(Elms,output[[1]])
   Nb_trees = length(neighbours_circle)
-
-  saveRDS(neighbours_circle,sprintf("%s/neighbours_%sTrees_RB%s_%s.Rds",dir_save,Nb_trees,R_B,name_ngh))
-  saveRDS(distance_neighbours,sprintf("%s/distance_neighbours_%sTrees_RB%s_%s.Rds",dir_save,Nb_trees,R_B,name_ngh))
-  saveRDS(neighbours_pos,sprintf("%s/neighbours_pos_%sTrees_RB%s_%s.Rds",dir_save,Nb_trees,R_B,name_ngh))
+  # Save results files
+  saveRDS(neighbours_circle,sprintf("%s/neighbours_%sTrees_RB%s_%s.Rds",
+                                    DIRS$save_new_preproc, Nb_trees, R_B,name_nbhd))
+  saveRDS(distance_neighbours,sprintf("%s/distance_neighbours_%sTrees_RB%s_%s.Rds",
+                                      DIRS$save_new_preproc, Nb_trees, R_B,name_nbhd))
+  saveRDS(neighbours_pos,sprintf("%s/neighbours_pos_%sTrees_RB%s_%s.Rds",
+                                 DIRS$save_new_preproc, Nb_trees, R_B, name_nbhd))
 }
