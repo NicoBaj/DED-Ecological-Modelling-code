@@ -10,13 +10,13 @@ This directory contains data used in the simulations. Tree inventories, roots-re
 
 - Model parameters are in `parameters.csv`.
 
-- Root networks are in the files `Proba_roots_*.Rds` in `/DATA`.
+- Root networks are in the files `proba_roots_*.Rds` in `/DATA`.
 
 #### Data used for a new simulation
 
 - After running the pre-processing scripts `pre_load_trees_and_compute_tree_heights.R` and `pre_roots_vs_routes.R`, it stores a new tree inventory and a dataset `elms_distances_roots*.Rds` in `/DATA`.
 
-- After running `pre_neighbourhoods_proba_roots.R`, a dataset `Proba_roots_*.Rds` is stored in `/DATA/Roots`.
+- After running `pre_neighbourhoods_proba_roots.R`, a dataset `proba_roots_*.Rds` is stored in `/DATA/roots`.
 
 - After running `pre_network_beetles.R`, beetles-related networs are stored in `/DATA/Preprocessing/new_pre_processing/`.
 

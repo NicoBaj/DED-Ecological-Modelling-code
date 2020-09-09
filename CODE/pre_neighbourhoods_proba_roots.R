@@ -89,7 +89,7 @@ for (Neighbourhood in list.of.neighbourhoods){
   Neighbourhood_norm = gsub(".", "", as.character(Neighbourhood_norm), fixed = TRUE)
   Neighbourhood_norm = gsub("'", "", as.character(Neighbourhood_norm), fixed = TRUE)
   #first, save the dataset of trees for each neighbourhood
-  save_file = sprintf("%s/Elms_%s.Rds", DIRS$elms, Neighbourhood_norm)
+  save_file = sprintf("%s/elms_%s.Rds", DIRS$elms, Neighbourhood_norm)
   trees = select_trees_neighbourhood(all_trees, Neighbourhood, save_file)
   list_trees[[Neighbourhood_norm]] = trees
   #second, take the dataframe with distances and select source and destination trees that are in the Neighbourhood (all elms in trees)
@@ -107,7 +107,7 @@ for (Neighbourhood in list.of.neighbourhoods){
   super_sub = cbind(sub_j,sub_i,sub_k)
   colnames(super_sub) = colnames(distances_Neighbourhood)
   double_distances_Neighbourhood = rbind(distances_Neighbourhood,super_sub)
-  saveRDS(distances_Neighbourhood,sprintf("%s/Proba_roots_%s.Rds",
+  saveRDS(distances_Neighbourhood,sprintf("%s/proba_roots_%s.Rds",
                                           DIRS$roots,
                                           Neighbourhood_norm))
   #Finally, save the number of trees

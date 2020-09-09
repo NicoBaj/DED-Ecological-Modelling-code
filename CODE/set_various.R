@@ -127,7 +127,7 @@ set_sim_time = function(sim_constants, startDate = start_date, endDate = end_dat
 set_sim_environment = function(sim_constants,input) {
   out = list()
   out$params = list()
-
+  
   for (i in 1:sim_constants$nb_sims){
     out$params[[i]] = sim_constants$default_params
     varying_params = list()
@@ -174,7 +174,7 @@ set_other_constants = function(sim_constants) {
                 to = sim_constants$default_params$Nbs*sim_constants$default_params$N,
                 by=sim_constants$default_params$Nbs)
   statesNames <- c("H", "S_W", "I_W", "S_D", "I_D")
-
+  
   out = list(statesNames = statesNames,
              indexOs = indexOs,
              indexOi = indexOi,
@@ -210,7 +210,7 @@ set_demography_matrices = function(default_params){
   lH9 = c(0,0,0,0,0,0,0,0,0,0)
   lH10 = c(0,0,0,0,0,0,0,0,0,0)
   LH_winter = matrix(data = c(lH1,lH2,lH3,lH4,lH5,lH6,lH7,lH8,lH9,lH10),
-                   nrow = Nbs, ncol = Nbs, byrow = TRUE)
+                     nrow = Nbs, ncol = Nbs, byrow = TRUE)
   LH_winter = as(LH_winter,"sparseMatrix")
   
   LSD_winter = mat.or.vec(Nbs,Nbs)
@@ -253,7 +253,7 @@ set_demography_matrices = function(default_params){
   lW9 = c(0,0,0,0,0,0,0,0,0,0)
   lW10 = c(0,0,0,0,0,0,0,0,0,0)
   LIW_emergence = matrix(data = c(lW1,lW2,lW3,lW4,lW5,lW6,lW7,lW8,lW9,lW10),
-                       nrow = Nbs, ncol = Nbs, byrow = TRUE)
+                         nrow = Nbs, ncol = Nbs, byrow = TRUE)
   LIW_emergence = as(LIW_emergence, "sparseMatrix")
   LSW_emergence = LIW_emergence
   
@@ -283,7 +283,7 @@ set_demography_matrices = function(default_params){
   lH9 = c(0,0,0,0,0,0,0,0,0,0)
   lH10 = c(0,0,0,0,0,0,0,0,0,0)
   LH_breeding = matrix(data = c(lH1,lH2,lH3,lH4,lH5,lH6,lH7,lH8,lH9,lH10),
-                     nrow = Nbs, ncol = Nbs, byrow = TRUE)
+                       nrow = Nbs, ncol = Nbs, byrow = TRUE)
   LH_breeding = as(LH_breeding,"sparseMatrix")
   
   lW1 = c(s_dt*(s_J+s_FJ),0,0,0,0,0,0,0,f_JA,f_JA)
@@ -297,7 +297,7 @@ set_demography_matrices = function(default_params){
   lW9 = c(0,0,0,0,0,0,s_dt,0,0,0)
   lW10 = c(0,0,0,0,0,0,0,s_dt,0,0)
   LIW_breeding = matrix(data = c(lW1,lW2,lW3,lW4,lW5,lW6,lW7,lW8,lW9,lW10),
-                      nrow = Nbs, ncol = Nbs, byrow = TRUE)
+                        nrow = Nbs, ncol = Nbs, byrow = TRUE)
   ## Check if this is good
   # LIW_breeding=LIW_breeding
   LIW_breeding = as(LIW_breeding,"sparseMatrix")
@@ -313,7 +313,7 @@ set_demography_matrices = function(default_params){
   lW9 = c(0,0,0,0,0,0,s_dt,0,0,0)
   lW10 = c(0,0,0,0,0,0,0,s_dt,0,0)
   LSW_breeding = matrix(data = c(lW1,lW2,lW3,lW4,lW5,lW6,lW7,lW8,lW9,lW10),
-                      nrow = Nbs, ncol = Nbs, byrow = TRUE)
+                        nrow = Nbs, ncol = Nbs, byrow = TRUE)
   LSW_breeding = as(LSW_breeding,"sparseMatrix")
   #the same thing but s_JJp=0 (row2,col1)
   

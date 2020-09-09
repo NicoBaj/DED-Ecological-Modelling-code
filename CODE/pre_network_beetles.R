@@ -104,7 +104,7 @@ neighb_pos = function(Elms,neighbours_circle){#position of neighbours (return a 
 source(sprintf("%s/CODE/set_directories.R", here::here()))
 
 # Read file
-Elms = readRDS(sprintf("%s/Elms_%s.Rds", DIRS$elms, name_nbhd))
+Elms = readRDS(sprintf("%s/elms_%s.Rds", DIRS$elms, name_nbhd))
 list.R_B = list()
 
 for (i in 1:length(seq_R_B)){
