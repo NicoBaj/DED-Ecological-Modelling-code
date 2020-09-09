@@ -14,7 +14,7 @@ DIRS$RESULTS = sprintf("%s/RESULTS", DIRS$prefix_github)
 DIRS$roots = sprintf("%s/roots", DIRS$DATA)
 DIRS$elms = sprintf("%s/elms_neighbouhood", DIRS$DATA)
 DIRS$save_new_preproc <- sprintf("%s/preprocessing/new_pre_processing",DIRS$DATA)
-DIRS$save_paper_preproc <- sprintf("%s/preprocessing/new_pre_processing",DIRS$DATA)
+DIRS$save_paper_preproc <- sprintf("%s/preprocessing/article_pre_processing",DIRS$DATA)
 
 
 # # DATA AND OUTPUT
