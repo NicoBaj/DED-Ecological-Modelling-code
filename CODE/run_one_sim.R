@@ -125,52 +125,41 @@ source(sprintf("%s/functions_pre_simulation.R", DIRS$CODE))
 source(sprintf("%s/functions_simulation.R", DIRS$CODE))
 
 
-###############################################
-## Spread of the Dutch Elm Disease
-## Code to run simulations in parallel
-###############################################
-
+## MAIN SIMULATION PART
 # Constants will go in a list called sim_constants.
 sim_constants = list()
-
 #Set the gates
 sim_constants$GATES = list()
 sim_constants$GATES$PLOT_SIM = PLOT_SIM #add other gates if needed
 sim_constants$GATES$SIMULATIONS_ARTICLE = SIMULATIONS_ARTICLE
 
-# Set directories
-source(sprintf("%s/CODE/set_directories.R", here::here()))
 # Add directories to constants for easy use
 sim_constants$DIRS = DIRS
 
 # Set the neighbourhood
-sim_constants$Neighbourhood = Neighbourhood
+sim_constants$neighbourhood = neighbourhood
 
 # Set part of the name for the result directory
-if(SIMULATIONS_ARTICLE){
+if (SIMULATIONS_ARTICLE) {
   sim_constants$sim_core = sim_core
-}else{
-  nb_trees = readRDS(sprintf("%s/sim_core_%s.Rds",sim_constants$DIRS$DATA,Neighbourhood))
+} else {
+  nb_trees = readRDS(sprintf("%s/sim_core_%s.Rds",sim_constants$DIRS$DATA,neighbourhood))
   sim_constants$sim_core = sprintf("%sTrees",nb_trees)
 }
 
-
 # Read parameters from the csv file and replace those choosen in the main file (input)
-sim_constants = read_parameters(sim_constants,input) # create default_params
-
+sim_constants = read_parameters(sim_constants, input) # create default_params
 # Root infection
 sim_constants$roots = roots
-
 # Set output directory
 sim_constants = set_output_location(sim_constants)
-
 # Set up simulations
 sim_constants$time = set_sim_time(sim_constants)
-
 # Nb of simulations
 sim_constants$nb_sims = nb_sims
 
-# Set up small demography matrices BY DEFAULT (they can change if we change parameters inside the matrices)
+# Set up small demography matrices BY DEFAULT (they can change if we change parameters inside the 
+# matrices)
 # sim_constants$matrices = set_demography_matrices(sim_constants$default_params) matrices are NOT constant then ...
 
 # Set up other stuffs

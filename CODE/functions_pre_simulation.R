@@ -4,11 +4,11 @@
 ###FIND_CENTER
 #
 #center of the map
-find_center = function(Elms){
-  min_X = min(Elms$X)
-  max_X = max(Elms$X)
-  min_Y = min(Elms$Y)
-  max_Y = max(Elms$Y)
+find_center = function(elms){
+  min_X = min(elms$X)
+  max_X = max(elms$X)
+  min_Y = min(elms$Y)
+  max_Y = max(elms$Y)
   center = list(x=(max_X+min_X)/2,y=(max_Y+min_Y)/2)
   return(center)
 }
@@ -16,11 +16,11 @@ find_center = function(Elms){
 ###SPECIAL_CENTER
 #
 #set the center of the third quadrant (bottom left)
-special_center = function(Elms){
-  min_X = min(Elms$X)
-  max_X = max(Elms$X)
-  min_Y = min(Elms$Y)
-  max_Y = max(Elms$Y)
+special_center = function(elms){
+  min_X = min(elms$X)
+  max_X = max(elms$X)
+  min_Y = min(elms$Y)
+  max_Y = max(elms$Y)
   center = list(x=(max_X+min_X)/2,y=(max_Y+min_Y)/2)
   third_quarter_center = list(x=(center$x+min_X)/2,y=(center$y+min_Y)/2)
   return(third_quarter_center)
@@ -29,11 +29,11 @@ special_center = function(Elms){
 ###SPECIAL_CENTER2
 #
 #set the right center of the map (middle right)
-special_center2 = function(Elms){
-  min_X = min(Elms$X)
-  max_X = max(Elms$X)
-  min_Y = min(Elms$Y)
-  max_Y = max(Elms$Y)
+special_center2 = function(elms){
+  min_X = min(elms$X)
+  max_X = max(elms$X)
+  min_Y = min(elms$Y)
+  max_Y = max(elms$Y)
   center = list(x=(max_X+min_X)/2,y=(max_Y+min_Y)/2)
   middle_right_center = list(x=(center$x+max_X)/2,y=(max_Y+min_Y)/2)
   return(middle_right_center)
@@ -42,11 +42,11 @@ special_center2 = function(Elms){
 ###SPECIAL_CENTER3
 #
 #set the center of the first quadrant (top right)
-special_center3 = function(Elms){
-  min_X = min(Elms$X)
-  max_X = max(Elms$X)
-  min_Y = min(Elms$Y)
-  max_Y = max(Elms$Y)
+special_center3 = function(elms){
+  min_X = min(elms$X)
+  max_X = max(elms$X)
+  min_Y = min(elms$Y)
+  max_Y = max(elms$Y)
   center = list(x=(max_X+min_X)/2,y=(max_Y+min_Y)/2)
   first_quadrant_center = list(x=(center$x+max_X)/2,y=(center$y+max_Y)/2)
   return(first_quadrant_center)
@@ -101,10 +101,10 @@ initial_beetles = function(default_params, stages, IC_beetles){
 ###CLUSTER_INF_TREES
 #
 #select all trees in the circle of radius r and center center_world
-cluster_inf_trees = function(Elms, centre_world, r){
+cluster_inf_trees = function(elms, centre_world, r){
   ## Function to select some trees from the data (around the "center" within a radius r)
-  diff_x = Elms$X-centre_world$x
-  diff_y = Elms$Y-centre_world$y
+  diff_x = elms$X-centre_world$x
+  diff_y = elms$Y-centre_world$y
   rad_xy = diff_x^2+diff_y^2
   idx_selected = which(rad_xy <= (r^2))
   return(idx_selected)
@@ -135,24 +135,24 @@ proba_infection = function(default_params, pop0ByTrees, stages){
 #
 #Function that creates the initial condition required with all info in an list of outputs
 create_IC = function(sim_constants, 
-                     Elms,
+                     elms,
                      IC_type,
                      IC_beetles,
                      IC_radius,
                      IC_number_dead_trees){
   
-  centre_world = find_center(Elms)
-  # centre_world = special_center(Elms)
+  centre_world = find_center(elms)
+  # centre_world = special_center(elms)
   
   if (IC_type == "cluster"){ # just one cluster in the middle of the map
-    sampling.dead.trees = cluster_inf_trees(Elms,centre_world,IC_radius)
+    sampling.dead.trees = cluster_inf_trees(elms,centre_world,IC_radius)
   } else if(IC_type == "2clusters"){ # 2 clusters
-    center1 = special_center(Elms) #center of the first cluster
-    center2 = special_center2(Elms) #center of the second cluster
+    center1 = special_center(elms) #center of the first cluster
+    center2 = special_center2(elms) #center of the second cluster
     radius1 = IC_radius$r1
     radius2 = IC_radius$r2
-    sampling.dead.trees1 = cluster_inf_trees(Elms,center1,radius1)
-    sampling.dead.trees2 = cluster_inf_trees(Elms,center2,radius2)
+    sampling.dead.trees1 = cluster_inf_trees(elms,center1,radius1)
+    sampling.dead.trees2 = cluster_inf_trees(elms,center2,radius2)
     sampling.dead.trees = c(sampling.dead.trees1,sampling.dead.trees2)
   }else if(IC_type == "random"){ # dead trees are chosen randomly
     sampling.dead.trees = sample.int(sim_constants$default_params$N,size = IC_number_dead_trees)
@@ -202,44 +202,34 @@ read_parameters = function(sim_constants, input) {
     sim_constants$default_params[[sprintf("%s",parameters[i,1])]] = 
       as.numeric(parameters[i,2])
   }
-  sim_constants$default_params$p_i             = input$p_i
-  sim_constants$default_params$p_r             = input$p_r
-  sim_constants$default_params$s_dt            = input$s_dt
-  sim_constants$default_params$R_B             = input$R_B
+  # Override some values
+  sim_constants$default_params$p_i  = input$p_i
+  sim_constants$default_params$p_r  = input$p_r
+  sim_constants$default_params$s_dt = input$s_dt
+  sim_constants$default_params$R_B  = input$R_B
   
-  ## Now we can load the good preprocessing since we have the right R_B
-  if (sim_constants$GATES$SIMULATIONS_ARTICLE) {
-    sim_constants$FILES[[2]] = sprintf("%s/neighbours_%s_maxD%s.Rds", 
-                                       sim_constants$DIRS$save_paper_preproc, sim_constants$sim_core, sim_constants$default_params$R_B)
-    sim_constants$FILES[[3]] = sprintf("%s/distance_neighbours_%s_maxD%s.Rds", 
-                                       sim_constants$DIRS$save_paper_preproc, sim_constants$sim_core, sim_constants$default_params$R_B)
-    sim_constants$FILES[[4]] = sprintf("%s/neighbours_pos_%s_maxD%s.Rds", 
-                                       sim_constants$DIRS$save_paper_preproc, sim_constants$sim_core, sim_constants$default_params$R_B)
-    sim_constants$FILES[[5]] = sprintf("%s/elms_%s_2020-01-28.Rds", 
-                                       sim_constants$DIRS$elms, sim_constants$Neighbourhood)
-    sim_constants$FILES[[7]] = sprintf("%s/proba_roots_%s_2020-01-28.Rds",
-                                       sim_constants$DIRS$roots,sim_constants$Neighbourhood)
-  } else {
-    sim_constants$FILES[[2]] = sprintf("%s/neighbours_%s_RB%s_%s.Rds", 
-                                       sim_constants$DIRS$save_new_preproc, sim_constants$sim_core, sim_constants$default_params$R_B,sim_constants$Neighbourhood)
-    sim_constants$FILES[[3]] = sprintf("%s/distance_neighbours_%s_RB%s_%s.Rds", 
-                                       sim_constants$DIRS$save_new_preproc, sim_constants$sim_core, sim_constants$default_params$R_B,sim_constants$Neighbourhood)
-    sim_constants$FILES[[4]] = sprintf("%s/neighbours_pos_%s_RB%s_%s.Rds", 
-                                       sim_constants$DIRS$save_new_preproc,sim_constants$sim_core, sim_constants$default_params$R_B,sim_constants$Neighbourhood)
-    sim_constants$FILES[[5]] = sprintf("%s/elms_%s.Rds", 
-                                       sim_constants$DIRS$elms, sim_constants$Neighbourhood)
-    sim_constants$FILES[[7]] = sprintf("%s/proba_roots_%s.Rds",
-                                       sim_constants$DIRS$roots,sim_constants$Neighbourhood)
-  }
-  
-  
+  ## Now we can set file names for the corresponding preprocessing since we have set the value of R_B
+  sim_constants$FILES[[2]] = sprintf("%s/neighbours_%s_maxD%s.Rds", 
+                                     sim_constants$DIRS$preproc_dists, 
+                                     sim_constants$sim_core, sim_constants$default_params$R_B)
+  sim_constants$FILES[[3]] = sprintf("%s/distance_neighbours_%s_maxD%s.Rds", 
+                                     sim_constants$DIRS$preproc_dists, 
+                                     sim_constants$sim_core, sim_constants$default_params$R_B)
+  sim_constants$FILES[[4]] = sprintf("%s/neighbours_pos_%s_maxD%s.Rds", 
+                                     sim_constants$DIRS$preproc_dists, 
+                                     sim_constants$sim_core, sim_constants$default_params$R_B)
+  # Also set file names for elms and roots files
+  sim_constants$FILES[[5]] = sprintf("%s/elms_%s.Rds", 
+                                     sim_constants$DIRS$nbhd_and_date, sim_constants$neighbourhood)
+  sim_constants$FILES[[7]] = sprintf("%s/proba_roots_%s.Rds",
+                                     sim_constants$DIRS$nbhd_and_date,sim_constants$neighbourhood)
   
   # parameters <- read.csv(sim_constants$FILES[[1]], header=TRUE)
   neighbours_circle = readRDS(sim_constants$FILES[[2]])
   distance_neighbours = readRDS(sim_constants$FILES[[3]])
   neighbours_pos = readRDS(sim_constants$FILES[[4]])
-  Elms = readRDS(sim_constants$FILES[[5]])
-  sim_constants$default_params$N = dim(Elms)[1]
+  elms = readRDS(sim_constants$FILES[[5]])
+  sim_constants$default_params$N = dim(elms)[1]
   sim_constants$default_params$proba_roots = readRDS(sim_constants$FILES[[7]])
   
   #### Sublist with preprocessed values
@@ -252,7 +242,7 @@ read_parameters = function(sim_constants, input) {
   # sim_constants$default_params$IC = readRDS(sim_constants$FILES[[6]])
   
   #### Sublist with selected elms
-  sim_constants$default_params$elms = Elms
+  sim_constants$default_params$elms = elms
   
   return(sim_constants)
 }
