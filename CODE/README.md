@@ -26,6 +26,6 @@ All `R` scripts are documented here. Most scripts have a prefixed name to indica
 - `set_directories.R` sets the directories.
 - `functions_IC.R` has functions to set initial conditions.
 - `set_various.R` sets the environment to run simulations.
-- `sim_functions.R` contains functions required during one simulation.
+- `functions_simulation.R` contains functions required during one simulation.
 - `sim.R` is the simulation code.
 - `run_sim.R` launches one simulation. Once the pre-processing is done, it selects the neighbourhood, the main parameter values and initial conditions. Then, it sources the functions required for the simulation.

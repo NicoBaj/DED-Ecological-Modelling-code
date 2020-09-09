@@ -114,7 +114,7 @@ source(sprintf("%s/CODE/set_directories.R", here::here()))
 # Source the pre processing (create env,loading files...)
 source(sprintf("%s/set_various.R", DIRS$CODE))
 # Source all the functions needed for the simulation
-source(sprintf("%s/sim_functions.R", DIRS$CODE))
+source(sprintf("%s/functions_simulation.R", DIRS$CODE))
 # Source the functions that create initial condition
 source(sprintf("%s/functions_IC.R", DIRS$CODE))
 # Source the R script for the simulation
