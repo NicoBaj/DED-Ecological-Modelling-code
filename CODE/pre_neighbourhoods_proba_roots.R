@@ -107,8 +107,10 @@ for (Neighbourhood in list.of.neighbourhoods){
   super_sub = cbind(sub_j,sub_i,sub_k)
   colnames(super_sub) = colnames(distances_Neighbourhood)
   double_distances_Neighbourhood = rbind(distances_Neighbourhood,super_sub)
-  saveRDS(distances_Neighbourhood,sprintf("%s/Proba_roots_%s.Rds",DIRS$roots,Neighbourhood_norm))
+  saveRDS(distances_Neighbourhood,sprintf("%s/Proba_roots_%s.Rds",
+                                          DIRS$roots,
+                                          Neighbourhood_norm))
   #Finally, save the number of trees
   sim_core = dim(trees)[1]
-  saveRDS(sim_core,sprintf("%s/sim_core_%s.Rds",DIRS$DATA,Neighbourhood_norm))
+  saveRDS(sim_core,sprintf("%s/sim_core_%s.Rds", DIRS$DATA, Neighbourhood_norm))
 }
