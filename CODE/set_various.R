@@ -39,13 +39,13 @@ read_parameters = function(sim_constants,input) {
   
   ## Now we can load the good preprocessing since we have the right R_B
   if (sim_constants$GATES$SIMULATIONS_ARTICLE) {
-    sim_constants$FILES[[2]] = sprintf("%s/neighbours_%s_maxD%s.RData", 
+    sim_constants$FILES[[2]] = sprintf("%s/neighbours_%s_maxD%s.Rds", 
                                        sim_constants$DIRS$save_paper_preproc, sim_constants$sim_core, sim_constants$default_params$R_B)
-    sim_constants$FILES[[3]] = sprintf("%s/distance_neighbours_%s_maxD%s.RData", 
+    sim_constants$FILES[[3]] = sprintf("%s/distance_neighbours_%s_maxD%s.Rds", 
                                        sim_constants$DIRS$save_paper_preproc, sim_constants$sim_core, sim_constants$default_params$R_B)
-    sim_constants$FILES[[4]] = sprintf("%s/neighbours_pos_%s_maxD%s.RData", 
+    sim_constants$FILES[[4]] = sprintf("%s/neighbours_pos_%s_maxD%s.Rds", 
                                        sim_constants$DIRS$save_paper_preproc, sim_constants$sim_core, sim_constants$default_params$R_B)
-    sim_constants$FILES[[5]] = sprintf("%s/elms_%s_2020-01-28.RData", 
+    sim_constants$FILES[[5]] = sprintf("%s/elms_%s_2020-01-28.Rds", 
                                        sim_constants$DIRS$elms, sim_constants$Neighbourhood)
     sim_constants$FILES[[7]] = sprintf("%s/proba_roots_%s_2020-01-28.Rds",
                                        sim_constants$DIRS$roots,sim_constants$Neighbourhood)
