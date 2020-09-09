@@ -113,6 +113,11 @@ if(SIMULATIONS_ARTICLE){
 
 # Set directories
 source(sprintf("%s/CODE/set_directories.R", here::here()))
+# Set save directory to include date of data file
+DIRS$nbhd_and_date = sprintf("%s%s", DIRS$prefix_data_date, date_TI_file)
+# Set directory for saving in this script
+DIRS$preproc_dists = sprintf("%s/%s", DIRS$nbhd_and_date, DIRS$suffix_preproc_dists)
+
 
 # Source the functions that help set up the simulation
 source(sprintf("%s/functions_pre_simulation.R", DIRS$CODE))
