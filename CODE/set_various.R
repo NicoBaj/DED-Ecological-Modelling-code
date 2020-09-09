@@ -115,10 +115,10 @@ set_sim_time = function(sim_constants, startDate = start_date, endDate = end_dat
   weeksSims = seq(start_date, end_date, by = "week")
   idx = which(dates$dateFull %in% weeksSims)
   out = data.frame(idx = 1:length(weeksSims), dates[idx,])
-  out$phase=week_types(out$weekShort)
-  out$simple_year=as.numeric(out$year) - as.numeric(out$year[1])
-  out$start_date=start_date
-  out$end_date=end_date
+  out$phase = week_types(out$weekShort)
+  out$simple_year = as.numeric(out$year) - as.numeric(out$year[1])
+  out$start_date = start_date
+  out$end_date = end_date
   return(out)
 }
 
@@ -143,19 +143,49 @@ set_sim_environment = function(sim_constants,input) {
 # Gives constants that can be used and that will never be changed
 # indexes and state names are defined here
 set_other_constants = function(sim_constants) {
-  indexOs = seq(1,sim_constants$default_params$Nbs*sim_constants$default_params$N,by=sim_constants$default_params$Nbs)
-  indexOi = seq(2,sim_constants$default_params$Nbs*sim_constants$default_params$N,by=sim_constants$default_params$Nbs)
-  indexMbs = seq(3,sim_constants$default_params$Nbs*sim_constants$default_params$N,by=sim_constants$default_params$Nbs)
-  indexMbi = seq(4,sim_constants$default_params$Nbs*sim_constants$default_params$N,by=sim_constants$default_params$Nbs)
-  indexJs = seq(5,sim_constants$default_params$Nbs*sim_constants$default_params$N,by=sim_constants$default_params$Nbs)
-  indexJi = seq(6,sim_constants$default_params$Nbs*sim_constants$default_params$N,by=sim_constants$default_params$Nbs)
-  indexMs = seq(7,sim_constants$default_params$Nbs*sim_constants$default_params$N,by=sim_constants$default_params$Nbs)
-  indexMi = seq(8,sim_constants$default_params$Nbs*sim_constants$default_params$N,by=sim_constants$default_params$Nbs)
-  indexAs = seq(9,sim_constants$default_params$Nbs*sim_constants$default_params$N,by=sim_constants$default_params$Nbs)
-  indexAi = seq(10,sim_constants$default_params$Nbs*sim_constants$default_params$N,by=sim_constants$default_params$Nbs)
+  indexOs = seq(from = 1,
+                to = sim_constants$default_params$Nbs*sim_constants$default_params$N,
+                by=sim_constants$default_params$Nbs)
+  indexOi = seq(from = 2,
+                to = sim_constants$default_params$Nbs*sim_constants$default_params$N,
+                by=sim_constants$default_params$Nbs)
+  indexMbs = seq(from = 3,
+                 to = sim_constants$default_params$Nbs*sim_constants$default_params$N,
+                 by=sim_constants$default_params$Nbs)
+  indexMbi = seq(from = 4,
+                 to = sim_constants$default_params$Nbs*sim_constants$default_params$N,
+                 by=sim_constants$default_params$Nbs)
+  indexJs = seq(from = 5,
+                to = sim_constants$default_params$Nbs*sim_constants$default_params$N,
+                by=sim_constants$default_params$Nbs)
+  indexJi = seq(from = 6,
+                to = sim_constants$default_params$Nbs*sim_constants$default_params$N,
+                by=sim_constants$default_params$Nbs)
+  indexMs = seq(from = 7,
+                to = sim_constants$default_params$Nbs*sim_constants$default_params$N,
+                by=sim_constants$default_params$Nbs)
+  indexMi = seq(from = 8,
+                to = sim_constants$default_params$Nbs*sim_constants$default_params$N,
+                by=sim_constants$default_params$Nbs)
+  indexAs = seq(from = 9,
+                to = sim_constants$default_params$Nbs*sim_constants$default_params$N,
+                by=sim_constants$default_params$Nbs)
+  indexAi = seq(from = 10,
+                to = sim_constants$default_params$Nbs*sim_constants$default_params$N,
+                by=sim_constants$default_params$Nbs)
   statesNames <- c("H", "S_W", "I_W", "S_D", "I_D")
 
-  out = list(statesNames=statesNames,indexOs=indexOs,indexOi=indexOi,indexMbs=indexMbs,indexJs=indexJs,indexMs=indexMs,indexAs=indexAs,indexMbi=indexMbi,indexJi=indexJi,indexMi=indexMi,indexAi=indexAi)
+  out = list(statesNames = statesNames,
+             indexOs = indexOs,
+             indexOi = indexOi,
+             indexMbs = indexMbs,
+             indexJs = indexJs,
+             indexMs = indexMs,
+             indexAs = indexAs,
+             indexMbi = indexMbi,
+             indexJi = indexJi,
+             indexMi = indexMi,
+             indexAi = indexAi)
   return(out)
 }
 
@@ -179,8 +209,9 @@ set_demography_matrices = function(default_params){
   lH8 = c(0,0,0,0,0,0,0,0,0,0)
   lH9 = c(0,0,0,0,0,0,0,0,0,0)
   lH10 = c(0,0,0,0,0,0,0,0,0,0)
-  LH_winter=matrix(data = c(lH1,lH2,lH3,lH4,lH5,lH6,lH7,lH8,lH9,lH10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
-  LH_winter=as(LH_winter,"sparseMatrix")
+  LH_winter = matrix(data = c(lH1,lH2,lH3,lH4,lH5,lH6,lH7,lH8,lH9,lH10),
+                   nrow = Nbs, ncol = Nbs, byrow = TRUE)
+  LH_winter = as(LH_winter,"sparseMatrix")
   
   LSD_winter = mat.or.vec(Nbs,Nbs)
   LSD_winter = as(LSD_winter,"sparseMatrix")
@@ -188,7 +219,11 @@ set_demography_matrices = function(default_params){
   LIW_winter = LID_winter
   LSW_winter = LID_winter
   
-  list_winter = list(LH_winter=LH_winter,LSD_winter=LSD_winter,LID_winter=LID_winter,LSW_winter=LSW_winter,LIW_winter=LIW_winter)
+  list_winter = list(LH_winter = LH_winter,
+                     LSD_winter = LSD_winter,
+                     LID_winter = LID_winter,
+                     LSW_winter = LSW_winter,
+                     LIW_winter = LIW_winter)
   
   #######################################################################
   ##matrices for Emergence event
@@ -203,8 +238,9 @@ set_demography_matrices = function(default_params){
   lH8 = c(0,0,0,0,0,s_dt*s_MC,0,0,0,0)
   lH9 = c(0,0,0,0,0,0,0,0,0,0)
   lH10 = c(0,0,0,0,0,0,0,0,0,0)
-  LH_emergence=matrix(data = c(lH1,lH2,lH3,lH4,lH5,lH6,lH7,lH8,lH9,lH10),nrow=Nbs,ncol=Nbs,byrow = TRUE)
-  LH_emergence=as(LH_emergence,"sparseMatrix")
+  LH_emergence = matrix(data = c(lH1,lH2,lH3,lH4,lH5,lH6,lH7,lH8,lH9,lH10),
+                        nrow = Nbs, ncol = Nbs, byrow = TRUE)
+  LH_emergence = as(LH_emergence,"sparseMatrix")
   
   lW1 = c(0,0,0,0,0,0,0,0,0,0)
   lW2 = c(0,0,0,0,0,0,0,0,0,0)
@@ -216,13 +252,13 @@ set_demography_matrices = function(default_params){
   lW8 = c(0,0,0,0,0,s_dt*s_MC,0,0,0,0)
   lW9 = c(0,0,0,0,0,0,0,0,0,0)
   lW10 = c(0,0,0,0,0,0,0,0,0,0)
-  LIW_emergence=matrix(data = c(lW1,lW2,lW3,lW4,lW5,lW6,lW7,lW8,lW9,lW10),
-                       nrow=Nbs, ncol=Nbs, byrow = TRUE)
-  LIW_emergence=as(LIW_emergence, "sparseMatrix")
-  LSW_emergence=LIW_emergence
+  LIW_emergence = matrix(data = c(lW1,lW2,lW3,lW4,lW5,lW6,lW7,lW8,lW9,lW10),
+                       nrow = Nbs, ncol = Nbs, byrow = TRUE)
+  LIW_emergence = as(LIW_emergence, "sparseMatrix")
+  LSW_emergence = LIW_emergence
   
-  LSD_emergence=mat.or.vec(Nbs,Nbs)
-  LSD_emergence=as(LSD_emergence,"sparseMatrix")
+  LSD_emergence = mat.or.vec(Nbs,Nbs)
+  LSD_emergence = as(LSD_emergence,"sparseMatrix")
   LID_emergence = LSD_emergence #no beetle can be present in dead trees at this time of the year
   
   list_emergence = list(LH_emergence = LH_emergence,
@@ -246,9 +282,9 @@ set_demography_matrices = function(default_params){
   lH8 = c(0,0,0,0,0,s_dt,0,0,0,0)
   lH9 = c(0,0,0,0,0,0,0,0,0,0)
   lH10 = c(0,0,0,0,0,0,0,0,0,0)
-  LH_breeding=matrix(data = c(lH1,lH2,lH3,lH4,lH5,lH6,lH7,lH8,lH9,lH10),
-                     nrow=Nbs, ncol=Nbs, byrow = TRUE)
-  LH_breeding=as(LH_breeding,"sparseMatrix")
+  LH_breeding = matrix(data = c(lH1,lH2,lH3,lH4,lH5,lH6,lH7,lH8,lH9,lH10),
+                     nrow = Nbs, ncol = Nbs, byrow = TRUE)
+  LH_breeding = as(LH_breeding,"sparseMatrix")
   
   lW1 = c(s_dt*(s_J+s_FJ),0,0,0,0,0,0,0,f_JA,f_JA)
   lW2 = c(s_dt*s_JJp,s_dt*(s_Jp+s_FJp),0,0,0,0,0,0,0,0)
@@ -260,11 +296,11 @@ set_demography_matrices = function(default_params){
   lW8 = c(0,0,0,0,0,s_dt,0,0,0,0)
   lW9 = c(0,0,0,0,0,0,s_dt,0,0,0)
   lW10 = c(0,0,0,0,0,0,0,s_dt,0,0)
-  LIW_breeding=matrix(data = c(lW1,lW2,lW3,lW4,lW5,lW6,lW7,lW8,lW9,lW10),
+  LIW_breeding = matrix(data = c(lW1,lW2,lW3,lW4,lW5,lW6,lW7,lW8,lW9,lW10),
                       nrow = Nbs, ncol = Nbs, byrow = TRUE)
   ## Check if this is good
   # LIW_breeding=LIW_breeding
-  LIW_breeding=as(LIW_breeding,"sparseMatrix")
+  LIW_breeding = as(LIW_breeding,"sparseMatrix")
   
   lW1 = c(s_dt*(s_J+s_JJp+s_FJ),0,0,0,0,0,0,0,f_JA,f_JA)
   lW2 = c(0,s_dt*(s_Jp+s_FJp),0,0,0,0,0,0,0,0)
@@ -276,9 +312,9 @@ set_demography_matrices = function(default_params){
   lW8 = c(0,0,0,0,0,s_dt,0,0,0,0)
   lW9 = c(0,0,0,0,0,0,s_dt,0,0,0)
   lW10 = c(0,0,0,0,0,0,0,s_dt,0,0)
-  LSW_breeding=matrix(data = c(lW1,lW2,lW3,lW4,lW5,lW6,lW7,lW8,lW9,lW10),
-                      nrow=Nbs, ncol=Nbs, byrow = TRUE)
-  LSW_breeding=as(LSW_breeding,"sparseMatrix")
+  LSW_breeding = matrix(data = c(lW1,lW2,lW3,lW4,lW5,lW6,lW7,lW8,lW9,lW10),
+                      nrow = Nbs, ncol = Nbs, byrow = TRUE)
+  LSW_breeding = as(LSW_breeding,"sparseMatrix")
   #the same thing but s_JJp=0 (row2,col1)
   
   lD1 = c(0,0,0,0,0,0,0,0,f_JA,f_JA)
