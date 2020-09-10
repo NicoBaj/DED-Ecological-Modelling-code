@@ -23,7 +23,7 @@ ui <- fluidPage(
   # Sidebar with a slider input for the number of bins
   sidebarLayout(
     sidebarPanel(
-      selectInput("Neighbourhood", 
+      selectInput("neighbourhood", 
                   label = "Choose a neighbourhood",
                   choices = c("North River Heights (NRH)", 
                               "Mixed Pulberry-Crescent Park (PCP)"),
@@ -93,7 +93,7 @@ server <- function(input, output) {
     # Get parameters from console
     params <- list()
     # Set the neighbourhood
-    params$NGH = input$Neighbourhood
+    params$NGH = input$neighbourhood
     # Set the IC
     params$IC = input$IC
     # Set main parameters
@@ -142,7 +142,7 @@ server <- function(input, output) {
     OUT = RESULTS_NEW()
     PLOT_SIM  = TRUE
     PLOT_PROP = FALSE
-    source("run_one_sim.R",local = TRUE)
+    source("run_one_sim_shiny.R",local = TRUE)
   })
 
   })

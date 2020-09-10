@@ -28,9 +28,9 @@ input = OUT # Main model parameter inputs are defined here
 
 # 1- Neighbourhood
 if(input$NGH == "North River Heights (NRH)"){
-  Neighbourhood = "NORTH_RIVER_HEIGHTS"
+  neighbourhood = "NORTH_RIVER_HEIGHTS"
 }else if(input$NGH == "Mixed Pulberry-Crescent Park (PCP)"){
-  Neighbourhood = "MIXED_PULBERRY_CRESCENT_PARK"
+  neighbourhood = "MIXED_PULBERRY_CRESCENT_PARK"
 }
 date_TI_file = "2020-01-28"
 
@@ -60,7 +60,7 @@ start_date = "2019-08-01"
 end_date = "2030-12-31"
 
 #Set up the simulation in function of choices in 2- and 3-:
-if(Neighbourhood=="MIXED_PULBERRY_CRESCENT_PARK"){
+if(neighbourhood=="MIXED_PULBERRY_CRESCENT_PARK"){
   sim_core = "1513Trees"
   if(IC_type == "cluster"){
     IC_radius = 96
@@ -73,7 +73,7 @@ if(Neighbourhood=="MIXED_PULBERRY_CRESCENT_PARK"){
     IC_radius = 96
     IC_number_dead_trees = 38
   }
-}else if (Neighbourhood == "NORTH_RIVER_HEIGHTS"){
+}else if (neighbourhood == "NORTH_RIVER_HEIGHTS"){
   sim_core = "2004Trees"
   if(IC_type == "cluster"){
     IC_radius = 100
