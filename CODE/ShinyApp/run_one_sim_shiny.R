@@ -61,7 +61,7 @@ end_date = "2030-12-31"
 
 #Set up the simulation in function of choices in 2- and 3-:
 if(neighbourhood=="MIXED_PULBERRY_CRESCENT_PARK"){
-  sim_core = "1513Trees"
+  sim_core = "1513trees"
   if(IC_type == "cluster"){
     IC_radius = 96
   }else if(IC_type == "2clusters"){
@@ -74,7 +74,7 @@ if(neighbourhood=="MIXED_PULBERRY_CRESCENT_PARK"){
     IC_number_dead_trees = 38
   }
 }else if (neighbourhood == "NORTH_RIVER_HEIGHTS"){
-  sim_core = "2004Trees"
+  sim_core = "2004trees"
   if(IC_type == "cluster"){
     IC_radius = 100
   }else if(IC_type == "2clusters"){
