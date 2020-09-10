@@ -86,10 +86,10 @@ server <- function(input, output) {
     # Set directories
     source("set_directories.R")
     # Set save directory to include date of data file
+    date_TI_file = "2020-01-28"
     DIRS$nbhd_and_date = sprintf("%s%s", DIRS$prefix_data_date, date_TI_file)
     # Set directory for saving in this script
     DIRS$preproc_dists = sprintf("%s/%s", DIRS$nbhd_and_date, DIRS$suffix_preproc_dists)
-    print(DIRS)
     # Get parameters from console
     params <- list()
     # Set the neighbourhood
