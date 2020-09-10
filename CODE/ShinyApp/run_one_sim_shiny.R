@@ -24,7 +24,7 @@ SIM_SAVE = FALSE #do we save the outputs ?
 
 #inputs are obtained from OUT
 OUT = RESULTS_NEW()
-input = OUT
+input = OUT # Main model parameter inputs are defined here
 
 # 1- Neighbourhood
 if(input$NGH == "North River Heights (NRH)"){
@@ -32,35 +32,16 @@ if(input$NGH == "North River Heights (NRH)"){
 }else if(input$NGH == "Mixed Pulberry-Crescent Park (PVC)"){
   Neighbourhood = "MIXED_PULBERRY_CRESCENT_PARK"
 }
+date_TI_file = "2020-01-28"
 
-#Inputs to define the type of simulations:
-#1- choose the neighbourhood
-#2- choose the initial condition (IC)
-#3- choose the values of the main parameters
-
-# 1- neighbourhood
-# Neighbourhoods from the articles are "MIXED_PULBERRY_CRESCENT_PARK" (PCP) and "NORTH_RIVER_HEIGHTS" (NRH)
-if (SIMULATIONS_ARTICLE) { # (un)comment to choose a neighbourhood
-  # neighbourhood = "MIXED_PULBERRY_CRESCENT_PARK" #PCP
-  neighbourhood = "NORTH_RIVER_HEIGHTS" #NRH
-  date_TI_file = "2020-01-28"
-} else {
-  neighbourhood = "your_pick" # and replace spaces by "_" in the neighbourhood name
-  date_TI_file = "2020-08-26" # Or something else..
+#2- IC
+if(input$IC=="Cluster"){
+  IC_type="cluster"
+}else if(input$IC=="Two clusters"){
+  IC_type = "2clusters"
+}else if(input$IC=="Random"){
+  IC_type = "random"
 }
-
-
-#2- IC: uncomment your choice
-IC_type = "cluster"
-# IC_type = "2clusters"
-# IC_type = "random"
-
-#3- Main model parameters: update the values 
-input = list()
-input$R_B   = 100 #max distance that beetles fly during one time step. If using data from article, then choose from 20 to 380 by steps of 40. 
-input$p_r   = 0.5 #max proba for an infected tree to infect another one by root infection
-input$p_i   = 0.02 #proba that one beetle infects successfully one tree
-input$s_dt  = 0.98 #proba for beetles to survive one time step
 
 #
 #do we want to run the code with the root infection route ?
@@ -76,47 +57,32 @@ IC_beetles = 500 #nb of inf beetles in each infected tree
 
 #Put here the initial and final dates for the simulation(s)
 start_date = "2019-08-01"
-end_date = "2021-12-31"
+end_date = "2030-12-31"
 
-###############################################################
-#Set up the simulation in function of choices in 1- and 2-:
-if(SIMULATIONS_ARTICLE){
-  if (neighbourhood == "MIXED_PULBERRY_CRESCENT_PARK") {
-    sim_core = "1513trees"
-    if (IC_type == "cluster") {
-      IC_radius = 96
-    } else if (IC_type == "2clusters") {
-      IC_radius1 = 47.5
-      IC_radius2 = 280
-      IC_radius = list(r1 = IC_radius1, r2 = IC_radius2)
-      #These values of radii are done to get the same nb of infected trees at the initial time than in one cluster (96m)
-    } else {
-      IC_radius = 96
-      IC_number_dead_trees = 38
-    }
-  } else if (neighbourhood == "NORTH_RIVER_HEIGHTS") {
-    sim_core = "2004trees"
-    if (IC_type == "cluster") {
-      IC_radius = 100
-    } else if (IC_type == "2clusters") {
-      IC_radius1 = 84
-      IC_radius2 = 84
-      IC_radius = list(r1 = IC_radius1, r2 = IC_radius2)
-      #These values of radii are done to get the same nb of infected trees at the initial time than in one cluster (100m)
-    }else{
-      IC_radius = 100
-      IC_number_dead_trees = 50
-    }
+#Set up the simulation in function of choices in 2- and 3-:
+if(Neighbourhood=="MIXED_PULBERRY_CRESCENT_PARK"){
+  sim_core = "1513Trees"
+  if(IC_type == "cluster"){
+    IC_radius = 96
+  }else if(IC_type == "2clusters"){
+    IC_radius1 = 47.5
+    IC_radius2 = 280
+    IC_radius = list(r1=IC_radius1,r2=IC_radius2)
+    #These values of radii are done to get the same nb of infected trees at the initial time than in one cluster (96m)
+  }else{
+    IC_radius = 96
+    IC_number_dead_trees = 38
   }
-} else {#if this is a new simulation, put whatever you want in the following
-  if (IC_type == "cluster") {
+}else if (Neighbourhood == "NORTH_RIVER_HEIGHTS"){
+  sim_core = "2004Trees"
+  if(IC_type == "cluster"){
     IC_radius = 100
-  } else if (IC_type == "2clusters") {
+  }else if(IC_type == "2clusters"){
     IC_radius1 = 84
     IC_radius2 = 84
-    IC_radius = list(r1=IC_radius1, r2=IC_radius2)
+    IC_radius = list(r1=IC_radius1,r2=IC_radius2)
     #These values of radii are done to get the same nb of infected trees at the initial time than in one cluster (100m)
-  } else {
+  }else{
     IC_radius = 100
     IC_number_dead_trees = 50
   }
