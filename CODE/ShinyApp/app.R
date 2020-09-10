@@ -26,7 +26,7 @@ ui <- fluidPage(
       selectInput("Neighbourhood", 
                   label = "Choose a neighbourhood",
                   choices = c("North River Heights (NRH)", 
-                              "Mixed Pulberry-Victoria Crescent-Crescent Park (PVC)"),
+                              "Mixed Pulberry-Crescent Park (PVC)"),
                   selected = "North River Heights (NRH)"),
       
       selectInput("IC", 

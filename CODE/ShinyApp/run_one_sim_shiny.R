@@ -20,7 +20,18 @@ SIMULATIONS_ARTICLE = TRUE # if true, launch simulations with tree inventory use
                            # (dated from 28th January 2020), else launch new simulation 
                            # (requires pre-processings)
 PLOT_SIM = TRUE #if sims are launched, do you want to see the DED spread evolution?
-SIM_SAVE = TRUE #do we save the outputs ?
+SIM_SAVE = FALSE #do we save the outputs ?
+
+#inputs are obtained from OUT
+OUT = RESULTS_NEW()
+input = OUT
+
+# 1- Neighbourhood
+if(input$NGH == "North River Heights (NRH)"){
+  Neighbourhood = "NORTH_RIVER_HEIGHTS"
+}else if(input$NGH == "Mixed Pulberry-Crescent Park (PVC)"){
+  Neighbourhood = "MIXED_PULBERRY_CRESCENT_PARK"
+}
 
 #Inputs to define the type of simulations:
 #1- choose the neighbourhood
