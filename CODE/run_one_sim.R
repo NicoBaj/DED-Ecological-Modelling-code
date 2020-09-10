@@ -35,7 +35,7 @@ if (SIMULATIONS_ARTICLE) { # (un)comment to choose a neighbourhood
   date_TI_file = "2020-01-28"
 } else {
   neighbourhood = "your_pick" # and replace spaces by "_" in the neighbourhood name
-  date_TI_file = "2020-06-28" # Or something else..
+  date_TI_file = "2020-08-26" # Or something else..
 }
 
 
@@ -144,7 +144,7 @@ if (SIMULATIONS_ARTICLE) {
   sim_constants$sim_core = sim_core
 } else {
   nb_trees = readRDS(sprintf("%s/sim_core_%s.Rds",
-                             sim_constants$DIRS$preproc_dists,
+                             sim_constants$DIRS$nbhd_and_date,
                              neighbourhood))
   sim_constants$sim_core = sprintf("%strees",nb_trees)
 }

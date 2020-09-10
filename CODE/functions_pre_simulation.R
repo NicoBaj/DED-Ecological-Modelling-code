@@ -209,20 +209,28 @@ read_parameters = function(sim_constants, input) {
   sim_constants$default_params$R_B  = input$R_B
   
   ## Now we can set file names for the corresponding preprocessing since we have set the value of R_B
-  sim_constants$FILES[[2]] = sprintf("%s/neighbours_%s_maxD%s.Rds", 
+  sim_constants$FILES[[2]] = sprintf("%s/neighbours_%s_RB%d_%s.Rds", 
                                      sim_constants$DIRS$preproc_dists, 
-                                     sim_constants$sim_core, sim_constants$default_params$R_B)
-  sim_constants$FILES[[3]] = sprintf("%s/distance_neighbours_%s_maxD%s.Rds", 
+                                     sim_constants$sim_core, 
+                                     sim_constants$default_params$R_B,
+                                     sim_constants$neighbourhood)
+  sim_constants$FILES[[3]] = sprintf("%s/distance_neighbours_%s_RB%s_%s.Rds", 
                                      sim_constants$DIRS$preproc_dists, 
-                                     sim_constants$sim_core, sim_constants$default_params$R_B)
-  sim_constants$FILES[[4]] = sprintf("%s/neighbours_pos_%s_maxD%s.Rds", 
+                                     sim_constants$sim_core, 
+                                     sim_constants$default_params$R_B,
+                                     sim_constants$neighbourhood)
+  sim_constants$FILES[[4]] = sprintf("%s/neighbours_pos_%s_RB%s_%s.Rds", 
                                      sim_constants$DIRS$preproc_dists, 
-                                     sim_constants$sim_core, sim_constants$default_params$R_B)
+                                     sim_constants$sim_core, 
+                                     sim_constants$default_params$R_B,
+                                     sim_constants$neighbourhood)
   # Also set file names for elms and roots files
   sim_constants$FILES[[5]] = sprintf("%s/elms_%s.Rds", 
-                                     sim_constants$DIRS$nbhd_and_date, sim_constants$neighbourhood)
+                                     sim_constants$DIRS$nbhd_and_date, 
+                                     sim_constants$neighbourhood)
   sim_constants$FILES[[7]] = sprintf("%s/proba_roots_%s.Rds",
-                                     sim_constants$DIRS$nbhd_and_date,sim_constants$neighbourhood)
+                                     sim_constants$DIRS$nbhd_and_date,
+                                     sim_constants$neighbourhood)
   
   # parameters <- read.csv(sim_constants$FILES[[1]], header=TRUE)
   neighbours_circle = readRDS(sim_constants$FILES[[2]])

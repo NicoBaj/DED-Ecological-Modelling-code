@@ -101,7 +101,7 @@ neighb_pos = function(elms, neighbours_circle){#position of neighbours (return a
 ###############################################################################
 
 # SELECT A DATE
-date_TI_file = "2020-08-26"
+date_TI_file = "2020-01-28"
 
 # Set directories
 source(sprintf("%s/CODE/set_directories.R", here::here()))
