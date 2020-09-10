@@ -41,7 +41,7 @@ ui <- fluidPage(
                   min = 20,
                   max = 380,
                   step = 40,
-                  value = 300),
+                  value = 100),
       sliderInput("s_dt",
                   "Proportion of beetles surviving one week:",
                   min = 0.97,
@@ -71,8 +71,8 @@ ui <- fluidPage(
                            imageOutput("plot_ngh",height=10)),
                   tabPanel("Maps", 
                            plotOutput("plot_maps", width = "600px", height = "450px")),
-                  tabPanel("Proportions",
-                           plotOutput("plot_proportions", width = "800px", height = "600px"))
+                  # tabPanel("Proportions",
+                  #          plotOutput("plot_proportions", width = "800px", height = "600px"))
                   #tabPanel("Effect of quarantine", verbatimTextOutput("summary"))
                   #tabPanel("Table", tableOutput("table"))
       )
@@ -142,7 +142,7 @@ server <- function(input, output) {
     source("run_sim.R",local = TRUE)
   })
   
-  output$plot_proportions <- renderPlot({
+  # output$plot_proportions <- renderPlot({
     # OUT = RESULTS_NEW()
     # par(mfrow = c(1,1))
     # prop_Di_Wi = mat.or.vec(nr=1,nc=length(tree_states))
@@ -153,7 +153,7 @@ server <- function(input, output) {
     # PLOT_SIM = FALSE
     # PLOT_PROP = TRUE
     # source("C://Users/nicol/Documents/Work/DED-Ecological-Modelling-code/CODE/run_sim.R",local = TRUE)
-  })
+  # })
 
   })
 }
