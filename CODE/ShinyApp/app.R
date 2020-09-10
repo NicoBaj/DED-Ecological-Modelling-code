@@ -5,7 +5,7 @@
 #
 #    http://shiny.rstudio.com/
 #
-# A COVID-19 quarantine calculator
+# A DED simulator
 # 
 # Based on the paper "Assessing the risk of COVID-19 importation and the effect of quarantine"
 # by Julien Arino, Nicolas Bajeux, Stephanie Portet and James Watmough
@@ -106,9 +106,9 @@ server <- function(input, output) {
   })
   
   output$info_ngh <- renderText({
-    exp_text = "Two areas are taken into consideration here."
-    exp_text = paste(exp_text, "The first one is the neighbourhood North River Heights (NRH) from the city of Winnipeg.")
-    exp_text = paste(exp_text, "The second one is the gathering of three neighbourhoods: Pulberry, Victoria Crescent and Cresent Park (PVC).")
+    exp_text = "Two areas can be used."
+    exp_text = paste(exp_text, "North River Heights (NRH) is an actual City of Winnipeg neighbourhood.")
+    exp_text = paste(exp_text, "Pulberry, Victoria Crescent and Crescent Park (PVC) is the agglomeration of three City of Winnipeg neighbourhoods.")
     exp_text = paste(exp_text, "PVC contains 1513 trees, while NRH contains 2004.")
     exp_text = paste(exp_text, "The dots represent the elm trees present in the area.")
     exp_text = paste(exp_text, "Their size is increasing as a function of their root neighbours, i.e., the trees whose roots are connected with, see the paper for more information.")
@@ -116,13 +116,13 @@ server <- function(input, output) {
     exp_text = paste(exp_text, "")
   })
   
-  # Display the neighbourhood currently chosen
+  # Display the currently chosen neighbourhood
   output$plot_ngh <- renderImage({
     OUT = RESULTS_NEW()
     if(OUT$NGH == "Mixed Pulberry-Victoria Crescent-Crescent Park (PVC)"){
-      filename <- "C://Users/nicol/Documents/Work/DED-Ecological-Modelling-code/DATA/images/PVC.png"
-    }else if (OUT$NGH == "North River Heights (NRH)"){
-      filename <- "C://Users/nicol/Documents/Work/DED-Ecological-Modelling-code/DATA/images/NRH.png"
+      filename <- "PVC.png"
+    } else if (OUT$NGH == "North River Heights (NRH)"){
+      filename <- "NRH.png"
     }
 
     # Return a list containing the filename and alt text
@@ -139,7 +139,7 @@ server <- function(input, output) {
     OUT = RESULTS_NEW()
     PLOT_SIM  = TRUE
     PLOT_PROP = FALSE
-    source("C://Users/nicol/Documents/Work/DED-Ecological-Modelling-code/CODE/run_sim.R",local = TRUE)
+    source("run_sim.R",local = TRUE)
   })
   
   output$plot_proportions <- renderPlot({
