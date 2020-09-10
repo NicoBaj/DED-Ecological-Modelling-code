@@ -5,7 +5,7 @@ To launch a simulation that uses the same dataset as the article (tree inventory
 
 ### Simulation from newly updated tree inventory or with different neighbourhoods
 To launch a new simulation, follow these steps: 
-1. Run `pre_load_trees_and_compute_tree_heights.R` if you want to refresh the tree inventory. If you do, then you must also run `pre_roots_vs_routes.R` to eliminate connections between root systems intersected by roads. **Warning**: a minimum of **90 GB** of RAM is required to run the latter. The `DATA` directory contains files resulting from running these scripts, so you can try simulations even if you do not possess this amount of RAM; they are named with the patterns `tree_inventory_elms_yyyy-mm-dd.Rds` and `elms_distances_roots_yyyy-mm-dd.Rds`, respectively.
+1. Run `pre_load_trees_and_compute_tree_heights.R` if you want to refresh the tree inventory. If you do, then you must also run `pre_roots_vs_routes.R` to eliminate connections between root systems intersected by roads. **Warning**: a minimum of **90 GB** of RAM is required to run the latter. The `DATA` directory contains files resulting from running these scripts, so you can try simulations even if you do not possess this amount of RAM (i.e., skip directly to step 2); they are named with the patterns `tree_inventory_elms_yyyy-mm-dd.Rds` and `elms_distances_roots_yyyy-mm-dd.Rds`, respectively.
 3. Run `pre_neighbourhoods_proba_roots.R` with a selected neighbourhood.
 4. Run `pre_network_beetles.R` with the chosen values for the beetle maximum dispersal distance `R_B` and the selected neighbourhood.
 5. Run `run_one_sim.R` with `SIMULATIONS_ARTICLE = FALSE`, a value of `R_B` within the chosen values and the name of the neighbourhood.
