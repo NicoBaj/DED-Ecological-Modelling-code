@@ -18,3 +18,6 @@ To launch one simulation using data and neighbourhoods from the article, go to `
 
 #### Simulations on newly updated tree inventory 
 To launch one simulation using newly updated data, see instructions in `CODE/README.md`.
+
+### Shiny app
+We provide, in the folder `CODE/ShinyApp`, a barebones Shiny app allowing to run simple simulations. See that folder for details.
