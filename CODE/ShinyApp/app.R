@@ -122,7 +122,7 @@ server <- function(input, output) {
   # Display the currently chosen neighbourhood
   output$plot_ngh <- renderImage({
     OUT = RESULTS_NEW()
-    if(OUT$NGH == "Mixed Pulberry-Victoria Crescent-Crescent Park (PVC)"){
+    if(OUT$NGH == "Mixed Pulberry-Crescent Park (PVC)"){
       filename <- "PCP.png"
     } else if (OUT$NGH == "North River Heights (NRH)"){
       filename <- "NRH.png"
