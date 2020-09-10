@@ -6,7 +6,8 @@
 ### SELECTION OF NEIGHBOURHOODS
 # Select the neighbourhood(s) you want to study
 # To see the names of neighbourhoods: unique(all_trees$Neighbourhood), once you have 
-# loaded the variable all_trees (a little below)
+# loaded the variable all_trees (a little below). So you may want to run this script a 
+# first time, then explore the contents of that variable.
 list.of.neighbourhoods      = list()
 list.of.neighbourhoods[[1]] = "NORTH RIVER HEIGHTS"
 ####################################################################################
