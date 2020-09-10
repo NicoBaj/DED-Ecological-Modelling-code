@@ -29,7 +29,7 @@ input = OUT # Main model parameter inputs are defined here
 # 1- Neighbourhood
 if(input$NGH == "North River Heights (NRH)"){
   Neighbourhood = "NORTH_RIVER_HEIGHTS"
-}else if(input$NGH == "Mixed Pulberry-Crescent Park (PVC)"){
+}else if(input$NGH == "Mixed Pulberry-Crescent Park (PCP)"){
   Neighbourhood = "MIXED_PULBERRY_CRESCENT_PARK"
 }
 date_TI_file = "2020-01-28"

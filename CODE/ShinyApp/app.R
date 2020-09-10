@@ -26,7 +26,7 @@ ui <- fluidPage(
       selectInput("Neighbourhood", 
                   label = "Choose a neighbourhood",
                   choices = c("North River Heights (NRH)", 
-                              "Mixed Pulberry-Crescent Park (PVC)"),
+                              "Mixed Pulberry-Crescent Park (PCP)"),
                   selected = "North River Heights (NRH)"),
       
       selectInput("IC", 
@@ -122,7 +122,7 @@ server <- function(input, output) {
   # Display the currently chosen neighbourhood
   output$plot_ngh <- renderImage({
     OUT = RESULTS_NEW()
-    if(OUT$NGH == "Mixed Pulberry-Crescent Park (PVC)"){
+    if(OUT$NGH == "Mixed Pulberry-Crescent Park (PCP)"){
       filename <- "PCP.png"
     } else if (OUT$NGH == "North River Heights (NRH)"){
       filename <- "NRH.png"
