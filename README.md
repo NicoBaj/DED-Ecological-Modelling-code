@@ -11,6 +11,8 @@ Some of the code requires substantial computing power (multiple cores) or RAM (>
 
 -`RESULTS` will contain simulation results (data and figures).
 
+-`simulation_DED_Shiny` is a barebones Shiny app allowing to run simple simulations. See that folder for details.
+
 ### Run simulations
 
 #### Simulations on data and neighbourhoods used in the article
@@ -19,5 +21,5 @@ To launch one simulation using data and neighbourhoods from the article, go to `
 #### Simulations on newly updated tree inventory 
 To launch one simulation using newly updated data, see instructions in `CODE/README.md`.
 
-### Shiny app
-We provide, in the folder `CODE/ShinyApp`, a barebones Shiny app allowing to run simple simulations. See that folder for details.
+#### Run simulations in the Shiny app
+The file `simulation_DED_Shiny/app.R` allows to run extremely simple simulations in a Shiny app, i.e., in a easy to use graphical interface.
