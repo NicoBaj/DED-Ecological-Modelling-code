@@ -143,7 +143,9 @@ sim_constants$neighbourhood = neighbourhood
 if (SIMULATIONS_ARTICLE) {
   sim_constants$sim_core = sim_core
 } else {
-  nb_trees = readRDS(sprintf("%s/sim_core_%s.Rds",sim_constants$DIRS$DATA,neighbourhood))
+  nb_trees = readRDS(sprintf("%s/sim_core_%s.Rds",
+                             sim_constants$DIRS$preproc_dists,
+                             neighbourhood))
   sim_constants$sim_core = sprintf("%strees",nb_trees)
 }
 
