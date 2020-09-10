@@ -17,13 +17,13 @@ All `R` scripts are documented here. Most scripts have a prefixed name to indica
 - `run_` scripts run the simulations.
 
 #### Preprocessing 
+- `set_directories.R` sets the directories.
 - `pre_load_trees_and_compute_tree_heights.R` loads the tree inventory from the [City of Winnipeg Open Data portal](https://data.winnipeg.ca/), selects American Elms, computes the heights of each tree, extracts lat/lon information for each tree and saves the result for later use as file named `tree_inventory_elms_yyyy-mm-dd.Rds`, where `yyyy-mm-dd` is the date at which the query was performed.
 - `pre_roots_vs_routes.R` (where route is intended as the French for road) loads Openstreetmap (OSM) data for the geography: roads, parking lots, railroads and rivers. It computes the distance between each pair of trees in the elms file then sets up line segments between all trees that are less than some threshold maximum distance away (we use 6 times the maximum tree height). It then removes from this graph all edges that intersect at least one of the OSM objects. The result is saved as `elms_distances_roots_yyyy-mm-dd.Rds`, where `yyyy-mm-dd` is the date of the elm tree inventory file used. Remark that we compute distances in the entire city. ***The amount of RAM required for some of the operations is therefore quite substantial. To run the code comfortably if other programs are running, 128 GB of RAM is recommended***. Note that you could adapt the code to operate on smaller areas, thereby reducing the need for RAM.
 - `pre_neighbourhoods_proba_roots.R` loads the elm tree inventory created by `pre_load_trees_and_compute_tree_heights.R` and the roots-related dataset obtained in `pre_roots_vs_routes.R`. It selects trees from chosen neighbourhoods and saves this new tree inventory. Then, it selects, in the roots-related dataset, the rows for which the trees are in the neighbourhood and computes, for all pairs of trees in the neighbourhood, the probability to become infected through the root system. It saves this dataset.
 - `pre_network_beetles.R` loads the tree inventory created by `pre_neighbourhoods_proba_roots.R` and saves, for the selected values of the beetle maximum dispersal distance `R_B`: the neighbours of each tree and information on neighbour trees.
 
 #### Processing
-- `set_directories.R` sets the directories.
 - `functions_pre_simulations.R` has functions to set initial conditions and the simulation environment.
 - `functions_simulation.R` contains functions required during one simulation.
 - `one_run_sim.R` launches one simulation. Once the pre-processing is done, it selects the neighbourhood, the main parameter values and initial conditions. Then, it sources the functions required for the simulation.
