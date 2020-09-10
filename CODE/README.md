@@ -27,3 +27,6 @@ All `R` scripts are documented here. Most scripts have a prefixed name to indica
 - `functions_pre_simulations.R` has functions to set initial conditions and the simulation environment.
 - `functions_simulation.R` contains functions required during one simulation.
 - `run_one_sim.R` launches one simulation. Once the pre-processing is done, it selects the neighbourhood, the main parameter values and initial conditions. Then, it sources the functions required for the simulation.
+
+## ShinyApp
+The folder `ShinyApp` contains a .. Shiny app. This app allows to run simple simulations in a Shiny interface. See details in that folder.
