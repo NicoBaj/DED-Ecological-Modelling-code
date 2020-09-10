@@ -110,12 +110,9 @@ system_over_time=function(sim_param,sim_constants) {
         # 53 weeks since the infection only occurs when beetles feed (in spring/summer and this is not
         # the week at which the update occurs)
       }
-      writeLines(sprintf("idx=%d, dim(status_trees)=%d %dd", 
-                         idx, dim(status_trees)[1],dim(status_trees)[2]))
       idx_susceptible_beetles = which(status_trees[,idx-1]=="H" | status_trees[,idx-1]=="S_W")
       #only these two types can be infected by beetles (because Fp can only go to S, Ws and Wi)
-      writeLines("Look where I am, mum!1!")
-      
+
       ###############################
       # BEETLE INFECTION
       ###############################
@@ -147,7 +144,6 @@ system_over_time=function(sim_param,sim_constants) {
       ###############################
       
       if (sim_constants$roots){
-        writeLines("Look where I am, mum!2!")
         idx_susceptible_roots = which(status_trees[,(idx-1)]=="H"|status_trees[,(idx-1)]=="S_W"|status_trees[,(idx-1)]=="S_D")#this time, all susceptible trees are ... susceptible
         status_trees_after_root = mat.or.vec(sim_constants$default_params$N,1)
         nb_inf_roots = 0#just to compute the number of infections by roots
@@ -159,17 +155,11 @@ system_over_time=function(sim_param,sim_constants) {
           if(sim_constants$GATES$SIMULATIONS_ARTICLE){
             #sim_param$params$proba_roots is the data frame
             #first the rows that have j as a connected tree in proba_roots and find the associated neighbours
-            writeLines("Look where I am, mum!3!")
             row_k = which(sim_param$params$proba_roots$idx_i==k)#indices of neighbours of j
-            writeLines("Look where I am, mum!4!")
             pos_neighbours = sim_param$params$proba_roots$idx_j[row_k]# their position in the system
-            writeLines(sprintf("idx=%d, pos_neighbours=%d, dim(status_trees)=%d %dd", 
-                               idx, pos_neighbours, dim(status_trees)[1],dim(status_trees)[2]))
             inf_neighbours = pos_neighbours[which(status_trees[pos_neighbours,idx-1]=="I_D")]#position of neighbours that are infected
-            writeLines("Look where I am, mum!7!")
-            
+
             if(length(inf_neighbours)>0){
-              writeLines("Look where I am, mum!5!")
               #save the rows at which we have j associated to an infected neighbour
               row_inf = row_k[which(status_trees[sim_param$params$proba_roots$idx_j[row_k],idx-1]=="I_D")]
               if(length(row_inf)>0){
