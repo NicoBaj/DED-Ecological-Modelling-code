@@ -97,9 +97,12 @@ DIRS$preproc_dists = sprintf("%s/%s", DIRS$nbhd_and_date, DIRS$suffix_preproc_di
 
 
 # Source the functions that help set up the simulation
-source(sprintf("%s/functions_pre_simulation.R", DIRS$CODE))
-# Source all the functions needed for the simulation
-source(sprintf("%s/functions_simulation.R", DIRS$CODE))
+# source(sprintf("%s/functions_pre_simulation.R", DIRS$CODE))
+# # Source all the functions needed for the simulation
+# source(sprintf("%s/functions_simulation.R", DIRS$CODE))
+
+source("functions_pre_simulation.R")
+source("functions_simulation.R")
 
 
 ## MAIN SIMULATION PART
@@ -131,9 +134,9 @@ sim_constants = read_parameters(sim_constants, input) # create default_params
 # Root infection
 sim_constants$roots = roots
 # Set output directory
-sim_constants = set_output_location(sim_constants)
+# sim_constants = set_output_location(sim_constants)
 # Set up simulations
-sim_constants$time = set_sim_time(sim_constants)
+sim_constants$time = set_sim_time(sim_constants,startDate = start_date, endDate = end_date)
 # Nb of simulations
 sim_constants$nb_sims = nb_sims
 

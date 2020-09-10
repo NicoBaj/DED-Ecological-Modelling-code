@@ -256,20 +256,20 @@ read_parameters = function(sim_constants, input) {
 ### SET_OUTPUT_LOCATION
 #
 # set up the directory for the output with a name sim_date for the directory
-set_output_location = function(sim_constants) {
-  current_date_time = format(Sys.time(), "%Y_%m_%d_%H_%M")
-  abb_nbhd = abbreviate(sim_constants$Neighbourhood,minlength = 5)
-  # Create the folder for the output
-  output_dir = paste(sim_constants$DIRS$RESULTS,
-                     "/sim",
-                     current_date_time,
-                     "_",
-                     abb_nbhd,
-                     sep = "")
-  dir.create(output_dir)
-  sim_constants$DIRS$output_dir = output_dir
-  return(sim_constants)
-}
+# set_output_location = function(sim_constants) {
+#   current_date_time = format(Sys.time(), "%Y_%m_%d_%H_%M")
+#   abb_nbhd = abbreviate(sim_constants$Neighbourhood,minlength = 5)
+#   # Create the folder for the output
+#   output_dir = paste(sim_constants$DIRS$RESULTS,
+#                      "/sim",
+#                      current_date_time,
+#                      "_",
+#                      abb_nbhd,
+#                      sep = "")
+#   dir.create(output_dir)
+#   sim_constants$DIRS$output_dir = output_dir
+#   return(sim_constants)
+# }
 
 # SET_SIM_TIME
 set_sim_time = function(sim_constants, startDate = start_date, endDate = end_date) {

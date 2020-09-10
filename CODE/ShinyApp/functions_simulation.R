@@ -25,10 +25,20 @@ system_over_time=function(sim_param,sim_constants) {
   root_or_beetle = mat.or.vec(length(sim_constants$time$idx),2)
   
   #plot the intial set up
+  op <- par(mfrow = c(2,6),
+            oma = c(4,4,0,0)+0.1, # two rows of text at the outer left and bottom margin
+            mar = c(0,0,0,0),
+            tcl = -0.25) # space for one row of text at ticks and to separate plots
   if(sim_constants$GATES$PLOT_SIM){
     plot(sim_constants$default_params$elms$X,
          sim_constants$default_params$elms$Y,
-         col="green",xlab = "X", ylab = "Y", main = "Trees")
+         xaxt="n",
+         yaxt="n",
+         yaxs='i',
+         xaxs='i',
+         col="green"
+         # ,xlab = "X", ylab = "Y", main = "Trees"
+    )
     Di_Wi = which(status_trees[,1]=="I_D"|status_trees[,1]=="I_W")
     points(sim_constants$default_params$elms$X[Di_Wi],sim_constants$default_params$elms$Y[Di_Wi],col="red")
   }
@@ -233,9 +243,14 @@ system_over_time=function(sim_param,sim_constants) {
         status_trees[,idx] = status_trees_after_beetles
       }
       
-      if (sim_constants$GATES$PLOT_SIM) {
+      if (sim_constants$GATES$PLOT_SIM){
         plot(sim_constants$default_params$elms$X,sim_constants$default_params$elms$Y,
-             col="green",xlab = "X", ylab = "Y", main = "Trees")
+             col="green",xlab = "X", ylab = "Y",
+             xaxt="n",
+             yaxt="n",
+             yaxs='i',
+             xaxs='i'
+        )
         Di_Wi = which(status_trees[,idx]=="I_D"|status_trees[,idx]=="I_W")
         points(sim_constants$default_params$elms$X[Di_Wi],sim_constants$default_params$elms$Y[Di_Wi],col="red")
       }
