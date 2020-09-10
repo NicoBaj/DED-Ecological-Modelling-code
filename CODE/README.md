@@ -26,4 +26,4 @@ All `R` scripts are documented here. Most scripts have a prefixed name to indica
 #### Processing
 - `functions_pre_simulations.R` has functions to set initial conditions and the simulation environment.
 - `functions_simulation.R` contains functions required during one simulation.
-- `one_run_sim.R` launches one simulation. Once the pre-processing is done, it selects the neighbourhood, the main parameter values and initial conditions. Then, it sources the functions required for the simulation.
+- `run_one_sim.R` launches one simulation. Once the pre-processing is done, it selects the neighbourhood, the main parameter values and initial conditions. Then, it sources the functions required for the simulation.
