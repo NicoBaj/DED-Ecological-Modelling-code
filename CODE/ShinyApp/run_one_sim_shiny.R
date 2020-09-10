@@ -89,7 +89,7 @@ if(Neighbourhood=="MIXED_PULBERRY_CRESCENT_PARK"){
 }
 
 # Set directories
-source(sprintf("%s/CODE/set_directories.R", here::here()))
+source("set_directories.R")
 # Set save directory to include date of data file
 DIRS$nbhd_and_date = sprintf("%s%s", DIRS$prefix_data_date, date_TI_file)
 # Set directory for saving in this script

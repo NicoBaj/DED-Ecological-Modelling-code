@@ -3,12 +3,9 @@
 # Store all the information in a list
 DIRS = list()
 
-# Provided this file is sourced, this should set to the top of the Github repo
-DIRS$prefix_github = here::here()
-
-DIRS$CODE = sprintf("%s/CODE", DIRS$prefix_github)
-DIRS$DATA = sprintf("%s/DATA", DIRS$prefix_github)
-DIRS$RESULTS = sprintf("%s/RESULTS", DIRS$prefix_github)
+DIRS$CODE = "."
+DIRS$DATA = "DATA"
+DIRS$RESULTS = "RESULTS"
 
 # Where we save some of the processed data (finer than just DATA)
 DIRS$neighbourhoods = sprintf("%s/neighbourhoods", DIRS$DATA)

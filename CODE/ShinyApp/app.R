@@ -83,6 +83,13 @@ server <- function(input, output) {
   # This is called whenever the inputs change. The output functions
   # defined below then use the value computed from this expression
   RESULTS_NEW <- reactive({
+    # Set directories
+    source("set_directories.R")
+    # Set save directory to include date of data file
+    DIRS$nbhd_and_date = sprintf("%s%s", DIRS$prefix_data_date, date_TI_file)
+    # Set directory for saving in this script
+    DIRS$preproc_dists = sprintf("%s/%s", DIRS$nbhd_and_date, DIRS$suffix_preproc_dists)
+    print(DIRS)
     # Get parameters from console
     params <- list()
     # Set the neighbourhood
