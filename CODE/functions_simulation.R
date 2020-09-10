@@ -184,7 +184,6 @@ system_over_time=function(sim_param,sim_constants) {
           } else {
             #sim_param$params$proba_roots is the data frame
             #first the rows that have k as a connected tree in proba_roots and find the associated neighbours
-            writeLines("Look where I am, mum!6!")
             ID_k = sim_constants$default_params$elms$Tree.ID[k]#Tree ID of k
             row_k = which(sim_param$params$proba_roots$ID_i == ID_k)#where is ID_k in the dataframe of proba (as a source)
             ID_neighbours = sim_param$params$proba_roots$ID_j[row_k]#IDs of neighbours (destinations)
