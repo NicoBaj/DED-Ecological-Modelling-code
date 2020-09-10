@@ -18,7 +18,7 @@ library(shiny)
 ui <- fluidPage(
   
   # Application title
-  titlePanel("Spread of the Dutch Elm Disease in Winnipeg"),
+  titlePanel("Spread of Dutch Elm Disease in Winnipeg"),
   
   # Sidebar with a slider input for the number of bins
   sidebarLayout(
@@ -120,7 +120,7 @@ server <- function(input, output) {
   output$plot_ngh <- renderImage({
     OUT = RESULTS_NEW()
     if(OUT$NGH == "Mixed Pulberry-Victoria Crescent-Crescent Park (PVC)"){
-      filename <- "PVC.png"
+      filename <- "PCP.png"
     } else if (OUT$NGH == "North River Heights (NRH)"){
       filename <- "NRH.png"
     }
