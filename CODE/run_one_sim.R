@@ -1,4 +1,4 @@
-##run_sim.R: 
+##run_one_sim.R: 
 # File that conducts the main simulation run.
 
 # Libraries needed for all the processes
