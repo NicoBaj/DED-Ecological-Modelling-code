@@ -1,14 +1,14 @@
 # DED-Ecological-Modelling-code
 
 ### Simulation on data and neighbourhoods used in the article
-To launch a simulation that uses the same dataset as the article (tree inventory dated 28 January 2020 and one of the two neighbourhoods PCP or NRH), run the script `run_sim.R` and set the logical gate `SIMULATIONS_ARTICLE` to `TRUE`. Then choose the neighbourhood, the type of initial conditions and the values of the main parameters.
+To launch a simulation that uses the same dataset as the article (tree inventory dated 28 January 2020 and one of the two neighbourhoods PCP or NRH), run the script `run_one_sim.R` and set the logical gate `SIMULATIONS_ARTICLE` to `TRUE`. Then choose the neighbourhood, the type of initial conditions and the values of the main parameters.
 
 ### Simulation from newly updated tree inventory or with different neighbourhoods
 To launch a new simulation, follow these steps: 
 1. Run `pre_load_trees_and_compute_tree_heights.R` if you want to refresh the tree inventory. If you do, then you must also run `pre_roots_vs_routes.R` to eliminate connections between root systems intersected by roads. **Warning**: a minimum of **90 GB** of RAM is required to run the latter. The `DATA` directory contains files resulting from running these scripts, so you can try simulations even if you do not possess this amount of RAM; they are named with the patterns `tree_inventory_elms_yyyy-mm-dd.Rds` and `elms_distances_roots_yyyy-mm-dd.Rds`, respectively.
 3. Run `pre_neighbourhoods_proba_roots.R` with a selected neighbourhood.
 4. Run `pre_network_beetles.R` with the chosen values for the beetle maximum dispersal distance `R_B` and the selected neighbourhood.
-5. Run `run_sim.R` with `SIMULATIONS_ARTICLE = FALSE`, a value of `R_B` within the chosen values and the name of the neighbourhood.
+5. Run `run_one_sim.R` with `SIMULATIONS_ARTICLE = FALSE`, a value of `R_B` within the chosen values and the name of the neighbourhood.
 
 ### R scripts
 All `R` scripts are documented here. Most scripts have a prefixed name to indicate the stage at which they come into play.
@@ -24,8 +24,6 @@ All `R` scripts are documented here. Most scripts have a prefixed name to indica
 
 #### Processing
 - `set_directories.R` sets the directories.
-- `functions_IC.R` has functions to set initial conditions.
-- `set_various.R` sets the environment to run simulations.
+- `functions_pre_simulations.R` has functions to set initial conditions and the simulation environment.
 - `functions_simulation.R` contains functions required during one simulation.
-- `sim.R` is the simulation code.
-- `run_sim.R` launches one simulation. Once the pre-processing is done, it selects the neighbourhood, the main parameter values and initial conditions. Then, it sources the functions required for the simulation.
+- `one_run_sim.R` launches one simulation. Once the pre-processing is done, it selects the neighbourhood, the main parameter values and initial conditions. Then, it sources the functions required for the simulation.
