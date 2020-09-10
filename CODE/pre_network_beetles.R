@@ -4,7 +4,7 @@
 ######################################################################
 ### SELECTION OF NEIGHBOURHOOD AND VALUES OF R_B
 ### replace spaces by "_" in the neighbourhood name
-name_nbhd = "MIXED_PULBERRY_CRESCENT_PARK"
+name_nbhd = "NORTH_RIVER_HEIGHTS"
 seq_R_B = seq(from = 20, to = 100, by=20) #list of values of R_B
 ######################################################################
 
@@ -101,7 +101,7 @@ neighb_pos = function(elms, neighbours_circle){#position of neighbours (return a
 ###############################################################################
 
 # SELECT A DATE
-date_TI_file = "2020-01-28"
+date_TI_file = "2020-08-26"
 
 # Set directories
 source(sprintf("%s/CODE/set_directories.R", here::here()))
