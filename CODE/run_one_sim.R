@@ -1,5 +1,12 @@
-##run_one_sim.R: 
+# PRE_LOAD_TREES_AND_COMPUTE_TREE_HEIGHTS.R
+#
+#
 # File that conducts the main simulation run.
+# 
+# This file is used to produce simulations in the paper: 
+# Spread of Dutch Elm Disease in an urban forest
+# Nicolas Bajeux, Julien Arino, Stephanie Portet and Richard Westwood
+# Ecological Modelling
 
 # Libraries needed for all the processes
 library(sqldf)

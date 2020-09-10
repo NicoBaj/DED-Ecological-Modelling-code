@@ -1,5 +1,13 @@
-##pre_network_beetles.R
-# File that produces 
+# PRE_NETWORK_BEETLES.R
+#
+#
+# Compute the beetle dispersion network.
+# 
+# This file is used to produce simulations in the paper: 
+# Spread of Dutch Elm Disease in an urban forest
+# Nicolas Bajeux, Julien Arino, Stephanie Portet and Richard Westwood
+# Ecological Modelling
+
 
 ######################################################################
 ### SELECTION OF NEIGHBOURHOOD AND VALUES OF R_B

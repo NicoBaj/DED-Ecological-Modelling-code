@@ -1,4 +1,13 @@
-### SET MAIN DIRECTORY AND MOVE THERE
+# SET_DIRECTORIES.R
+#
+#
+# When sourced, this file should be able to define the location of all the
+# needed directories for the various scripts and functions.
+# 
+# This file is used to produce simulations in the paper: 
+# Spread of Dutch Elm Disease in an urban forest
+# Nicolas Bajeux, Julien Arino, Stephanie Portet and Richard Westwood
+# Ecological Modelling
 
 # Store all the information in a list
 DIRS = list()

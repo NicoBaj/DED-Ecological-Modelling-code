@@ -5,7 +5,9 @@
 # Compute network for roots, taking into account roads and other obstacles.
 # 
 # This file is used to produce simulations in the paper: 
+# Spread of Dutch Elm Disease in an urban forest
 # Nicolas Bajeux, Julien Arino, Stephanie Portet and Richard Westwood
+# Ecological Modelling
 # 
 # Please note: running some of this code requires a substantial amount of RAM.
 

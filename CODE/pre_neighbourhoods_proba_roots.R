@@ -1,6 +1,13 @@
-##pre_load_trees_and_separate_into_ngh.R
-#load the right dataset
-#split the dataset for each neighbourhood
+# PRE_NEIGHBOURHOODS_PROBA_ROOTS.R
+#
+#
+# Load the right dataset for a neighbourhood, compute the probabilities of
+# root-based infection.
+# 
+# This file is used to produce simulations in the paper: 
+# Spread of Dutch Elm Disease in an urban forest
+# Nicolas Bajeux, Julien Arino, Stephanie Portet and Richard Westwood
+# Ecological Modelling
 
 ####################################################################################
 ### SELECTION OF NEIGHBOURHOODS

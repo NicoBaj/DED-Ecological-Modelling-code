@@ -4,7 +4,9 @@
 # Load tree data, select elms and add tree heights.
 # 
 # This file is used to produce simulations in the paper: 
+# Spread of Dutch Elm Disease in an urban forest
 # Nicolas Bajeux, Julien Arino, Stephanie Portet and Richard Westwood
+# Ecological Modelling
 
 # Set directories
 source(sprintf("%s/CODE/set_directories.R", here::here()))

@@ -1,15 +1,24 @@
-##pre_IC.R:
-#functions that permit to create the three types of initial conditions (cluster, 2clusters and random)
-
-###FIND_CENTER
+# FUNCTIONS_PRE_SIMULATION.R
 #
-#center of the map
+#
+# Functions that permit to create the three types of initial conditions 
+# (cluster, 2clusters and random), as well as set up of simulations.
+# 
+# This file is used to produce simulations in the paper: 
+# Spread of Dutch Elm Disease in an urban forest
+# Nicolas Bajeux, Julien Arino, Stephanie Portet and Richard Westwood
+# Ecological Modelling
+
+
+### FIND_CENTER
+#
+# Center of the map
 find_center = function(elms){
   min_X = min(elms$X)
   max_X = max(elms$X)
   min_Y = min(elms$Y)
   max_Y = max(elms$Y)
-  center = list(x=(max_X+min_X)/2,y=(max_Y+min_Y)/2)
+  center = list(x = (max_X+min_X)/2, y = (max_Y+min_Y)/2)
   return(center)
 }
 

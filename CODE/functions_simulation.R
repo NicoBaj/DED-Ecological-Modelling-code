@@ -1,4 +1,12 @@
-########## Functions #########
+# FUNCTIONS_SIMULATION.R
+#
+#
+# Functions that permit to run the simulations.
+# 
+# This file is used to produce simulations in the paper: 
+# Spread of Dutch Elm Disease in an urban forest
+# Nicolas Bajeux, Julien Arino, Stephanie Portet and Richard Westwood
+# Ecological Modelling
 
 ### SYSTEM_OVER_TIME
 #
