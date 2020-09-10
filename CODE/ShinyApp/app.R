@@ -70,11 +70,7 @@ ui <- fluidPage(
                            textOutput("info_ngh"),
                            imageOutput("plot_ngh",height=10)),
                   tabPanel("Maps", 
-                           plotOutput("plot_maps", width = "600px", height = "450px")),
-                  # tabPanel("Proportions",
-                  #          plotOutput("plot_proportions", width = "800px", height = "600px"))
-                  #tabPanel("Effect of quarantine", verbatimTextOutput("summary"))
-                  #tabPanel("Table", tableOutput("table"))
+                           plotOutput("plot_maps", width = "600px", height = "450px"))
       )
     )
   )
@@ -141,19 +137,6 @@ server <- function(input, output) {
     PLOT_PROP = FALSE
     source("run_sim.R",local = TRUE)
   })
-  
-  # output$plot_proportions <- renderPlot({
-    # OUT = RESULTS_NEW()
-    # par(mfrow = c(1,1))
-    # prop_Di_Wi = mat.or.vec(nr=1,nc=length(tree_states))
-    # for (i in 1:length(prop_Di_Wi)){
-    #   prop_Di_Wi[i] = length(which(tree_states[,i]=="I_W" & tree_states[,i]=="I_D"))/length(tree_states[,i])
-    # }
-    # plot(0:11,prop_Di_Wi) 
-    # PLOT_SIM = FALSE
-    # PLOT_PROP = TRUE
-    # source("C://Users/nicol/Documents/Work/DED-Ecological-Modelling-code/CODE/run_sim.R",local = TRUE)
-  # })
 
   })
 }
