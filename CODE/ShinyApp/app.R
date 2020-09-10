@@ -102,10 +102,10 @@ server <- function(input, output) {
   })
   
   output$info_ngh <- renderText({
-    exp_text = "Two areas can be used."
+    exp_text = "Two areas are used."
     exp_text = paste(exp_text, "North River Heights (NRH) is an actual City of Winnipeg neighbourhood.")
-    exp_text = paste(exp_text, "Pulberry, Victoria Crescent and Crescent Park (PVC) is the agglomeration of three City of Winnipeg neighbourhoods.")
-    exp_text = paste(exp_text, "PVC contains 1513 trees, while NRH contains 2004.")
+    exp_text = paste(exp_text, "Pulberry and Crescent Park (PCP) is the agglomeration of two City of Winnipeg neighbourhoods.")
+    exp_text = paste(exp_text, "PCP contains 1513 trees, while NRH contains 2004.")
     exp_text = paste(exp_text, "The dots represent the elm trees present in the area.")
     exp_text = paste(exp_text, "Their size is increasing as a function of their root neighbours, i.e., the trees whose roots are connected with, see the paper for more information.")
     exp_text = paste(exp_text, "")
@@ -135,7 +135,7 @@ server <- function(input, output) {
     OUT = RESULTS_NEW()
     PLOT_SIM  = TRUE
     PLOT_PROP = FALSE
-    source("run_sim.R",local = TRUE)
+    source("run_one_sim.R",local = TRUE)
   })
 
   })
