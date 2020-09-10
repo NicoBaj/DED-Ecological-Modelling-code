@@ -212,7 +212,7 @@ for (i in 1:sim_constants$nb_sims) {
   sims_params[[i]]$params = sims$params$params[[i]]
   if(IC_type=="random"){ #for random IC: there is a different IC for each sim
     sims_params[[i]]$IC = sims$IC[[i]] 
-  }else{ #for cluster and 2clusters IC: there is only one IC
+  } else { #for cluster and 2clusters IC: there is only one IC
     sims_params[[i]]$IC = sims$IC 
   }
 }
@@ -241,15 +241,14 @@ if (RUN_PARALLEL) {
                   "new.transition.matrices"),
                 envir = .GlobalEnv)
   # Run computation
-  results = parLapply(cl = cl, X = sims_params, fun = function(x) system_over_time(x, sim_constants))
+  results = parLapply(cl = cl, X = sims_params, 
+                      fun = function(x) system_over_time(x, sim_constants))
   # Stop cluster
   stopCluster(cl)
   timeProcessing=tictoc::toc()
 } else {
-  tictoc::tic()
   # Run computation
-  results = lapply(X = sims_params, FUN = function(x) system_over_time(x,sim_constants))
-  timeProcessing=tictoc::toc()
+  results = lapply(X = sims_params, FUN = function(x) system_over_time(x, sim_constants))
 }
 
 
@@ -265,8 +264,8 @@ if (SIM_SAVE) {
   tree_states = list()
   beetles = list()
   paramet = list()
-  vec_year = seq(1,length(sim_constants$time$idx),by=53)
-  for (i in 1:sim_constants$nb_sims){
+  vec_year = seq(from = 1, to = length(sim_constants$time$idx), by = 53)
+  for (i in 1:sim_constants$nb_sims) {
     tree_states[[i]] = results[[i]]$sim_output$status_trees[,vec_year]
     beetles[[i]]     = results[[i]]$sim_output$matPopByTrees
     paramet[[i]]     = results[[i]]$sim_param$params
@@ -279,7 +278,6 @@ if (SIM_SAVE) {
                          sim_constants$default_params$R_B,
                          sim_constants$default_params$p_i*100,
                          sim_constants$default_params$p_r*100))
-  
   saveRDS(beetles, 
           file = sprintf("%s/beetles_Rb%03g_pb_inf%03g_pr%03g.Rds",
                          sim_constants$DIRS$output_dir,

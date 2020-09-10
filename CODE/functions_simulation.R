@@ -3,13 +3,13 @@
 ### SYSTEM_OVER_TIME
 #
 # Runs one simulation
-system_over_time=function(sim_param,sim_constants){
-  
-  #Set up the initial conditions:
-  matPopByTrees = mat.or.vec(sim_constants$default_params$N*sim_constants$default_params$Nbs,length(sim_constants$time$idx))
+system_over_time=function(sim_param,sim_constants) {
+  #Set up initial conditions
+  matPopByTrees = mat.or.vec(sim_constants$default_params$N * sim_constants$default_params$Nbs,
+                             length(sim_constants$time$idx))
   colnames(matPopByTrees) = sim_constants$time$dateFull
   matPopByTrees[,1] = sim_param$IC$pop0ByTrees
-  matPopByTrees<-as(matPopByTrees,"sparseMatrix")
+  matPopByTrees = as(matPopByTrees,"sparseMatrix")
   status_trees = mat.or.vec(sim_constants$default_params$N,length(sim_constants$time$idx))
   status_trees[,1] = sim_param$IC$stages
   
@@ -42,30 +42,54 @@ system_over_time=function(sim_param,sim_constants){
       current_period = period
     }
     
-    
     ## three steps: 1) movement of beetles, 2) demography and 3) update of tree states (if required)
     ## 1) movement
     matPopByTrees[,idx] = matPopByTrees[,idx-1]
     
     #mvt of feeders F, spores-free
-    mvt_F = mvt_beetles(sim_constants,sim_param$params,matPopByTrees[sim_constants$other$indexMbs,idx-1],status_trees[,(idx-1)],"H",VARYING_PREPROC,"no_carrier",sim_constants$default_params$p_i)
-    
+    mvt_F = mvt_beetles(sim_constants,
+                        sim_param$params,
+                        matPopByTrees[sim_constants$other$indexMbs,idx-1],
+                        status_trees[,(idx-1)],
+                        "H",
+                        VARYING_PREPROC,
+                        "no_carrier",
+                        sim_constants$default_params$p_i)
     #mvt of feeders Fp, spores-carrying
-    mvt_Fp = mvt_beetles(sim_constants,sim_param$params,matPopByTrees[sim_constants$other$indexMbi,idx-1],status_trees[,(idx-1)],"H",VARYING_PREPROC,"carrier",sim_constants$default_params$p_i)
-    
+    mvt_Fp = mvt_beetles(sim_constants,
+                         sim_param$params,
+                         matPopByTrees[sim_constants$other$indexMbi,idx-1],
+                         status_trees[,(idx-1)],
+                         "H",
+                         VARYING_PREPROC,
+                         "carrier",
+                         sim_constants$default_params$p_i)
     #mvt of maters M, spores-free
-    mvt_M = mvt_beetles(sim_constants,sim_param$params,matPopByTrees[sim_constants$other$indexMs,idx-1],status_trees[,(idx-1)],"all",VARYING_PREPROC,"no_carrier",sim_constants$default_params$p_i)
-    
+    mvt_M = mvt_beetles(sim_constants,
+                        sim_param$params,
+                        matPopByTrees[sim_constants$other$indexMs,idx-1],
+                        status_trees[,(idx-1)],
+                        "all",
+                        VARYING_PREPROC,
+                        "no_carrier",
+                        sim_constants$default_params$p_i)
     #mvt of maters M, spores-carrying
-    mvt_Mp = mvt_beetles(sim_constants,sim_param$params,matPopByTrees[sim_constants$other$indexMi,idx-1],status_trees[,(idx-1)],"all",VARYING_PREPROC,"carrier",sim_constants$default_params$p_i)
+    mvt_Mp = mvt_beetles(sim_constants,
+                         sim_param$params,
+                         matPopByTrees[sim_constants$other$indexMi,idx-1],
+                         status_trees[,(idx-1)],
+                         "all",
+                         VARYING_PREPROC,
+                         "carrier",
+                         sim_constants$default_params$p_i)
     
     matPopByTrees[sim_constants$other$indexMbs,idx] = mvt_F$Movement
     matPopByTrees[sim_constants$other$indexMbi,idx] = mvt_Fp$Movement
     matPopByTrees[sim_constants$other$indexMs,idx] =  mvt_M$Movement
     matPopByTrees[sim_constants$other$indexMi,idx] =  mvt_Mp$Movement
     
-    #only the new feeders can infect trees
-    new_infection[,idx]=mvt_Fp$Infection
+    # Only the new feeders can infect trees
+    new_infection[,idx] = mvt_Fp$Infection
     
     ## 2) demography
     #Matrix Demog is defined first in the initial conditions, it only changes when scenario, trees status or year condition change
@@ -75,8 +99,8 @@ system_over_time=function(sim_param,sim_constants){
     if (period == "Winter" & 
         sim_constants$time$phase[idx+1] == "Emergence" & 
         idx != length(sim_constants$time$idx)) {
-      writeLines(sprintf("Update tree states %d",idx))
-      if(sim_constants$time$simple_year[idx]==1) {
+      writeLines(sprintf("Update tree states %d", idx))
+      if (sim_constants$time$simple_year[idx]==1) {
         #if this is the the first time we update
         vec_idx = 1:idx #take all the weeks from the beginning
       } else { 
@@ -86,9 +110,11 @@ system_over_time=function(sim_param,sim_constants){
         # 53 weeks since the infection only occurs when beetles feed (in spring/summer and this is not
         # the week at which the update occurs)
       }
-      idx_susceptible_beetles = which(status_trees[,idx-1]=="H"|status_trees[,idx-1]=="S_W")
+      writeLines(sprintf("idx=%d, dim(status_trees)=%d %dd", 
+                         idx, dim(status_trees)[1],dim(status_trees)[2]))
+      idx_susceptible_beetles = which(status_trees[,idx-1]=="H" | status_trees[,idx-1]=="S_W")
       #only these two types can be infected by beetles (because Fp can only go to S, Ws and Wi)
-      writeLines("Look where I am, mum!!")
+      writeLines("Look where I am, mum!1!")
       
       ###############################
       # BEETLE INFECTION
@@ -102,7 +128,7 @@ system_over_time=function(sim_param,sim_constants){
         }
       }
       nb_inf_trees_by_beetles = length(vec_new_inf)
-      print(sprintf("nb of new infected trees by beetles = %s",nb_inf_trees_by_beetles))
+      writeLines(sprintf("nb of trees newly infected by beetles = %s", nb_inf_trees_by_beetles))
       status_trees_after_beetles = mat.or.vec(sim_constants$default_params$N,1)
       status_trees_after_beetles[vec_new_inf] = "I_W"
       
@@ -121,6 +147,7 @@ system_over_time=function(sim_param,sim_constants){
       ###############################
       
       if (sim_constants$roots){
+        writeLines("Look where I am, mum!2!")
         idx_susceptible_roots = which(status_trees[,(idx-1)]=="H"|status_trees[,(idx-1)]=="S_W"|status_trees[,(idx-1)]=="S_D")#this time, all susceptible trees are ... susceptible
         status_trees_after_root = mat.or.vec(sim_constants$default_params$N,1)
         nb_inf_roots = 0#just to compute the number of infections by roots
@@ -132,12 +159,17 @@ system_over_time=function(sim_param,sim_constants){
           if(sim_constants$GATES$SIMULATIONS_ARTICLE){
             #sim_param$params$proba_roots is the data frame
             #first the rows that have j as a connected tree in proba_roots and find the associated neighbours
-            
+            writeLines("Look where I am, mum!3!")
             row_k = which(sim_param$params$proba_roots$idx_i==k)#indices of neighbours of j
+            writeLines("Look where I am, mum!4!")
             pos_neighbours = sim_param$params$proba_roots$idx_j[row_k]# their position in the system
+            writeLines(sprintf("idx=%d, pos_neighbours=%d, dim(status_trees)=%d %dd", 
+                               idx, pos_neighbours, dim(status_trees)[1],dim(status_trees)[2]))
             inf_neighbours = pos_neighbours[which(status_trees[pos_neighbours,idx-1]=="I_D")]#position of neighbours that are infected
+            writeLines("Look where I am, mum!7!")
             
             if(length(inf_neighbours)>0){
+              writeLines("Look where I am, mum!5!")
               #save the rows at which we have j associated to an infected neighbour
               row_inf = row_k[which(status_trees[sim_param$params$proba_roots$idx_j[row_k],idx-1]=="I_D")]
               if(length(row_inf)>0){
@@ -154,15 +186,15 @@ system_over_time=function(sim_param,sim_constants){
                   nb_inf_roots = nb_inf_roots+1
                 }
               }
-              if(k == 23){
+              if (k == 23) {
                 print(vec_proba_inf)
                 print(poisson_binomial_run)
               }
             }
-          }else{
+          } else {
             #sim_param$params$proba_roots is the data frame
             #first the rows that have k as a connected tree in proba_roots and find the associated neighbours
-            
+            writeLines("Look where I am, mum!6!")
             ID_k = sim_constants$default_params$elms$Tree.ID[k]#Tree ID of k
             row_k = which(sim_param$params$proba_roots$ID_i == ID_k)#where is ID_k in the dataframe of proba (as a source)
             ID_neighbours = sim_param$params$proba_roots$ID_j[row_k]#IDs of neighbours (destinations)
@@ -192,27 +224,27 @@ system_over_time=function(sim_param,sim_constants){
                   nb_inf_roots = nb_inf_roots+1
                 }
               }
-              if(k==23){
+              if (k==23) {
                 print(vec_proba_inf)
                 print(poisson_binomial_run)
               }
             }
           }
-          
         }
-        print(sprintf("nb of new infected trees by roots = %s",nb_inf_roots))
+        print(sprintf("nb of trees newly infected by roots = %s",nb_inf_roots))
         root_or_beetle[idx,2] = length(nb_inf_roots)
         
         ###############################
         # MERGING BOTH ROUTES OF INFECTION
         ###############################
-        
-        status_trees[,idx] = merge_updates(sim_constants,status_trees_after_root,status_trees_after_beetles)
-      }else{
+        status_trees[,idx] = merge_updates(sim_constants,
+                                           status_trees_after_root,
+                                           status_trees_after_beetles)
+      } else {
         status_trees[,idx] = status_trees_after_beetles
       }
       
-      if (sim_constants$GATES$PLOT_SIM){
+      if (sim_constants$GATES$PLOT_SIM) {
         plot(sim_constants$default_params$elms$X,sim_constants$default_params$elms$Y,
              col="green",xlab = "X", ylab = "Y", main = "Trees")
         Di_Wi = which(status_trees[,idx]=="I_D"|status_trees[,idx]=="I_W")
@@ -221,7 +253,7 @@ system_over_time=function(sim_param,sim_constants){
       
       ##since we change the status, we change the demography matrices
       Demog=demography_matrix(sim_constants,sim_param$params,status_trees[,idx],period)
-    }else{
+    } else {
       status_trees[,idx]=status_trees[,(idx-1)]
     }
   }
@@ -275,7 +307,14 @@ merge_updates = function(sim_constants,root,beetles){
 ###MVT_BEETLES
 #
 #function that moves beetles from trees to other. If beetles are carrying the spores, then the probability to infect the destination trees are computed and saved
-mvt_beetles = function(sim_constants,params,vec.of.beetles,status_trees,type,VARYING_PREPROC,status_beetles,p_i){
+mvt_beetles = function(sim_constants,
+                       params,
+                       vec.of.beetles,
+                       status_trees,
+                       type,
+                       VARYING_PREPROC,
+                       status_beetles,
+                       p_i) {
   # params list of para: sim_param$params
   # vec.of.beetles vector of beetles is the vector of Mbs, Mbi, Ms or Mi
   # type MUST BE "H" or "all": this is the type of trees towards which the beetles go, "H" meaning not dead trees (H, SW and IW)
@@ -286,9 +325,9 @@ mvt_beetles = function(sim_constants,params,vec.of.beetles,status_trees,type,VAR
   distance_neighbours = params$preproc$distance_neighbours
   
   #The entry i of result gives the number of beetles that moved in tree i from all other possible trees 
-  movement = rep(0,sim_constants$default_params$N)
+  movement = rep(0, sim_constants$default_params$N)
   #The entry i of Infection is either 0 or 1, if 1 then the tree i has been infected by a beetle, 0 otherwise
-  Infection = rep(0,sim_constants$default_params$N)
+  Infection = rep(0, sim_constants$default_params$N)
   
   dec.beetles = vec.of.beetles-floor(vec.of.beetles)
   
@@ -296,16 +335,18 @@ mvt_beetles = function(sim_constants,params,vec.of.beetles,status_trees,type,VAR
   list.pos = list()
   list.dist = list()
   
-  for (i in 1:sim_constants$default_params$N){
-    if(vec.of.beetles[i]>0){#if beetles need to move :
-      if (type == "H"){## then beetles are looking for Healthy or Weak trees
+  for (i in 1:sim_constants$default_params$N) {
+    if (vec.of.beetles[i]>0) {
+      #if beetles need to move :
+      if (type == "H") {
+        ## then beetles are looking for Healthy or Weak trees
         id_H = which(status_trees[neighbours_pos[[i]]]=="H")
         id_Ws = which(status_trees[neighbours_pos[[i]]]=="S_W")
         id_Wi = which(status_trees[neighbours_pos[[i]]]=="I_W")
         id = c(id_H,id_Ws,id_Wi)
         len = length(neighbours_pos[[i]][id])
-      }
-      else if (type == "all"){## then the beetles are looking for any type of tree
+      } else if (type == "all") {
+        ## then the beetles are looking for any type of tree
         id_Ds = which(status_trees[neighbours_pos[[i]]]=="S_D")
         id_Di = which(status_trees[neighbours_pos[[i]]]=="I_D")
         id_Ws = which(status_trees[neighbours_pos[[i]]]=="S_W")
@@ -313,15 +354,14 @@ mvt_beetles = function(sim_constants,params,vec.of.beetles,status_trees,type,VAR
         id_H  = which(status_trees[neighbours_pos[[i]]]=="H")
         id = c(id_H,id_Ws,id_Wi,id_Ds,id_Di)
         len = length(neighbours_pos[[i]][id])
-      }
-      else{
+      } else {
         print(sprintf("no tree, type = %s, Tree number %s",type,i))
         len=0
       }
       #len is the number of trees that beetles in tree i can reach
       #id is their index
       
-      if (len>0){#if trees are reachable
+      if (len>0) {#if trees are reachable
         pos_of_H_in_neighbourhood = neighbours_pos[[i]][id] #position of each neighbour
         distance_of_H_in_neighbourhood = distance_neighbours[[i]][id] #distance of each neighbour
         
@@ -383,9 +423,9 @@ mvt_beetles = function(sim_constants,params,vec.of.beetles,status_trees,type,VAR
       }
     }
   }
-  Infection[which(Infection>0)]=1
+  Infection[which(Infection>0)] = 1
   #If a tree i is successfully infected by a beetle, then Infection[i]=1, else Infection[i]=0. This will be used to update the tree status at the right time
-  out=list(Movement=movement,Infection=Infection)
+  out=list(Movement = movement, Infection = Infection)
   return(out)
 }
 
