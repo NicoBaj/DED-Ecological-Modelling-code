@@ -4,7 +4,7 @@
 ######################################################################
 ### SELECTION OF NEIGHBOURHOOD AND VALUES OF R_B
 ### replace spaces by "_" in the neighbourhood name
-name_nbhd = "NORTH_RIVER_HEIGHTS"
+name_nbhd = "MIXED_PULBERRY_CRESCENT_PARK"
 seq_R_B = seq(from = 20, to = 100, by=20) #list of values of R_B
 ######################################################################
 
