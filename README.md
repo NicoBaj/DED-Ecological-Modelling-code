@@ -14,7 +14,7 @@ Some of the code requires substantial computing power (multiple cores) or RAM (>
 ### Run simulations
 
 #### Simulations on data and neighbourhoods used in the article
-To launch one simulation using data and neighbourhoods from the article, go to `CODE/run_sim.R` and set `SIMULATIONS_ARTICLE` to `TRUE` and other inputs of the code (neighbourhood, initial conditions and main parameters). See `CODE/README.md` for more details.
+To launch one simulation using data and neighbourhoods from the article, go to `CODE/run_one_sim.R` and set `SIMULATIONS_ARTICLE` to `TRUE` and other inputs of the code (neighbourhood, initial conditions and main parameters). See `CODE/README.md` for more details.
 
 #### Simulations on newly updated tree inventory 
 To launch one simulation using newly updated data, see instructions in `CODE/README.md`.
